@@ -5,11 +5,14 @@ GL\GLibrary$1.class
 App\AppGL.class
 GL\FrameBuffer.class
 GL\Vertex.class
+Rasterizer\RasterizerPoints.class
 Texture\TextureNearest.class
 Math\Mtx4.class
 Viewer\Viewer.class
 GL\VertexBuffer$1.class
+Rasterizer\RasterizerSimple.class
 GL\GLibrary$MatrixType.class
 Texture\AbstractTexture.class
 Math\Vec4.class
+Rasterizer\RasterizerAbstract.class
 App\AbstractAppGL.class

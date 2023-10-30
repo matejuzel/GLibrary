@@ -6,6 +6,11 @@ package GL;
 
 import Math.Mtx4;
 import Math.Vec4;
+import Rasterizer.RasterizerAbstract;
+import Rasterizer.RasterizerPoints;
+import Rasterizer.RasterizerSimple;
+import Texture.AbstractTexture;
+import Texture.TextureNearest;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -26,6 +31,7 @@ public class GLibrary {
     
     
     FrameBuffer frameBuffer;
+    RasterizerAbstract rasterizer;
     
     Mtx4 mtxViewPort = new Mtx4();
     
@@ -46,6 +52,10 @@ public class GLibrary {
         stackMatrixModelView.push(new Mtx4());
         stackMatrixProjection.push(new Mtx4());
         mtxViewPort.loadViewport(width, height);
+        
+        AbstractTexture texture = new TextureNearest(256, 256);
+        rasterizer = new RasterizerSimple(frameBuffer, 0, texture);
+        //rasterizer = new RasterizerPoints(frameBuffer, 0, texture);
         
         for (int i=0; i<vertexBufferWork.length; i++) {
             vertexBufferWork[i] = new Vec4(0.0d, 0.0d, 0.0d, 0.0d);
@@ -181,30 +191,13 @@ public class GLibrary {
                     vertB.transform(mtxViewPort);
                     vertC.transform(mtxViewPort);
                     
-                    this.frameBuffer.putPixel((int)vertA.getX(), (int) vertA.getY(), 255, 200, 200, 4);
-                    this.frameBuffer.putPixel((int)vertB.getX(), (int) vertB.getY(), 255, 200, 200, 4);
-                    this.frameBuffer.putPixel((int)vertC.getX(), (int) vertC.getY(), 255, 200, 200, 4);
-                    
-                    this.frameBuffer.putTriangle(vertA, vertB, vertC, 255, 200, 200);
-                    /*
-                    this.frameBuffer.putLine(
-                            (int) Math.round(vertA.getX()), 
-                            (int) Math.round(vertA.getY()), 
-                            (int) Math.round(vertB.getX()), 
-                            (int) Math.round(vertB.getY()), 255, 200, 200
-                    );
-                    this.frameBuffer.putLine(
-                            (int) Math.round(vertB.getX()), 
-                            (int) Math.round(vertB.getY()), 
-                            (int) Math.round(vertC.getX()), 
-                            (int) Math.round(vertC.getY()), 255, 200, 200
-                    );
-                    this.frameBuffer.putLine(
-                            (int) Math.round(vertC.getX()), 
-                            (int) Math.round(vertC.getY()), 
-                            (int) Math.round(vertA.getX()), 
-                            (int) Math.round(vertA.getY()), 255, 200, 200
-                    );*/
+                    rasterizer.setVertexCoordinates(vertA, vertB, vertC);
+                    rasterizer.setColorA(255, 0, 0);
+                    rasterizer.setColorB(0, 255, 0);
+                    rasterizer.setColorC(0, 0, 255);
+                    rasterizer.setDepthValues(1.0d, 1.0d, 1.0d);
+                    rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
+                    rasterizer.drawTriangle();
                 }
                 
                 break;
