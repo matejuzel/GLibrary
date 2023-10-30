@@ -27,7 +27,7 @@ public class Viewer extends JPanel {
         frame.setSize(width, height);
         frame.setVisible(true);
         
-        super.setDoubleBuffered(true);
+        //super.setDoubleBuffered(true);
 
     }
     

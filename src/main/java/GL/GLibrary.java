@@ -8,7 +8,7 @@ import Math.Mtx4;
 import Math.Vec4;
 import Rasterizer.RasterizerAbstract;
 import Rasterizer.RasterizerPoints;
-import Rasterizer.RasterizerSimple;
+import Rasterizer.RasterizerLines;
 import Texture.AbstractTexture;
 import Texture.TextureNearest;
 import java.awt.Color;
@@ -54,7 +54,7 @@ public class GLibrary {
         mtxViewPort.loadViewport(width, height);
         
         AbstractTexture texture = new TextureNearest(256, 256);
-        rasterizer = new RasterizerSimple(frameBuffer, 0, texture);
+        rasterizer = new RasterizerLines(frameBuffer, 0, texture);
         //rasterizer = new RasterizerPoints(frameBuffer, 0, texture);
         
         for (int i=0; i<vertexBufferWork.length; i++) {

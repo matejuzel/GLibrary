@@ -11,9 +11,9 @@ import Texture.AbstractTexture;
  *
  * @author matej uzel
  */
-public class RasterizerSimple extends RasterizerAbstract {
+public class RasterizerLines extends RasterizerAbstract {
     
-    public RasterizerSimple(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
+    public RasterizerLines(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
 
