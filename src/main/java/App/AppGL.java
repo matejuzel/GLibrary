@@ -32,7 +32,8 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getFrameBuffer().setClearColor(0, 0, 0);
         
         // nastaveni projekcni a model-view matice
-        gLibrary.matrixPush(Mtx4.getProjectionPerspective(-0.1d, 0.1d, -0.1d, 0.1d, -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
+        //gLibrary.matrixPush(Mtx4.getProjectionPerspective(-0.1d, 0.1d, -0.1d, 0.1d, -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
+        gLibrary.matrixPush(Mtx4.getProjectionPerspective(Math.toRadians(20), this.gLibrary.getWidth()/this.gLibrary.getHeight(), -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
         gLibrary.matrixPush(Mtx4.getIdentity(), GLibrary.MatrixType.MODELVIEW);
         
         // umisteni objektu cube
@@ -40,7 +41,7 @@ public class AppGL extends AbstractAppGL {
         mtxCube1.loadIdentity().translate(-2, 0, 0);
         
         // umisteni kamery
-        mtxCamera.loadIdentity().translate(0, 0, -10);
+        mtxCamera.loadIdentity().translate(0, 0, -5);
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
@@ -73,9 +74,10 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        AbstractAppGL app = new AppGL(200, 180);
+        
+        AbstractAppGL app = new AppGL(2500, 1020);
         app.initCallback();
-        //app.runLoop(1);
-        app.run();
+        app.runLoop(1);
+        //app.run();
     }
 }

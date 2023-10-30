@@ -1,14 +1,16 @@
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\App\AppGL.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\GL\GLibrary.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Texture\AbstractTexture.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Math\Vec4.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Viewer\Viewer.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Math\Mtx4.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerSimple.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\GL\VertexBuffer.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Texture\TextureNearest.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerPoints.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\App\AbstractAppGL.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\GL\Vertex.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\GL\FrameBuffer.java
-C:\Users\matej uzel\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerAbstract.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\GL\FrameBuffer.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerSolid.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\GL\GLibrary.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Math\Vec4.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerTexture.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Texture\AbstractTexture.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\App\AppGL.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\GL\VertexBuffer.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\App\AbstractAppGL.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerAbstract.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerPoints.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Viewer\Viewer.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\GL\Vertex.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Rasterizer\RasterizerSimple.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Math\Mtx4.java
+C:\Users\matej\Documents\NetBeansProjects\GLibrary\src\main\java\Texture\TextureNearest.java

@@ -104,6 +104,23 @@ public final class Mtx4 {
         return this;
     }
     
+    public Mtx4 loadProjectionPerspective(double fovy, double aspect, double zNear, double zFar) {
+        
+        double f = Math.tan(2.0d/fovy);
+        
+        double dZ = zFar - zNear;
+        double dSum = zNear + zFar;
+        
+        this.setData(
+                f/aspect, 0,0,0,
+                0, f, 0,0,
+                0, 0,-dZ/dSum,-2*zNear*zFar/dZ,
+                0, 0,-1,0
+        );
+        
+        return this;
+    }
+    
     public Mtx4 loadViewport(int width, int height) {
         
         double w_half = width / 2.0d;
@@ -172,6 +189,12 @@ public final class Mtx4 {
     public static Mtx4 getProjectionPerspective(double left, double right, double bottom, double top, double near, double far) {
         Mtx4 mtx = new Mtx4();
         mtx.loadProjectionPerspective(left, right, bottom, top, near, far);
+        return mtx;
+    }
+    
+    public static Mtx4 getProjectionPerspective(double fovy, double aspect, double zNear, double zFar) {
+        Mtx4 mtx = new Mtx4();
+        mtx.loadProjectionPerspective(fovy, aspect, zNear, zFar);
         return mtx;
     }
     

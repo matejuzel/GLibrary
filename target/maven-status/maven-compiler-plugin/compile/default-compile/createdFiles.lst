@@ -15,4 +15,6 @@ GL\GLibrary$MatrixType.class
 Texture\AbstractTexture.class
 Math\Vec4.class
 Rasterizer\RasterizerAbstract.class
+Rasterizer\RasterizerSolid.class
 App\AbstractAppGL.class
+Rasterizer\RasterizerTexture.class
