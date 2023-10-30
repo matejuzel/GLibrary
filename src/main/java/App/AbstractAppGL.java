@@ -6,6 +6,7 @@ package App;
 
 import GL.GLibrary;
 import Viewer.Viewer;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -39,17 +40,22 @@ public abstract class AbstractAppGL {
         
         time0 = System.currentTimeMillis();
         
+        
+        
         for (int i=1; i<1000; i++) {
             
             time1 = System.currentTimeMillis();
             
-            loopCallback();
             
-            Graphics g2dScene = gLibrary.getFrameBuffer().getGraphics();
-            g2dScene.clearRect(1, 1, 200, 60);
+            
+            //gLibrary.getFrameBuffer().getGraphics();
+            Graphics g2dScene = viewer.getGraphics();
+            g2dScene.setColor(Color.black);
+            g2dScene.clearRect(1, 1, 100, 50);
             g2dScene.drawString("fps: "+fps, 20, 20);
             g2dScene.drawString("mean: "+fpsMean, 20, 40);
             
+            loopCallback();
             viewer.repaint();
             
             if (sleepMillis > 0) {

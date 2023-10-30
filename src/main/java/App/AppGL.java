@@ -72,14 +72,14 @@ public class AppGL extends AbstractAppGL {
         mtxCube1.multiply(Mtx4.getRotationY(0.003d));
         mtxCube1.translate(0, 0, -0.002);
         
-        gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
+        //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
     
     public static void main(String[] args) {
         
         AbstractAppGL app = new AppGL(800, 600);
         app.initCallback();
-        app.runLoop(1);
+        app.runLoop(2);
         //app.run();
     }
 }

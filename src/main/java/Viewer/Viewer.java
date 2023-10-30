@@ -27,17 +27,14 @@ public class Viewer extends JPanel {
         frame.setSize(width, height);
         frame.setVisible(true);
         
-        //super.setDoubleBuffered(true);
+        super.setDoubleBuffered(false);
 
     }
     
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.buffer != null) {
-            // Draw the loaded image on the panel
-            g.drawImage(this.buffer, 0, 0, this);
-        }
+        g.drawImage(this.buffer, 0, 0, this);
     }
     
     @Override
