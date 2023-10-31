@@ -41,7 +41,7 @@ public class AppGL extends AbstractAppGL {
         mtxCube1.loadIdentity().translate(-2, 0, 0);
         
         // umisteni kamery
-        mtxCamera.loadIdentity().translate(0, 0, -5);
+        mtxCamera.loadIdentity().translate(0, 0, -3);
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
@@ -66,11 +66,11 @@ public class AppGL extends AbstractAppGL {
         // do object transformations
         mtxCube0.multiply(Mtx4.getRotationX(0.005d));
         mtxCube0.multiply(Mtx4.getRotationY(0.005d));
-        mtxCube0.translate(0, 0, -0.005);
+        mtxCube0.translate(0, 0, -0.0000);
         
         mtxCube1.multiply(Mtx4.getRotationX(-0.004d));
         mtxCube1.multiply(Mtx4.getRotationY(0.003d));
-        mtxCube1.translate(0, 0, -0.002);
+        mtxCube1.translate(0, 0, -0.0000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
@@ -79,7 +79,8 @@ public class AppGL extends AbstractAppGL {
         
         AbstractAppGL app = new AppGL(800, 600);
         app.initCallback();
-        app.runLoop(2);
+        app.runLoop(5);
         //app.run();
+        
     }
 }

@@ -9,6 +9,7 @@ import Math.Vec4;
 import Rasterizer.RasterizerAbstract;
 import Rasterizer.RasterizerPoints;
 import Rasterizer.RasterizerLines;
+import Rasterizer.RasterizerSolid;
 import Texture.AbstractTexture;
 import Texture.TextureNearest;
 import java.awt.Color;
@@ -54,12 +55,70 @@ public class GLibrary {
         mtxViewPort.loadViewport(width, height);
         
         AbstractTexture texture = new TextureNearest(256, 256);
-        rasterizer = new RasterizerLines(frameBuffer, 0, texture);
-        //rasterizer = new RasterizerPoints(frameBuffer, 0, texture);
+        //rasterizer = new RasterizerLines(frameBuffer, 0, texture);
+        rasterizer = new RasterizerSolid(frameBuffer, 0, texture);
         
         for (int i=0; i<vertexBufferWork.length; i++) {
             vertexBufferWork[i] = new Vec4(0.0d, 0.0d, 0.0d, 0.0d);
         }
+    }
+    
+    public GLibrary vertexBufferRender(int handler) {
+        /*
+        rasterizer.setVertexCoordinates(new Vec4(34, 50, 0, 1), new Vec4(254, 70, 0, 1), new Vec4(100, 400, 0, 1));
+        rasterizer.setColorA(255, 0, 0);
+        rasterizer.setColorB(0, 255, 0);
+        rasterizer.setColorC(0, 0, 255);
+        rasterizer.drawTriangle();
+        */
+        
+        VertexBuffer vb = this.vertexBufferArray.get(handler);
+        
+        Mtx4 mtx = Mtx4.getIdentity();
+        mtx.multiply(this.getMatrix(MatrixType.PROJECTION));
+        mtx.multiply(this.getMatrix(MatrixType.MODELVIEW));
+        
+        
+        
+        
+        for (int i=0; i<vb.vertexArray.size(); i++) {
+            
+            
+            
+            this.vertexBufferWork[i].setData(vb.vertexArray.get(i));
+            this.vertexBufferWork[i].transform(mtx).divideByW();
+        }
+        
+        switch (vb.triangleMode) {
+            case SIMPLE:
+                
+                for (int i=0; i<vb.vertexArray.size(); i+=3) {
+                    
+                    Vec4 vertA = this.vertexBufferWork[i];
+                    Vec4 vertB = this.vertexBufferWork[i+1];
+                    Vec4 vertC = this.vertexBufferWork[i+2];
+                    
+                    vertA.transform(mtxViewPort);
+                    vertB.transform(mtxViewPort);
+                    vertC.transform(mtxViewPort);
+                    
+                    rasterizer.setVertexCoordinates(vertA, vertB, vertC);
+                    rasterizer.setColorA(255, 0, 0);
+                    rasterizer.setColorB(0, 255, 0);
+                    rasterizer.setColorC(0, 0, 255);
+                    rasterizer.setDepthValues(1.0d, 1.0d, 1.0d);
+                    rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
+                    rasterizer.drawTriangle();
+                    
+
+                }
+                
+                break;
+            default:
+                throw new RuntimeException("Zatim je podporovan pouze trangleMode = SIMPLE");
+        }
+        
+        return this;
     }
     
     public GLibrary matrixSet(Mtx4 matrix, MatrixType matrixType) {
@@ -161,52 +220,7 @@ public class GLibrary {
         return this.vertexBufferArray.get(handler);
     }
     
-    public GLibrary vertexBufferRender(int handler) {
-        
-        VertexBuffer vb = this.vertexBufferArray.get(handler);
-        
-        Mtx4 mtx = Mtx4.getIdentity();
-        mtx.multiply(this.getMatrix(MatrixType.PROJECTION));
-        mtx.multiply(this.getMatrix(MatrixType.MODELVIEW));
-        
-        
-        
-        
-        for (int i=0; i<vb.vertexArray.size(); i++) {
-            
-            this.vertexBufferWork[i].setData(vb.vertexArray.get(i));
-            this.vertexBufferWork[i].transform(mtx).divideByW();
-        }
-        
-        switch (vb.triangleMode) {
-            case SIMPLE:
-                
-                for (int i=0; i<vb.vertexArray.size(); i+=3) {
-                    
-                    Vec4 vertA = this.vertexBufferWork[i];
-                    Vec4 vertB = this.vertexBufferWork[i+1];
-                    Vec4 vertC = this.vertexBufferWork[i+2];
-                    
-                    vertA.transform(mtxViewPort);
-                    vertB.transform(mtxViewPort);
-                    vertC.transform(mtxViewPort);
-                    
-                    rasterizer.setVertexCoordinates(vertA, vertB, vertC);
-                    rasterizer.setColorA(255, 0, 0);
-                    rasterizer.setColorB(0, 255, 0);
-                    rasterizer.setColorC(0, 0, 255);
-                    rasterizer.setDepthValues(1.0d, 1.0d, 1.0d);
-                    rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
-                    rasterizer.drawTriangle();
-                }
-                
-                break;
-            default:
-                throw new RuntimeException("Zatim je podporovan pouze trangleMode = SIMPLE");
-        }
-        
-        return this;
-    }
+    
     
     public GLibrary drawRectangle(int x1, int y1, int x2, int y2, int r, int g, int b) {
         

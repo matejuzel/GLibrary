@@ -84,4 +84,6 @@ public abstract class RasterizerAbstract {
         cB = b;
     }
     
+
+    
 }

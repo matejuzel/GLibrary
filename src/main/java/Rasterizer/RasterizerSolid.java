@@ -5,6 +5,7 @@
 package Rasterizer;
 
 import GL.FrameBuffer;
+import Math.Vec4;
 import Texture.AbstractTexture;
 
 /**
@@ -17,9 +18,243 @@ public class RasterizerSolid extends RasterizerAbstract {
         super(frameBuffer, depthBuffer, texture);
     }
 
-    @Override
-    public void drawTriangle() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void sortVertices() {
+        int pom;
+        if (bY < aY) {
+            pom = bX; bX = aX; aX = pom;
+            pom = bY; bY = aY; aY = pom;
+        }
+        if (cY < bY) {
+            pom = cX; cX = bX; bX = pom;
+            pom = cY; cY = bY; bY = pom;   
+            if (bY < aY) {
+                pom = bX; bX = aX; aX = pom;
+                pom = bY; bY = aY; aY = pom;
+            }
+        }
     }
     
+    public void scanLine(int x0, int x1, int y, int r, int g, int b) {
+        
+        if (x0 < x1) {
+            
+            for (int x = x0; x < x1; x++) {
+                frameBuffer.putPixel(x, y, r,g,b);
+            }
+        } else {
+            for (int x = x0; x > x1; x--) {
+                frameBuffer.putPixel(x, y, r,g,b);
+            }
+        }
+        
+        
+    }
+    
+    @Override
+    public void drawTriangle() {
+        
+        sortVertices();
+        
+        int dxAC = cX - aX;
+        int dxAB = bX - aX;
+        int dxBC = cX - bX;
+        
+        int dy0 = cY - aY;
+        int dy1 = bY - aY;
+        int dy2 = cY - bY;
+        
+        float dyAC_inv = 1.0f / dy0;
+        float dyAB_inv = 1.0f / dy1;
+        float dyBC_inv = 1.0f / dy2;
+        
+        int crossAC = cY * aX - aY * cX;
+        int crossAB = bY * aX - aY * bX;
+        int crossBC = cY * bX - bY * cX;
+
+        // horni cast trojuhelniku
+        for (int line = aY; line < bY; line++) {
+            
+            // pruseciky svislych usecek - krajni body pro scanline
+            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xAB = Math.round((crossAB + line * dxAB) * dyAB_inv);
+            
+            scanLine(xAC, xAB, line, 127, 127, 127);
+        }
+        
+        // dolni cast trojuhelniku
+        for (int line = bY; line < cY; line++) {
+            
+            // pruseciky svislych usecek - krajni body pro scanline
+            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xBC = Math.round((crossBC + line * dxBC) * dyBC_inv);
+            
+            scanLine(xAC, xBC, line, 127, 127, 127);
+        }
+        
+        frameBuffer.putLine(aX, aY, bX, bY, 255, 255, 255);
+        frameBuffer.putLine(bX, bY, cX, cY, 255, 255, 255);
+        frameBuffer.putLine(cX, cY, aX, aY, 255, 255, 255);
+        
+        frameBuffer.putPixel(aX, aY, aR, aG, aB, 4);
+        frameBuffer.putPixel(bX, bY, bR, bG, bB, 4);
+        frameBuffer.putPixel(cX, cY, cR, cG, cB, 4);
+    }
+    
+    /*
+    public void triangleSolid(Vertex vertexA, Vertex vertexB, Vertex vertexC) {
+        
+        //System.out.println("A: "+vertexA.getU()+" ; "+vertexA.getV()+"; B: "+vertexB.getU()+" ; "+vertexB.getV()+"; C: "+vertexC.getU()+" ; "+vertexC.getV());
+        
+        Vertex pom;
+        if (vertexB.getOut().getY() < vertexA.getOut().getY()) {
+            
+            pom = vertexB;
+            vertexB = vertexA;
+            vertexA = pom;
+        }
+        if (vertexC.getOut().getY() < vertexB.getOut().getY()) {
+        
+            pom = vertexC;
+            vertexC = vertexB;
+            vertexB = pom;
+            
+            if (vertexB.getOut().getY() < vertexA.getOut().getY()) {
+                
+                pom = vertexB;
+                vertexB = vertexA;
+                vertexA = pom;
+            }
+        }
+        
+        
+        Vector4 outA = vertexA.getOut();
+        Vector4 outB = vertexB.getOut();
+        Vector4 outC = vertexC.getOut();
+        
+        // z Normalized Device Coordinates prevedeme souradnice do Screen Space [-1 ; 1] -> [0 ; widht resp. height]
+        Vector2 screenA = new Vector2(Math.round((context.getWidth() / 2.0f * (outA.getX() + 1))), Math.round(context.getHeight() / 2.0f * (outA.getY() + 1)));
+        Vector2 screenB = new Vector2(Math.round((context.getWidth() / 2.0f * (outB.getX() + 1))), Math.round(context.getHeight() / 2.0f * (outB.getY() + 1)));
+        Vector2 screenC = new Vector2(Math.round((context.getWidth() / 2.0f * (outC.getX() + 1))), Math.round(context.getHeight() / 2.0f * (outC.getY() + 1)));
+        
+        //System.out.println(scrA.toString()+" , "+scrB.toString()+" , "+scrC.toString());
+        
+        int dxAC = screenC.getX() - screenA.getX();
+        int dxAB = screenB.getX() - screenA.getX();
+        int dxBC = screenC.getX() - screenB.getX();
+        
+        int dy0 = screenC.getY() - screenA.getY();
+        int dy1 = screenB.getY() - screenA.getY();
+        int dy2 = screenC.getY() - screenB.getY();
+        
+        float dyAC_inv = 1.0f / dy0;
+        float dyAB_inv = 1.0f / dy1;
+        float dyBC_inv = 1.0f / dy2;
+        
+        int crossAC = screenC.getY()*screenA.getX() - screenA.getY()*screenC.getX();
+        int crossAB = screenB.getY()*screenA.getX() - screenA.getY()*screenB.getX();
+        int crossBC = screenC.getY()*screenB.getX() - screenB.getY()*screenC.getX();
+        
+        float kAC = 0;//dyAC_inv / 2; 
+        float kAB = 0;//dyAB_inv / 2;
+        float kBC = 0;//dyBC_inv / 2;
+        
+        float zAC_0 = vertexA.getRealZ();
+        float zAC_1 = vertexC.getRealZ();
+        float zAB_0 = vertexA.getRealZ();
+        float zAB_1 = vertexB.getRealZ();
+        float zBC_0 = vertexB.getRealZ();
+        float zBC_1 = vertexC.getRealZ();
+        
+        float uAC_0 = vertexA.getU();
+        float uAC_1 = vertexC.getU();
+        float uAB_0 = vertexA.getU();
+        float uAB_1 = vertexB.getU();
+        float uBC_0 = vertexB.getU();
+        float uBC_1 = vertexC.getU();
+        
+        float vAC_0 = vertexA.getV();
+        float vAC_1 = vertexC.getV();
+        float vAB_0 = vertexA.getV();
+        float vAB_1 = vertexB.getV();
+        float vBC_0 = vertexB.getV();
+        float vBC_1 = vertexC.getV();
+        
+        // horni cast trojuhelniku
+        for (int line = screenA.getY(); line < screenB.getY(); line++) {
+            
+            // pruseciky svislych usecek - krajni body pro scanline
+            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xAB = Math.round((crossAB + line * dxAB) * dyAB_inv);
+            
+            // interpolace z
+            float zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
+            float zAB_k = 1.0f / ( 1.0f/zAB_0 + kAB * (1.0f/zAB_1 - 1.0f/zAB_0) );
+            // interpolace texturovacich souradnic u, v
+            float uAC_k = ( uAC_0/zAC_0 + kAC * (uAC_1/zAC_1 - uAC_0/zAC_0) ) * zAC_k;
+            float uAB_k = ( uAB_0/zAB_0 + kAB * (uAB_1/zAB_1 - uAB_0/zAB_0) ) * zAB_k;
+            float vAC_k = ( vAC_0/zAC_0 + kAC * (vAC_1/zAC_1 - vAC_0/zAC_0) ) * zAC_k;
+            float vAB_k = ( vAB_0/zAB_0 + kAB * (vAB_1/zAB_1 - vAB_0/zAB_0) ) * zAB_k;
+            
+            scanLine(xAC, xAB, line, zAC_k, zAB_k, uAC_k, uAB_k, vAC_k, vAB_k);
+            
+            kAC += dyAC_inv;
+            kAB += dyAB_inv;
+        }
+        
+        // dolni cast trojuhelniku
+        for (int line = screenB.getY(); line < screenC.getY(); line++) {
+            
+            // pruseciky svislych usecek - krajni body pro scanline
+            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xBC = Math.round((crossBC + line * dxBC) * dyBC_inv);
+            
+            // interpolace z
+            float zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
+            float zBC_k = 1.0f / ( 1.0f/zBC_0 + kBC * (1.0f/zBC_1 - 1.0f/zBC_0) );
+            // interpolace texturovacich souradnic u, v
+            float uAC_k = ( uAC_0/zAC_0 + kAC * (uAC_1/zAC_1 - uAC_0/zAC_0) ) * zAC_k;
+            float uBC_k = ( uBC_0/zBC_0 + kBC * (uBC_1/zBC_1 - uBC_0/zBC_0) ) * zBC_k;
+            float vAC_k = ( vAC_0/zAC_0 + kAC * (vAC_1/zAC_1 - vAC_0/zAC_0) ) * zAC_k;
+            float vBC_k = ( vBC_0/zBC_0 + kBC * (vBC_1/zBC_1 - vBC_0/zBC_0) ) * zBC_k;
+
+            scanLine(xAC, xBC, line, zAC_k, zBC_k, uAC_k, uBC_k, vAC_k, vBC_k);
+            
+            kAC += dyAC_inv;
+            kBC += dyBC_inv;
+        }
+    }
+    
+    public void scanLine(int x0, int x1, int y, float z0, float z1, float u0, float u1, float v0, float v1) {
+        
+        if (x0 > x1) {
+            
+            int pomI; float pomF;
+            pomI = x0; x0 = x1; x1 = pomI;
+            pomF = z0; z0 = z1; z1 = pomF;
+            pomF = u0; u0 = u1; u1 = pomF;
+            pomF = v0; v0 = v1; v1 = pomF;
+        }
+        
+        float dx_inv = 1.0f / (x1 - x0);
+        float k = dx_inv / 2; // zaciname vlastne v pulce pixelu proto ten posun o polovinu kroku
+        
+        
+        float u_k0 = 0, v_k0 = 0; // texturovaci souradnice z predchoziho kroku pro filtrovani textury
+        
+        for (int x = x0; x < x1; x++) {
+            
+            float z_k = 1.0f / ( 1.0f/z0 + k * (1.0f/z1 - 1.0f/z0));
+            
+            float u_k = ( u0/z0 + k * (u1/z1 - u0/z0) ) * z_k;
+            float v_k = ( v0/z0 + k * (v1/z1 - v0/z0) ) * z_k;
+            
+            dot(new Vector2(x, y), texture.getTextel(u_k, v_k, u_k0, v_k0));
+            
+            k += dx_inv;
+            
+            u_k0 = u_k;
+            v_k0 = v_k;
+        }
+    }
+    */
 }
