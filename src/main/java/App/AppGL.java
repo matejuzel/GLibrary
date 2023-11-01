@@ -77,7 +77,7 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        AbstractAppGL app = new AppGL(800, 600);
+        AbstractAppGL app = new AppGL(200, 180);
         app.initCallback();
         app.runLoop(5);
         //app.run();

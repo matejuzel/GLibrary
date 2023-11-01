@@ -18,6 +18,9 @@ public class RasterizerSolid extends RasterizerAbstract {
         super(frameBuffer, depthBuffer, texture);
     }
 
+    /**
+     * seradi vertexy shora dolu v poradi A,B,C
+     */
     public void sortVertices() {
         int pom;
         if (bY < aY) {
@@ -59,13 +62,13 @@ public class RasterizerSolid extends RasterizerAbstract {
         int dxAB = bX - aX;
         int dxBC = cX - bX;
         
-        int dy0 = cY - aY;
-        int dy1 = bY - aY;
-        int dy2 = cY - bY;
+        int dyAC = cY - aY;
+        int dyAB = bY - aY;
+        int dyBC = cY - bY;
         
-        float dyAC_inv = 1.0f / dy0;
-        float dyAB_inv = 1.0f / dy1;
-        float dyBC_inv = 1.0f / dy2;
+        float dyAC_inv = 1.0f / dyAC;
+        float dyAB_inv = 1.0f / dyAB;
+        float dyBC_inv = 1.0f / dyBC;
         
         int crossAC = cY * aX - aY * cX;
         int crossAB = bY * aX - aY * bX;
