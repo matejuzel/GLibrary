@@ -14,11 +14,14 @@ import Texture.AbstractTexture;
  */
 public class RasterizerSolid extends RasterizerAbstract {
     
-    // pomocne hodnoty
+    // pomocne hodnoty - rasterizace
     protected int dxAC, dxAB, dxBC;
     protected int dyAC, dyAB, dyBC;
     protected int crossAC, crossAB, crossBC;
-    protected float dyAC_inv, dyAB_inv, dyBC_inv;
+    protected double dyAC_inv, dyAB_inv, dyBC_inv;
+    
+    // pomocne hodnoty - interpolace hloubky
+    protected double zAC_0, zAC_1, zAB_0, zAB_1, zBC_0, zBC_1;
     
     public RasterizerSolid(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
@@ -28,20 +31,7 @@ public class RasterizerSolid extends RasterizerAbstract {
      * seradi vertexy shora dolu v poradi A,B,C
      */
     public void sortVertices() {
-        /*
-        int pom;
-        if (bY < aY) {
-            pom = bX; bX = aX; aX = pom;
-            pom = bY; bY = aY; aY = pom;
-        }
-        if (cY < bY) {
-            pom = cX; cX = bX; bX = pom;
-            pom = cY; cY = bY; bY = pom;   
-            if (bY < aY) {
-                pom = bX; bX = aX; aX = pom;
-                pom = bY; bY = aY; aY = pom;
-            }
-        }*/
+        
         if (bY < aY) {
             swapAB();
         }
@@ -74,21 +64,21 @@ public class RasterizerSolid extends RasterizerAbstract {
     }
     
     public void swapAB() {
-        int pom;
-        pom = aX; aX = bX; bX = pom;
-        pom = aY; aY = bY; bY = pom;
+        int tmp;
+        tmp = aX; aX = bX; bX = tmp;
+        tmp = aY; aY = bY; bY = tmp;
     }
     
     public void swapBC() {
-        int pom;
-        pom = bX; bX = cX; cX = pom;
-        pom = bY; bY = cY; cY = pom;
+        int tmp;
+        tmp = bX; bX = cX; cX = tmp;
+        tmp = bY; bY = cY; cY = tmp;
     }
     
     public void swapCA() {
-        int pom;
-        pom = cX; cX = aX; aX = pom;
-        pom = cY; cY = aY; aY = pom;
+        int tmp;
+        tmp = cX; cX = aX; aX = tmp;
+        tmp = cY; cY = aY; aY = tmp;
     }
     
     public void preprocess() {
@@ -108,6 +98,13 @@ public class RasterizerSolid extends RasterizerAbstract {
         crossAC = cY * aX - aY * cX;
         crossAB = bY * aX - aY * bX;
         crossBC = cY * bX - bY * cX;
+        
+        zAC_0 = aZ;
+        zAC_1 = cZ;
+        zAB_0 = aZ;
+        zAB_1 = bZ;
+        zBC_0 = bZ;
+        zBC_1 = cZ;
     }
     
     @Override
@@ -117,24 +114,40 @@ public class RasterizerSolid extends RasterizerAbstract {
         
         preprocess();
         
+        double kAC = 0, kAB = 0, kBC = 0;
+        
         // horni cast trojuhelniku
         for (int line = aY; line < bY; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
-            int xAB = Math.round((crossAB + line * dxAB) * dyAB_inv);
+            int xAC = (int) Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xAB = (int) Math.round((crossAB + line * dxAB) * dyAB_inv);
+            
+            // interpolace z
+            double zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
+            double zAB_k = 1.0f / ( 1.0f/zAB_0 + kAB * (1.0f/zAB_1 - 1.0f/zAB_0) );
             
             scanLine(xAC, xAB, line, 127, 127, 127);
+            
+            kAC += dyAC_inv;
+            kAB += dyAB_inv;
         }
         
         // dolni cast trojuhelniku
         for (int line = bY; line < cY; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = Math.round((crossAC + line * dxAC) * dyAC_inv);
-            int xBC = Math.round((crossBC + line * dxBC) * dyBC_inv);
+            int xAC = (int) Math.round((crossAC + line * dxAC) * dyAC_inv);
+            int xBC = (int) Math.round((crossBC + line * dxBC) * dyBC_inv);
+            
+            // interpolace z
+            double zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
+            double zBC_k = 1.0f / ( 1.0f/zBC_0 + kBC * (1.0f/zBC_1 - 1.0f/zBC_0) );
             
             scanLine(xAC, xBC, line, 127, 127, 127);
+            
+            kAC += dyAC_inv;
+            kBC += dyBC_inv;
         }
         
         frameBuffer.putLine(aX, aY, bX, bY, 255, 255, 255);

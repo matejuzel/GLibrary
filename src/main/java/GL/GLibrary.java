@@ -250,4 +250,14 @@ public class GLibrary {
     }
     
     
+    @Override
+    public String toString() {
+        
+        int sum = 0;
+        for (int i=0; i<vertexBufferArray.size(); i++) {
+            sum += vertexBufferArray.get(i).vertexArray.size();
+        }
+        
+        return "pocet vertexu: "+sum;
+    }
 }

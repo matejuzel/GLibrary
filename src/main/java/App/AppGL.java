@@ -47,8 +47,23 @@ public class AppGL extends AbstractAppGL {
         vbaCube0 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+
         vbaCube1 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube1).addCube(0.3);
+        
+        System.out.println(gLibrary.toString());
     }
 
     @Override
@@ -77,7 +92,7 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        AbstractAppGL app = new AppGL(200, 180);
+        AbstractAppGL app = new AppGL(800, 600);
         app.initCallback();
         app.runLoop(5);
         //app.run();
