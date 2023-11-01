@@ -4,6 +4,7 @@
  */
 package Rasterizer;
 
+import GL.DepthBuffer;
 import GL.FrameBuffer;
 import Math.Vec4;
 import Texture.AbstractTexture;
@@ -23,7 +24,7 @@ public class RasterizerSolid extends RasterizerAbstract {
     // pomocne hodnoty - interpolace hloubky
     protected double zAC_0, zAC_1, zAB_0, zAB_1, zBC_0, zBC_1;
     
-    public RasterizerSolid(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
+    public RasterizerSolid(FrameBuffer frameBuffer, DepthBuffer depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
 
@@ -43,42 +44,25 @@ public class RasterizerSolid extends RasterizerAbstract {
         }
     }
     
-    public void scanLine(int x0, int x1, int y, int r, int g, int b) {
-        
-        int step, length;
-        
-        if (x0 < x1) {
-            step = 1;
-            length = x1 - x0;
-        } else {
-            step = -1;
-            length = x0 - x1;
-        }
-        
-        int x = x0;
-        for (int i = 0; i < length; i++) {
-        
-            frameBuffer.putPixel(x, y, r,g,b);
-            x += step;
-        } 
-    }
-    
     public void swapAB() {
-        int tmp;
+        int tmp; double tmp2;
         tmp = aX; aX = bX; bX = tmp;
         tmp = aY; aY = bY; bY = tmp;
+        tmp2 = aZ; aZ = bZ; bZ = tmp2;
     }
     
     public void swapBC() {
-        int tmp;
+        int tmp; double tmp2;
         tmp = bX; bX = cX; cX = tmp;
         tmp = bY; bY = cY; cY = tmp;
+        tmp2 = bZ; bZ = cZ; cZ = tmp2;
     }
     
     public void swapCA() {
-        int tmp;
+        int tmp; double tmp2;
         tmp = cX; cX = aX; aX = tmp;
         tmp = cY; cY = aY; aY = tmp;
+        tmp2 = cZ; cZ = aZ; aZ = tmp2;
     }
     
     public void preprocess() {
@@ -109,6 +93,11 @@ public class RasterizerSolid extends RasterizerAbstract {
     
     @Override
     public void drawTriangle() {
+        /*
+        System.out.println(aX+" ; "+aY+" ; "+aZ);
+        System.out.println(bX+" ; "+bY+" ; "+bZ);
+        System.out.println(cX+" ; "+cY+" ; "+cZ);
+        System.out.println("");*/
         
         sortVertices();
         
@@ -124,10 +113,10 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xAB = (int) Math.round((crossAB + line * dxAB) * dyAB_inv);
             
             // interpolace z
-            double zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
-            double zAB_k = 1.0f / ( 1.0f/zAB_0 + kAB * (1.0f/zAB_1 - 1.0f/zAB_0) );
+            double zAC_k = 1.0d / ( 1.0d/zAC_0 + kAC * (1.0d/zAC_1 - 1.0d/zAC_0) );
+            double zAB_k = 1.0d / ( 1.0d/zAB_0 + kAB * (1.0d/zAB_1 - 1.0d/zAB_0) );
             
-            scanLine(xAC, xAB, line, 127, 127, 127);
+            scanLine(xAC, xAB, line, zAC_k, zAB_k, aR, aG, aB);
             
             kAC += dyAC_inv;
             kAB += dyAB_inv;
@@ -141,22 +130,58 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xBC = (int) Math.round((crossBC + line * dxBC) * dyBC_inv);
             
             // interpolace z
-            double zAC_k = 1.0f / ( 1.0f/zAC_0 + kAC * (1.0f/zAC_1 - 1.0f/zAC_0) );
-            double zBC_k = 1.0f / ( 1.0f/zBC_0 + kBC * (1.0f/zBC_1 - 1.0f/zBC_0) );
+            double zAC_k = 1.0d / ( 1.0d/zAC_0 + kAC * (1.0d/zAC_1 - 1.0d/zAC_0) );
+            double zBC_k = 1.0d / ( 1.0d/zBC_0 + kBC * (1.0d/zBC_1 - 1.0d/zBC_0) );
             
-            scanLine(xAC, xBC, line, 127, 127, 127);
+            scanLine(xAC, xBC, line, zAC_k, zBC_k, aR, aG, aB);
             
             kAC += dyAC_inv;
             kBC += dyBC_inv;
         }
-        
+        /*
         frameBuffer.putLine(aX, aY, bX, bY, 255, 255, 255);
         frameBuffer.putLine(bX, bY, cX, cY, 255, 255, 255);
         frameBuffer.putLine(cX, cY, aX, aY, 255, 255, 255);
         
         frameBuffer.putPixel(aX, aY, aR, aG, aB, 4);
         frameBuffer.putPixel(bX, bY, bR, bG, bB, 4);
-        frameBuffer.putPixel(cX, cY, cR, cG, cB, 4);
+        frameBuffer.putPixel(cX, cY, cR, cG, cB, 4);*/
+    }
+    
+    public void scanLine(int x0, int x1, int y, double z0, double z1, int r, int g, int b) {
+        
+        //System.out.println(z0+";"+z1);
+        
+        int step, length;
+        
+        if (x0 < x1) {
+            step = 1;
+            length = x1 - x0;
+        } else {
+            step = -1;
+            length = x0 - x1;
+            //return;
+        }
+        
+        double dx_inv = 1.0d / (x1 - x0);
+        double k = 0; // zaciname vlastne v pulce pixelu proto ten posun o polovinu kroku
+        
+        int x = x0;
+        for (int i = 0; i < length; i++) {
+            
+            double z_k = 1.0d / ( 1.0d/z0 + k * (1.0d/z1 - 1.0d/z0));
+            
+            //r = g = b = (int) (z_k * 128 + 127); // barva jako hloubka v odstinech sede
+            
+            if (depthBuffer.write(x, y, z_k)) {
+                
+                frameBuffer.putPixel(x, y, r,g,b);
+            }
+            
+            x += step;
+            
+            if (step > 0) {k += dx_inv;} else {k -= dx_inv;}
+        } 
     }
     
     /*

@@ -33,20 +33,21 @@ public class AppGL extends AbstractAppGL {
         
         // nastaveni projekcni a model-view matice
         //gLibrary.matrixPush(Mtx4.getProjectionPerspective(-0.1d, 0.1d, -0.1d, 0.1d, -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
-        gLibrary.matrixPush(Mtx4.getProjectionPerspective(Math.toRadians(20), this.gLibrary.getWidth()/this.gLibrary.getHeight(), -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
+        gLibrary.matrixPush(Mtx4.getProjectionPerspective(Math.toRadians(45), this.gLibrary.getWidth()/this.gLibrary.getHeight(), -0.5d, -5.0d), GLibrary.MatrixType.PROJECTION);
         gLibrary.matrixPush(Mtx4.getIdentity(), GLibrary.MatrixType.MODELVIEW);
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(1, 0,0);
-        mtxCube1.loadIdentity().translate(-2, 0, 0);
+        mtxCube1.loadIdentity().translate(-0.5, 0.4, 0).multiply(Mtx4.getRotationZ(2.8));
         
         // umisteni kamery
         mtxCamera.loadIdentity().translate(0, 0, -3);
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(0.9);
         
+        /*gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
@@ -57,11 +58,9 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-
+*/
         vbaCube1 = gLibrary.addVertexBuffer();
-        gLibrary.getVertexBuffer(vbaCube1).addCube(0.3);
+        gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
         
         System.out.println(gLibrary.toString());
     }
@@ -70,6 +69,7 @@ public class AppGL extends AbstractAppGL {
     public void loopCallback() {
         // clear color buffer
         gLibrary.getFrameBuffer().clear();
+        gLibrary.getDepthBuffer().clear(1.0d);
         
         // set modelview matrix
         gLibrary.matrixSet(mtxCamera.getOrthonormalInverted().multiply(mtxCube0), GLibrary.MatrixType.MODELVIEW);
@@ -84,7 +84,7 @@ public class AppGL extends AbstractAppGL {
         mtxCube0.translate(0, 0, -0.0000);
         
         mtxCube1.multiply(Mtx4.getRotationX(-0.004d));
-        mtxCube1.multiply(Mtx4.getRotationY(0.003d));
+        //mtxCube1.multiply(Mtx4.getRotationY(0.003d));
         mtxCube1.translate(0, 0, -0.0000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);

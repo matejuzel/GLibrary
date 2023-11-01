@@ -4,6 +4,7 @@
  */
 package Rasterizer;
 
+import GL.DepthBuffer;
 import GL.FrameBuffer;
 import Texture.AbstractTexture;
 
@@ -13,7 +14,7 @@ import Texture.AbstractTexture;
  */
 public class RasterizerPoints extends RasterizerAbstract {
 
-    public RasterizerPoints(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
+    public RasterizerPoints(FrameBuffer frameBuffer, DepthBuffer depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
 

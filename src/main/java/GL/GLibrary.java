@@ -32,6 +32,7 @@ public class GLibrary {
     
     
     FrameBuffer frameBuffer;
+    DepthBuffer depthBuffer;
     RasterizerAbstract rasterizer;
     
     Mtx4 mtxViewPort = new Mtx4();
@@ -48,7 +49,11 @@ public class GLibrary {
     //TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public GLibrary(int width, int height) {
-        this.frameBuffer = new FrameBuffer(width, height);
+        
+        depthBuffer = new DepthBuffer(width, height);
+        
+        frameBuffer = new FrameBuffer(width, height);
+        
         
         stackMatrixModelView.push(new Mtx4());
         stackMatrixProjection.push(new Mtx4());
@@ -56,7 +61,7 @@ public class GLibrary {
         
         AbstractTexture texture = new TextureNearest(256, 256);
         //rasterizer = new RasterizerLines(frameBuffer, 0, texture);
-        rasterizer = new RasterizerSolid(frameBuffer, 0, texture);
+        rasterizer = new RasterizerSolid(frameBuffer, depthBuffer, texture);
         
         for (int i=0; i<vertexBufferWork.length; i++) {
             vertexBufferWork[i] = new Vec4(0.0d, 0.0d, 0.0d, 0.0d);
@@ -89,10 +94,32 @@ public class GLibrary {
             this.vertexBufferWork[i].transform(mtx).divideByW();
         }
         
+        
+        int[] colors = {
+            255,0,0,
+            255,0,0,
+            0,255,0,
+            0,255,0,
+            0,0,255,
+            0,0,255,
+            
+            255,255,0,
+            255,255,0,
+            255,0,255,
+            255,0,255,
+            255,255,255,
+            255,255,255,
+        };
+        
+        
         switch (vb.triangleMode) {
             case SIMPLE:
                 
                 for (int i=0; i<vb.vertexArray.size(); i+=3) {
+                    
+                    int colorR = colors[i%36];
+                    int colorG = colors[i%36+1];
+                    int colorB = colors[i%36+2];
                     
                     Vec4 vertA = this.vertexBufferWork[i];
                     Vec4 vertB = this.vertexBufferWork[i+1];
@@ -103,10 +130,10 @@ public class GLibrary {
                     vertC.transform(mtxViewPort);
                     
                     rasterizer.setVertexCoordinates(vertA, vertB, vertC);
-                    rasterizer.setColorA(255, 0, 0);
-                    rasterizer.setColorB(0, 255, 0);
-                    rasterizer.setColorC(0, 0, 255);
-                    rasterizer.setDepthValues(1.0d, 1.0d, 1.0d);
+                    rasterizer.setColorA(colorR, colorG, colorB);
+                    rasterizer.setColorB(colorR, colorG, colorB);
+                    rasterizer.setColorC(colorR, colorG, colorB);
+                    
                     rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
                     rasterizer.drawTriangle();
                     
@@ -241,6 +268,9 @@ public class GLibrary {
     
     public FrameBuffer getFrameBuffer() {
         return this.frameBuffer;
+    }
+    public DepthBuffer getDepthBuffer() {
+        return this.depthBuffer;
     }
     public int getWidth() {
         return this.frameBuffer.getWidth();

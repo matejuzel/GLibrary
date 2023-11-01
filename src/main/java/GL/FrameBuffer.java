@@ -16,9 +16,12 @@ public class FrameBuffer extends BufferedImage {
     private int[] clearColor = null;
     private int[] color = {0, 0, 0};
     
+    
+    
     public FrameBuffer(int width, int height) {
         super(width, height, BufferedImage.TYPE_3BYTE_BGR);
         this.clearColor = new int[3 * this.getWidth() * this.getHeight()];
+        
     }
     
     private int mapFunction(int x, int y) {
