@@ -13,7 +13,13 @@ import Texture.AbstractTexture;
  * @author matej uzel
  */
 public class RasterizerSolid extends RasterizerAbstract {
-
+    
+    // pomocne hodnoty
+    protected int dxAC, dxAB, dxBC;
+    protected int dyAC, dyAB, dyBC;
+    protected int crossAC, crossAB, crossBC;
+    protected float dyAC_inv, dyAB_inv, dyBC_inv;
+    
     public RasterizerSolid(FrameBuffer frameBuffer, int depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
@@ -22,6 +28,7 @@ public class RasterizerSolid extends RasterizerAbstract {
      * seradi vertexy shora dolu v poradi A,B,C
      */
     public void sortVertices() {
+        /*
         int pom;
         if (bY < aY) {
             pom = bX; bX = aX; aX = pom;
@@ -34,23 +41,73 @@ public class RasterizerSolid extends RasterizerAbstract {
                 pom = bX; bX = aX; aX = pom;
                 pom = bY; bY = aY; aY = pom;
             }
+        }*/
+        if (bY < aY) {
+            swapAB();
+        }
+        if (cY < bY) {
+            swapBC();
+            if (bY < aY) {
+                swapAB();
+            }
         }
     }
     
     public void scanLine(int x0, int x1, int y, int r, int g, int b) {
         
+        int step, length;
+        
         if (x0 < x1) {
-            
-            for (int x = x0; x < x1; x++) {
-                frameBuffer.putPixel(x, y, r,g,b);
-            }
+            step = 1;
+            length = x1 - x0;
         } else {
-            for (int x = x0; x > x1; x--) {
-                frameBuffer.putPixel(x, y, r,g,b);
-            }
+            step = -1;
+            length = x0 - x1;
         }
         
+        int x = x0;
+        for (int i = 0; i < length; i++) {
         
+            frameBuffer.putPixel(x, y, r,g,b);
+            x += step;
+        } 
+    }
+    
+    public void swapAB() {
+        int pom;
+        pom = aX; aX = bX; bX = pom;
+        pom = aY; aY = bY; bY = pom;
+    }
+    
+    public void swapBC() {
+        int pom;
+        pom = bX; bX = cX; cX = pom;
+        pom = bY; bY = cY; cY = pom;
+    }
+    
+    public void swapCA() {
+        int pom;
+        pom = cX; cX = aX; aX = pom;
+        pom = cY; cY = aY; aY = pom;
+    }
+    
+    public void preprocess() {
+        
+        dxAC = cX - aX;
+        dxAB = bX - aX;
+        dxBC = cX - bX;
+        
+        dyAC = cY - aY;
+        dyAB = bY - aY;
+        dyBC = cY - bY;
+        
+        dyAC_inv = 1.0f / dyAC;
+        dyAB_inv = 1.0f / dyAB;
+        dyBC_inv = 1.0f / dyBC;
+        
+        crossAC = cY * aX - aY * cX;
+        crossAB = bY * aX - aY * bX;
+        crossBC = cY * bX - bY * cX;
     }
     
     @Override
@@ -58,22 +115,8 @@ public class RasterizerSolid extends RasterizerAbstract {
         
         sortVertices();
         
-        int dxAC = cX - aX;
-        int dxAB = bX - aX;
-        int dxBC = cX - bX;
+        preprocess();
         
-        int dyAC = cY - aY;
-        int dyAB = bY - aY;
-        int dyBC = cY - bY;
-        
-        float dyAC_inv = 1.0f / dyAC;
-        float dyAB_inv = 1.0f / dyAB;
-        float dyBC_inv = 1.0f / dyBC;
-        
-        int crossAC = cY * aX - aY * cX;
-        int crossAB = bY * aX - aY * bX;
-        int crossBC = cY * bX - bY * cX;
-
         // horni cast trojuhelniku
         for (int line = aY; line < bY; line++) {
             
