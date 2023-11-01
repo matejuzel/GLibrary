@@ -1,5 +1,5 @@
 # lst files
-.lst
+*.lst
 
 # Compiled class file
 *.class
