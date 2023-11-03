@@ -75,9 +75,9 @@ public class RasterizerSolid extends RasterizerAbstract {
         dyAB = bY - aY;
         dyBC = cY - bY;
         
-        dyAC_inv = 1.0f / dyAC;
-        dyAB_inv = 1.0f / dyAB;
-        dyBC_inv = 1.0f / dyBC;
+        dyAC_inv = 1.0d / dyAC;
+        dyAB_inv = 1.0d / dyAB;
+        dyBC_inv = 1.0d / dyBC;
         
         crossAC = cY * aX - aY * cX;
         crossAB = bY * aX - aY * bX;
@@ -112,8 +112,14 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xAC = (int) Math.round((crossAC + line * dxAC) * dyAC_inv);
             int xAB = (int) Math.round((crossAB + line * dxAB) * dyAB_inv);
             
+            
+            double zAC_0_inv = 1.0d/zAC_0;
+            double zAC_1_inv = 1.0d/zAC_1;
+            double zAB_0_inv = 1.0d/zAB_0;
+            double zAB_1_inv = 1.0d/zAB_1;
+            
             // interpolace z
-            double zAC_k = 1.0d / ( 1.0d/zAC_0 + kAC * (1.0d/zAC_1 - 1.0d/zAC_0) );
+            double zAC_k = 1.0d / ( zAC_0_inv + kAC * (1.0d/zAC_1 - 1.0d/zAC_0) );
             double zAB_k = 1.0d / ( 1.0d/zAB_0 + kAB * (1.0d/zAB_1 - 1.0d/zAB_0) );
             
             scanLine(xAC, xAB, line, zAC_k, zAB_k, aR, aG, aB);
@@ -163,11 +169,11 @@ public class RasterizerSolid extends RasterizerAbstract {
             //return;
         }
         
-        double dx_inv = 1.0d / (x1 - x0);
+        double dx_inv = 1.0d / (x1 - x0 + 1);
         double k = 0; // zaciname vlastne v pulce pixelu proto ten posun o polovinu kroku
         
         int x = x0;
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i <= length; i++) {
             
             double z_k = 1.0d / ( 1.0d/z0 + k * (1.0d/z1 - 1.0d/z0));
             
