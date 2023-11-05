@@ -5,7 +5,9 @@
 package App;
 
 import GL.GLibrary;
+import Math.MFloat;
 import Math.Mtx4;
+import Math.Utils;
 
 /**
  *
@@ -91,6 +93,104 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
+
+        
+        //System.out.println(Integer.toBinaryString((0b10001101011 >> 2) & 0b11111111111));
+        
+        
+        //Utils.test(1.0f/3.0f);
+        //Utils.test(3.14159274101257324f);
+        
+        //ystem.out.println(Utils.multiplyByPowerOfTwo(87, 3));
+        
+        
+        //System.out.println(Utils.remapFloatToByte(57f, -100.0f, 100.0f));
+        
+        
+        /*
+        System.out.println(Utils.floatToByte(-1.0f));
+        System.out.println(Utils.floatToByte(1.0f));
+        System.out.println(Utils.floatToByte(0.0f));
+        System.out.println(Utils.floatToByte(0.1f));
+        System.out.println(Utils.floatToByte(0.2f));
+        System.out.println(Utils.floatToByte(0.3f));
+        System.out.println(Utils.floatToByte(0.4f));
+        System.out.println(Utils.floatToByte(0.5f));
+        System.out.println(Utils.floatToByte(0.6f));
+        */
+        
+        
+        
+        
+        /*
+        Utils.test(-1.0f);
+        Utils.test(-0.9f);
+        Utils.test(-0.8f);
+        Utils.test(-0.7f);
+        Utils.test(-0.6f);
+        Utils.test(-0.5f);
+        Utils.test(-0.4f);
+        Utils.test(-0.3f);
+        Utils.test(-0.2f);
+        Utils.test(-0.1f);
+        Utils.test(-0.0f);
+        Utils.test(0.0f);
+        Utils.test(0.1f);
+        Utils.test(0.2f);
+        Utils.test(0.3f);
+        Utils.test(0.4f);
+        Utils.test(0.5f);
+        Utils.test(0.6f);
+        Utils.test(0.7f);
+        Utils.test(0.8f);
+        Utils.test(0.9f);
+        Utils.test(1.0f);*/
+        
+        
+        
+        float[] arr = {
+            0.0f,
+            1.0f,
+            2.0f,
+            3.0f,
+            4.0f,
+            5.0f,
+            6.0f,
+            7.0f,
+            8.0f,
+            9.0f,
+            10.0f,
+            11.0f,
+            12.0f,
+            13.0f,
+            14.0f,
+            15.0f,
+            16.0f,
+            32.0f,
+            64.0f,
+            
+            79.0f,
+            
+            -128.0f,
+            
+            -37.49f,
+            -37.51f,
+            
+            -72.012f,   
+            -534.0f
+        };
+        for (int i=0; i<arr.length; i++) {
+        
+            MFloat mf = new MFloat(arr[i]); 
+            System.out.println(arr[i] + " => " + mf.remapToInt(mf));
+        }
+        
+        
+        
+        
+        System.out.println("done");
+        
+        if (true) return;
         
         AbstractAppGL app = new AppGL(800, 600);
         app.initCallback();
