@@ -11,14 +11,12 @@ package Texture;
 public class TextureNearest extends AbstractTexture {
     
     public TextureNearest(int width, int height) {
-        
         super(width, height);
         this.textels = new int[width * height * 3];
     }
 
     @Override
     public int mapFunction(int x, int y) {
-        
         return y*this.height + x;
     }
 }

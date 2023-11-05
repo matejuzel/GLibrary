@@ -31,10 +31,8 @@ public class GLibrary {
         PROJECTION
     }
     
-    
-    
     FrameBuffer frameBuffer;
-    DepthBufferDouble depthBuffer;
+    DepthBufferAbstract depthBuffer;
     RasterizerAbstract rasterizer;
     
     Mtx4 mtxViewPort = new Mtx4();
@@ -269,7 +267,7 @@ public class GLibrary {
     public FrameBuffer getFrameBuffer() {
         return this.frameBuffer;
     }
-    public DepthBufferDouble getDepthBuffer() {
+    public DepthBufferAbstract getDepthBuffer() {
         return this.depthBuffer;
     }
     public int getWidth() {
