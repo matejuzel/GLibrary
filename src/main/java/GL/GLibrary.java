@@ -4,6 +4,8 @@
 
 package GL;
 
+import GL.DepthBuffer.DepthBufferAbstract;
+import GL.DepthBuffer.DepthBufferDouble;
 import Math.Mtx4;
 import Math.Vec4;
 import Rasterizer.RasterizerAbstract;
@@ -32,7 +34,7 @@ public class GLibrary {
     
     
     FrameBuffer frameBuffer;
-    DepthBuffer depthBuffer;
+    DepthBufferDouble depthBuffer;
     RasterizerAbstract rasterizer;
     
     Mtx4 mtxViewPort = new Mtx4();
@@ -50,10 +52,8 @@ public class GLibrary {
     
     public GLibrary(int width, int height) {
         
-        depthBuffer = new DepthBuffer(width, height);
-        
+        depthBuffer = new DepthBufferDouble(width, height);
         frameBuffer = new FrameBuffer(width, height);
-        
         
         stackMatrixModelView.push(new Mtx4());
         stackMatrixProjection.push(new Mtx4());
@@ -269,7 +269,7 @@ public class GLibrary {
     public FrameBuffer getFrameBuffer() {
         return this.frameBuffer;
     }
-    public DepthBuffer getDepthBuffer() {
+    public DepthBufferDouble getDepthBuffer() {
         return this.depthBuffer;
     }
     public int getWidth() {

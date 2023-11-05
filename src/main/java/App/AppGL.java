@@ -4,6 +4,7 @@
  */
 package App;
 
+import GL.DepthBuffer.DepthBufferAbstract;
 import GL.GLibrary;
 import Math.MFloat;
 import Math.Mtx4;
@@ -32,6 +33,9 @@ public class AppGL extends AbstractAppGL {
         
         // nastaveni vychozi barvy pozadi - clearColor
         gLibrary.getFrameBuffer().setClearColor(0, 0, 0);
+        
+        gLibrary.getDepthBuffer().setClearValue(1.0f);
+        gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.LESS);
         
         // nastaveni projekcni a model-view matice
         //gLibrary.matrixPush(Mtx4.getProjectionPerspective(-0.1d, 0.1d, -0.1d, 0.1d, -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
@@ -71,7 +75,7 @@ public class AppGL extends AbstractAppGL {
     public void loopCallback() {
         // clear color buffer
         gLibrary.getFrameBuffer().clear();
-        gLibrary.getDepthBuffer().clear(1.0d);
+        gLibrary.getDepthBuffer().clear();
         
         // set modelview matrix
         gLibrary.matrixSet(mtxCamera.getOrthonormalInverted().multiply(mtxCube0), GLibrary.MatrixType.MODELVIEW);
@@ -147,7 +151,7 @@ public class AppGL extends AbstractAppGL {
         Utils.test(1.0f);*/
         
         
-        
+        /*
         float[] arr = {
             0.0f,
             1.0f,
@@ -191,7 +195,7 @@ public class AppGL extends AbstractAppGL {
         System.out.println("done");
         
         if (true) return;
-        
+        */
         AbstractAppGL app = new AppGL(800, 600);
         app.initCallback();
         app.runLoop(5);

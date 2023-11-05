@@ -4,7 +4,7 @@
  */
 package Rasterizer;
 
-import GL.DepthBuffer;
+import GL.DepthBuffer.DepthBufferDouble;
 import GL.FrameBuffer;
 import Math.Vec4;
 import Texture.AbstractTexture;
@@ -24,7 +24,7 @@ public class RasterizerSolid extends RasterizerAbstract {
     // pomocne hodnoty - interpolace hloubky
     protected double zAC_0, zAC_1, zAB_0, zAB_1, zBC_0, zBC_1;
     
-    public RasterizerSolid(FrameBuffer frameBuffer, DepthBuffer depthBuffer, AbstractTexture texture) {
+    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferDouble depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
 
