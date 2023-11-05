@@ -163,11 +163,11 @@ public class RasterizerSolid extends RasterizerAbstract {
             //return;
         }
         
-        double dx_inv = 1.0d / (x1 - x0);
+        double dx_inv = 1.0d / (x1 - x0 + 1);
         double k = 0; // zaciname vlastne v pulce pixelu proto ten posun o polovinu kroku
         
         int x = x0;
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i <= length; i++) {
             
             double z_k = 1.0d / ( 1.0d/z0 + k * (1.0d/z1 - 1.0d/z0));
             
