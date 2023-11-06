@@ -166,7 +166,7 @@ public class RasterizerSolid extends RasterizerAbstract {
         }
         
         int dx = x1 - x0;
-        double dx_inv = 1.0d / dx;
+        double dxInv = 1.0d / dx;
         double k = 0;
         double z0Inv = 1.0d / z0;
         double z1Inv = 1.0d / z1;
@@ -183,7 +183,7 @@ public class RasterizerSolid extends RasterizerAbstract {
                 frameBuffer.putPixel(x, y, r,g,b);
             }
             x++;
-            k += dx_inv;
+            k += dxInv;
         }
     }
     
