@@ -32,6 +32,7 @@ public class GLibrary {
     }
     
     public enum FaceCullingMode {
+        NONE,
         FRONT,
         BACK,
         FRONT_AND_BACK
@@ -47,6 +48,9 @@ public class GLibrary {
     FrameBuffer frameBuffer;
     DepthBufferAbstract depthBuffer;
     RasterizerAbstract rasterizer;
+    
+    FaceCullingMode faceCullingMode = FaceCullingMode.BACK;
+    PrimitiveMode primitiveMode = PrimitiveMode.SOLID;
     
     Mtx4 mtxViewPort = new Mtx4();
     
@@ -135,6 +139,40 @@ public class GLibrary {
                     Vec4 vertA = this.vertexBufferWork[i];
                     Vec4 vertB = this.vertexBufferWork[i+1];
                     Vec4 vertC = this.vertexBufferWork[i+2];
+                    
+                    /*
+                    double xAB = vertB.getX() - vertA.getX();
+                    double yAB = vertB.getY() - vertA.getY();
+                    double xAC = vertC.getX() - vertA.getX();
+                    double yAC = vertC.getY() - vertA.getY();
+                    */
+                    Vec4 vAB = new Vec4(vertB.getX() - vertA.getX(), vertB.getY() - vertA.getY(), vertB.getZ() - vertA.getZ());
+                    Vec4 vAC = new Vec4(vertC.getX() - vertA.getX(), vertC.getY() - vertA.getY(), vertC.getZ() - vertA.getZ());
+                    Vec4 normal = new Vec4(vAB.getX()*vAC.getY() - vAB.getY()*vAC.getX(), vAB.getX()*vAC.getY() - vAB.getY()*vAC.getX(), 0);
+                    
+                    //Mtx4 modelview = stackMatrixModelView.peek();
+                    //Vec4 eye = new Vec4(modelview.getData(3),modelview.getData(7),modelview.getData(11),modelview.getData(15));
+                    Vec4 eye = new Vec4(0,0,0,1);
+                    Vec4 vVP = new Vec4(vertA.getX() - eye.getX(), vertB.getY() - vertB.getY(), vertB.getZ() - vertB.getZ(), vertB.getW() - vertB.getW());
+                    
+                    //double dotProduct = xAB*xAC + yAB*yAC;
+                    double dotProduct = eye.getX()*vVP.getX() + eye.getY()*vVP.getY() + eye.getZ()*vVP.getZ();
+                    System.out.println(dotProduct);
+                    switch (faceCullingMode) {
+                        case NONE:
+                            break;
+                        case BACK:
+                            if (dotProduct < 0) continue;
+                            break;
+                        case FRONT:
+                            if (dotProduct > 0) continue;
+                            break;
+                        case FRONT_AND_BACK:
+                            throw new UnsupportedOperationException("faceCullingMode=FRONT_AND_BACK is not supported yet");
+                        default:
+                            throw new UnsupportedOperationException("faceCullingMode option is not set");
+                    }
+                    
                     
                     vertA.transform(mtxViewPort);
                     vertB.transform(mtxViewPort);
