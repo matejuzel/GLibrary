@@ -20,10 +20,10 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected int dxAC, dxAB, dxBC;
     protected int dyAC, dyAB, dyBC;
     protected int crossAC, crossAB, crossBC;
-    protected double dyAC_inv, dyAB_inv, dyBC_inv;
+    protected double dyInvAC, dyInvAB, dyInvBC;
     
     // pomocne hodnoty - interpolace hloubky
-    protected double zAC_0, zAC_1, zAB_0, zAB_1, zBC_0, zBC_1;
+    protected double zAC0, zAC1, zAB0, zAB1, zBC0, zBC1;
     
     public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
@@ -76,33 +76,41 @@ public class RasterizerSolid extends RasterizerAbstract {
         dyAB = bY - aY;
         dyBC = cY - bY;
         
-        dyAC_inv = 1.0d / dyAC;
-        dyAB_inv = 1.0d / dyAB;
-        dyBC_inv = 1.0d / dyBC;
+        dyInvAC = 1.0d / dyAC;
+        dyInvAB = 1.0d / dyAB;
+        dyInvBC = 1.0d / dyBC;
         
         crossAC = cY * aX - aY * cX;
         crossAB = bY * aX - aY * bX;
         crossBC = cY * bX - bY * cX;
         
-        zAC_0 = aZ;
-        zAC_1 = cZ;
-        zAB_0 = aZ;
-        zAB_1 = bZ;
-        zBC_0 = bZ;
-        zBC_1 = cZ;
+        zAC0 = aZ;
+        zAC1 = cZ;
+        zAB0 = aZ;
+        zAB1 = bZ;
+        zBC0 = bZ;
+        zBC1 = cZ;
     }
     
     @Override
     public void drawTriangle() {
-        /*
-        System.out.println(aX+" ; "+aY+" ; "+aZ);
-        System.out.println(bX+" ; "+bY+" ; "+bZ);
-        System.out.println(cX+" ; "+cY+" ; "+cZ);
-        System.out.println("");*/
         
         sortVertices();
         
         preprocess();
+        
+        double zInvAC0 = 1.0d / zAC0;
+        double zInvAC1 = 1.0d / zAC1;
+        
+        double zInvAB0 = 1.0d / zAB0;
+        double zInvAB1 = 1.0d / zAB1;
+        
+        double zInvBC0 = 1.0d / zBC0;
+        double zInvBC1 = 1.0d / zBC1;
+        
+        double dzInvAC = zInvAC1 - zInvAC0;
+        double dzInvAB = zInvAB1 - zInvAB0;
+        double dzInvBC = zInvBC1 - zInvBC0;
         
         double kAC = 0, kAB = 0, kBC = 0;
         
@@ -110,36 +118,35 @@ public class RasterizerSolid extends RasterizerAbstract {
         for (int line = aY; line < bY; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = (int) Math.round((crossAC + line * dxAC) * dyAC_inv);
-            int xAB = (int) Math.round((crossAB + line * dxAB) * dyAB_inv);
+            int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
+            int xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
             
             // interpolace z
-            double zAC_0_inv = 1.0d/zAC_0, zAC_1_inv = 1.0d/zAC_1, zAB_0_inv = 1.0d/zAB_0, zAB_1_inv = 1.0d/zAB_1;
-            double zAC_k = 1.0d / ( zAC_0_inv + kAC * (zAC_1_inv - zAC_0_inv) );
-            double zAB_k = 1.0d / ( zAB_0_inv + kAB * (zAB_1_inv - zAB_0_inv) );
+            
+            double zAC_k = 1.0d / ( zInvAC0 + kAC * (dzInvAC) );
+            double zAB_k = 1.0d / ( zInvAB0 + kAB * (dzInvAB) );
             
             scanLine(xAC, xAB, line, zAC_k, zAB_k, aR, aG, aB);
             
-            kAC += dyAC_inv;
-            kAB += dyAB_inv;
+            kAC += dyInvAC;
+            kAB += dyInvAB;
         }
         
         // dolni cast trojuhelniku
         for (int line = bY; line < cY; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = (int) Math.round((crossAC + line * dxAC) * dyAC_inv);
-            int xBC = (int) Math.round((crossBC + line * dxBC) * dyBC_inv);
+            int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
+            int xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
             
             // interpolace z
-            double zAC_0_inv = 1.0d/zAC_0, zAC_1_inv = 1.0d/zAC_1, zBC_0_inv = 1.0d/zBC_0, zBC_1_inv = 1.0d/zBC_1;
-            double zAC_k = 1.0d / ( zAC_0_inv + kAC * (zAC_1_inv - zAC_0_inv) );
-            double zBC_k = 1.0d / ( zBC_0_inv + kBC * (zBC_1_inv - zBC_0_inv) );
+            double zAC_k = 1.0d / ( zInvAC0 + kAC * (dzInvAC) );
+            double zBC_k = 1.0d / ( zInvBC0 + kBC * (dzInvBC) );
             
             scanLine(xAC, xBC, line, zAC_k, zBC_k, aR, aG, aB);
             
-            kAC += dyAC_inv;
-            kBC += dyBC_inv;
+            kAC += dyInvAC;
+            kBC += dyInvBC;
         }
         /*
         frameBuffer.putLine(aX, aY, bX, bY, 255, 255, 255);
@@ -151,45 +158,33 @@ public class RasterizerSolid extends RasterizerAbstract {
         frameBuffer.putPixel(cX, cY, cR, cG, cB, 4);*/
     }
     
-    
-    
-    
     public void scanLine(int x0, int x1, int y, double z0, double z1, int r, int g, int b) {
         
-        //System.out.println(z0+";"+z1);
-        
-        int step, length;
-        
-        if (x0 < x1) {
-            step = 1;
-            length = x1 - x0;
-        } else {
-            step = -1;
-            length = x0 - x1;
-            //return;
+        if (x0 > x1) {
+            scanLine(x1, x0, y, z1, z0, r, g, b);
+            return;
         }
         
-        double dx_inv = 1.0d / (x1 - x0 + 1);
-        double k = 0; // zaciname vlastne v pulce pixelu proto ten posun o polovinu kroku
+        int dx = x1 - x0;
+        double dx_inv = 1.0d / dx;
+        double k = 0;
+        double z0Inv = 1.0d / z0;
+        double z1Inv = 1.0d / z1;
+        double dzInv = z1Inv - z0Inv;
+        
+        double z_k;
         
         int x = x0;
-        for (int i = 0; i <= length; i++) {
+        for (int i=0; i<dx+1; i++) {
             
-            double z_k = 1.0d / ( 1.0d/z0 + k * (1.0d/z1 - 1.0d/z0));
-            
-            //r = g = b = (int) (z_k * 128 + 127); // barva jako hloubka v odstinech sede
-            
+            z_k = 1.0d / (z0Inv + k * dzInv);
             if (depthBuffer.write(x, y, z_k)) {
                 
                 frameBuffer.putPixel(x, y, r,g,b);
-                
-                //if (step ==-1) frameBuffer.putPixel(x, y, r-20,g,b);
             }
-            
-            x += step;
-            
-            if (step > 0) {k += dx_inv;} else {k -= dx_inv;}
-        } 
+            x++;
+            k += dx_inv;
+        }
     }
     
     /*

@@ -16,26 +16,46 @@ public class MFloat {
     
     public static int MASK_HIDDEN_BIT = 0x00800000; // pozice bitu mantisy, ktery se nezapisuje
     
-    
     public static int OFFSET_SIGN = 31;
     public static int OFFSET_EXPONENT = 23;
     
-    private float num;
-    private int rawInt;
+    private final float num;
+    private final int rawInt;
     private String rawString;
+    
+    int sign;
+    int exponent;
+    int exponentReal;
+    int mantissa;
+    int mantissaReal;
     
     public MFloat(float num) {
         this.num = num;
-        this.rawInt = Float.floatToRawIntBits(this.num);
+        rawInt = Float.floatToRawIntBits(this.num);
+        rawString = MFloat.intToBinnaryString32(rawInt);
+        
+        sign = (rawInt & MASK_SIGN_FLOAT) >>> OFFSET_SIGN;
+        exponent = (rawInt & MASK_EXPONENT_FLOAT) >>> OFFSET_EXPONENT;
+        exponentReal = exponent - 127;
+        mantissa = rawInt & MASK_MANTISSA_FLOAT;
+        
+        if (exponentReal > 0) {
+            mantissaReal = (mantissa | MASK_HIDDEN_BIT) << (exponentReal);
+        } else {
+            mantissaReal = (mantissa | MASK_HIDDEN_BIT) >>> (-exponentReal);
+        }
     }
     
-    public static String intToBinnary(int number) {
+    public static int floatNormPositiveToInt24Bit(float in) {
+        // prevede float z rozmezi [0.0f-1.0f] na integer v rozmezi [0-8388608] ; 8388608 = 2^23
+        int res = Float.floatToRawIntBits(in);
+        return ((res & 0x007fffff) | 0x00800000) >>> (-(((res & 0x7f800000) >>> 23) - 127));
+    }
     
+    public static String intToBinnaryString32(int number) {
         String res = Integer.toBinaryString(number);
-        
         int rest = 32 - res.length();
         for (int i=0; i<rest; i++) {
-            
             res = "0" + res;
         }
         return res;
@@ -43,17 +63,18 @@ public class MFloat {
     
     public static String BinaryFormatString(String binary, int length) {
         String res = "";
-        for (int i=0; i<binary.length(); i++) {
-            
+        int j = (32 - length) % 8;
+        for (int i=binary.length() - length; i<binary.length(); i++) {
+            if (j % 8 == 0) res += " ";
             res += binary.charAt(i);
-            if (i%4==3) res += " ";
+            j++;
         }
         return res;
     }
     
     public int remapToInt(MFloat mfloat) {
         
-        String binaryStr = MFloat.intToBinnary(rawInt);
+        String binaryStr = MFloat.intToBinnaryString32(rawInt);
         
         String signString = "";
         String expString = "";
@@ -69,36 +90,26 @@ public class MFloat {
             }
         }
         
-        
-        int sign = (rawInt & MASK_SIGN_FLOAT) >>> OFFSET_SIGN;
-        int exponent = (rawInt & MASK_EXPONENT_FLOAT) >>> OFFSET_EXPONENT;
-        int exponentReal = exponent - 127;
-        int mantissa = rawInt & MASK_MANTISSA_FLOAT;
-        
         int remapped = (mantissa | MASK_HIDDEN_BIT) >>> (23 - exponentReal);
-        /*
-        System.out.println("number: "+num);
-        System.out.println("raw: "+binaryStr);
-        System.out.println(signString+" ### "+expString+" ### "+mantissaString);
-        
-        System.out.println("signum  : "+BinaryFormatString(MFloat.intToBinnary(sign), 1));
-        System.out.println("exponent: "+BinaryFormatString(MFloat.intToBinnary(exponent), 8));
-        System.out.println("expReal : "+BinaryFormatString(MFloat.intToBinnary(exponentReal), 23)+ " ("+exponentReal+")");
-        System.out.println("mantissa: "+BinaryFormatString(MFloat.intToBinnary(mantissa), 8));
-        
-        
-        System.out.println("man posu: "+BinaryFormatString(MFloat.intToBinnary((mantissa | MASK_HIDDEN_BIT)) , 0));
-        System.out.println("man posu: "+BinaryFormatString(MFloat.intToBinnary(remapped), 0));
-        */
         return remapped;
+    }
+    
+    public int getIntval() {
+        return mantissaReal;
     }
     
     @Override
     public String toString() {
         
-        String res = "";
+        String patternFormat = "%+10.2f;";
         
+        String strSign = BinaryFormatString(MFloat.intToBinnaryString32(sign), 1);
+        String strExponent = BinaryFormatString(MFloat.intToBinnaryString32(exponent), 8);
+        String strExponentReal = BinaryFormatString(MFloat.intToBinnaryString32(exponentReal), 23);
+        String strMantissa = BinaryFormatString(MFloat.intToBinnaryString32(mantissa), 23);
+        String strMantissaReal = BinaryFormatString(MFloat.intToBinnaryString32(mantissaReal), 32);
         
+        String res = String.format("Num: %+12.6f [%s] ;;; [%s || %s || %s] ;;; [expR=%s] [manR=%s]", num, rawString, strSign, strExponent, strMantissa, exponentReal, strMantissaReal);
         
         return res;
     }

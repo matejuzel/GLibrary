@@ -18,9 +18,7 @@ public class Utils {
     public static int MASK_EXPONENT_FLOAT = 0x7f800000; // 30-23
     public static int MASK_SIGN_FLOAT = 0x80000000; // 22-0
     
-    
-    
-    public static int remapFloatToByte(float value, float minVal, float maxVal) {
+    public static int remapFloatToInt8Bit(float value, float minVal, float maxVal) {
         // Step 1: Scale the float to the range [0.0, 1.0]
         float scaledValue = (value - minVal) / (maxVal - minVal);
 
@@ -34,7 +32,6 @@ public class Utils {
 
         return remappedValue;
     }
-    
     
     public static float multiplyByPowerOfTwo(float number, int exponent) {
         

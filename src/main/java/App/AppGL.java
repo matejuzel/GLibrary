@@ -97,106 +97,63 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-
-        
-        //System.out.println(Integer.toBinaryString((0b10001101011 >> 2) & 0b11111111111));
-        
-        
-        //Utils.test(1.0f/3.0f);
-        //Utils.test(3.14159274101257324f);
-        
-        //ystem.out.println(Utils.multiplyByPowerOfTwo(87, 3));
-        
-        
-        //System.out.println(Utils.remapFloatToByte(57f, -100.0f, 100.0f));
-        
-        
-        /*
-        System.out.println(Utils.floatToByte(-1.0f));
-        System.out.println(Utils.floatToByte(1.0f));
-        System.out.println(Utils.floatToByte(0.0f));
-        System.out.println(Utils.floatToByte(0.1f));
-        System.out.println(Utils.floatToByte(0.2f));
-        System.out.println(Utils.floatToByte(0.3f));
-        System.out.println(Utils.floatToByte(0.4f));
-        System.out.println(Utils.floatToByte(0.5f));
-        System.out.println(Utils.floatToByte(0.6f));
-        */
-        
-        
-        
-        
-        /*
-        Utils.test(-1.0f);
-        Utils.test(-0.9f);
-        Utils.test(-0.8f);
-        Utils.test(-0.7f);
-        Utils.test(-0.6f);
-        Utils.test(-0.5f);
-        Utils.test(-0.4f);
-        Utils.test(-0.3f);
-        Utils.test(-0.2f);
-        Utils.test(-0.1f);
-        Utils.test(-0.0f);
-        Utils.test(0.0f);
-        Utils.test(0.1f);
-        Utils.test(0.2f);
-        Utils.test(0.3f);
-        Utils.test(0.4f);
-        Utils.test(0.5f);
-        Utils.test(0.6f);
-        Utils.test(0.7f);
-        Utils.test(0.8f);
-        Utils.test(0.9f);
-        Utils.test(1.0f);*/
-        
-        
-        /*
+ /*
         float[] arr = {
             0.0f,
-            1.0f,
-            2.0f,
-            3.0f,
-            4.0f,
-            5.0f,
-            6.0f,
-            7.0f,
-            8.0f,
-            9.0f,
-            10.0f,
-            11.0f,
-            12.0f,
-            13.0f,
-            14.0f,
-            15.0f,
-            16.0f,
-            32.0f,
-            64.0f,
-            
-            79.0f,
-            
-            -128.0f,
-            
-            -37.49f,
-            -37.51f,
-            
-            -72.012f,   
-            -534.0f
+            0.01f,
+            0.001f,
+            0.0001f,
+            0.00001f,
+            0.123456f,
+            0.1f,
+            0.2f,
+            0.3f,
+            0.4f,
+            0.5f,
+            0.6f,
+            0.7f,
+            0.8f,
+            0.9f,
+            1.0f
         };
-        for (int i=0; i<arr.length; i++) {
         
-            MFloat mf = new MFloat(arr[i]); 
-            System.out.println(arr[i] + " => " + mf.remapToInt(mf));
+        long samples = 100000000000L;
+        
+        int rawInt;
+        float floatval = 0.34553f;
+        
+        float out1;
+        int out2;
+        
+        long time0 = System.currentTimeMillis();
+        
+        for (long i=0; i<samples; i++) {
+            
+            //float fla =  1.0f / ( 1.0f/34.4224f + 1.0f/4.43233f );
+            
+            //out1 = floatval * 8388608;
         }
         
+        long time1 = System.currentTimeMillis();
         
+        for (long i=0; i<samples; i++) {
+            
+            //double fla =  1.0d / ( 1.0d/34.4224d + 1.0d/4.43233d );
+            
+            //rawInt = Float.floatToRawIntBits(floatval);
+            //out2 = ((rawInt & 0x007fffff) | 0x00800000) >>> (-(((rawInt & 0x7f800000) >>> 23) - 127));
+        }
+        
+        long time2 = System.currentTimeMillis();
+        
+        System.out.println((time1 - time0)+" vs. "+(time2 - time1));
         
         
         System.out.println("done");
         
         if (true) return;
         */
-        AbstractAppGL app = new AppGL(800, 600);
+        AbstractAppGL app = new AppGL(150, 120);
         app.initCallback();
         app.runLoop(5);
         //app.run();

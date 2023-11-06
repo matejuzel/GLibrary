@@ -31,6 +31,19 @@ public class GLibrary {
         PROJECTION
     }
     
+    public enum FaceCullingMode {
+        FRONT,
+        BACK,
+        FRONT_AND_BACK
+    }
+    
+    public enum PrimitiveMode {
+        POINTS,
+        LINES,
+        SOLID,
+        TEXTURED
+    }
+    
     FrameBuffer frameBuffer;
     DepthBufferAbstract depthBuffer;
     RasterizerAbstract rasterizer;
@@ -134,8 +147,6 @@ public class GLibrary {
                     
                     rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
                     rasterizer.drawTriangle();
-                    
-
                 }
                 
                 break;

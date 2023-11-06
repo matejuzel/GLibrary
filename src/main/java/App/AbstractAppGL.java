@@ -49,12 +49,13 @@ public abstract class AbstractAppGL {
             
             
             //gLibrary.getFrameBuffer().getGraphics();
+            /*
             Graphics g2dScene = viewer.getGraphics();
             g2dScene.setColor(Color.black);
             g2dScene.clearRect(1, 1, 100, 50);
             g2dScene.drawString("fps: "+fps, 20, 20);
             g2dScene.drawString("mean: "+fpsMean, 20, 40);
-            
+            */
             loopCallback();
             viewer.repaint();
             

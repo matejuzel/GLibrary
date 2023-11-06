@@ -13,51 +13,66 @@ import Math.Vec4;
  */
 public class Vertex {
     
-    Vec4 vertex = null;
-    Vec4 textureCoord = null;
+    Vec4 vertex;
+    Vec4 normal;
+    Vec4 textureCoord;
+    Vec4 color;
+    
     Vec4 textureCoordExt1 = null;
-    Vec4 textureCoordExt2 = null;
-    Vec4 textureCoordExt3 = null;
     
-    public Vertex(Vec4 vertex, Vec4 textureCoord) {
-    
-        this.vertex = vertex;
-        this.textureCoord = textureCoord;
+    public Vertex() {
+        vertex = new Vec4(0, 0, 0, 1);
+        textureCoord = new Vec4(0, 0, 0, 1);
     }
     
     public Vertex transform(Mtx4 transformation) {
-        
-        this.vertex.transform(transformation);
+        vertex.transform(transformation);
         return this;
     }
     
     public Vertex transformTextureCoord(Mtx4 transformation) {
-        
-        this.textureCoord.transform(transformation);
+        textureCoord.transform(transformation);
         return this;
+    }
+
+    public void setVertex(Vec4 vertex) {
+        this.vertex = vertex;
+    }
+
+    public void setNormal(Vec4 normal) {
+        this.normal = normal;
+    }
+
+    public void setTextureCoord(Vec4 textureCoord) {
+        this.textureCoord = textureCoord;
+    }
+
+    public void setColor(Vec4 color) {
+        this.color = color;
+    }
+    
+    public void setTextureCoordExt1(Vec4 textureCoordExt1) {
+        this.textureCoordExt1 = textureCoordExt1;
     }
     
     public Vec4 getVertex() {
-        
-        return this.vertex;
+        return vertex;
+    }
+    
+    public Vec4 getNormal() {
+        return normal;
     }
     
     public Vec4 getTextureCoord() {
-        
         return this.textureCoord;
     }
     
+    public Vec4 getColor() {
+        return color;
+    }
+    
     public Vec4 getTextureCoordExt1() {
-        
         return this.textureCoordExt1;
-    }
-    public Vec4 getTextureCoordExt2() {
-        
-        return this.textureCoordExt2;
-    }
-    public Vec4 getTextureCoordExt3() {
-        
-        return this.textureCoordExt3;
     }
     
 }
