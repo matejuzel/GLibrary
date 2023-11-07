@@ -22,9 +22,6 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected int crossAC, crossAB, crossBC;
     protected double dyInvAC, dyInvAB, dyInvBC;
     
-    // pomocne hodnoty - interpolace hloubky
-    protected double zAC0, zAC1, zAB0, zAB1, zBC0, zBC1;
-    
     public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
@@ -83,13 +80,6 @@ public class RasterizerSolid extends RasterizerAbstract {
         crossAC = cY * aX - aY * cX;
         crossAB = bY * aX - aY * bX;
         crossBC = cY * bX - bY * cX;
-        
-        zAC0 = aZ;
-        zAC1 = cZ;
-        zAB0 = aZ;
-        zAB1 = bZ;
-        zBC0 = bZ;
-        zBC1 = cZ;
     }
     
     @Override
@@ -99,18 +89,13 @@ public class RasterizerSolid extends RasterizerAbstract {
         
         preprocess();
         
-        double zInvAC0 = 1.0d / zAC0;
-        double zInvAC1 = 1.0d / zAC1;
+        double zInvA = 1.0d / aZ;
+        double zInvB = 1.0d / bZ;
+        double zInvC = 1.0d / cZ;
         
-        double zInvAB0 = 1.0d / zAB0;
-        double zInvAB1 = 1.0d / zAB1;
-        
-        double zInvBC0 = 1.0d / zBC0;
-        double zInvBC1 = 1.0d / zBC1;
-        
-        double dzInvAC = zInvAC1 - zInvAC0;
-        double dzInvAB = zInvAB1 - zInvAB0;
-        double dzInvBC = zInvBC1 - zInvBC0;
+        double dzInvAC = zInvC - zInvA;
+        double dzInvAB = zInvB - zInvA;
+        double dzInvBC = zInvC - zInvB;
         
         double kAC = 0, kAB = 0, kBC = 0;
         
@@ -123,8 +108,8 @@ public class RasterizerSolid extends RasterizerAbstract {
             
             // interpolace z
             
-            double zAC_k = 1.0d / ( zInvAC0 + kAC * (dzInvAC) );
-            double zAB_k = 1.0d / ( zInvAB0 + kAB * (dzInvAB) );
+            double zAC_k = 1.0d / ( zInvA + kAC * (dzInvAC) );
+            double zAB_k = 1.0d / ( zInvA + kAB * (dzInvAB) );
             
             scanLine(xAC, xAB, line, zAC_k, zAB_k, aR, aG, aB);
             
@@ -140,22 +125,14 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
             
             // interpolace z
-            double zAC_k = 1.0d / ( zInvAC0 + kAC * (dzInvAC) );
-            double zBC_k = 1.0d / ( zInvBC0 + kBC * (dzInvBC) );
+            double zAC_k = 1.0d / ( zInvA + kAC * (dzInvAC) );
+            double zBC_k = 1.0d / ( zInvB + kBC * (dzInvBC) );
             
             scanLine(xAC, xBC, line, zAC_k, zBC_k, aR, aG, aB);
             
             kAC += dyInvAC;
             kBC += dyInvBC;
         }
-        /*
-        frameBuffer.putLine(aX, aY, bX, bY, 255, 255, 255);
-        frameBuffer.putLine(bX, bY, cX, cY, 255, 255, 255);
-        frameBuffer.putLine(cX, cY, aX, aY, 255, 255, 255);
-        
-        frameBuffer.putPixel(aX, aY, aR, aG, aB, 4);
-        frameBuffer.putPixel(bX, bY, bR, bG, bB, 4);
-        frameBuffer.putPixel(cX, cY, cR, cG, cB, 4);*/
     }
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, int r, int g, int b) {
