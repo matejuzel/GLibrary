@@ -22,6 +22,12 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected int crossAC, crossAB, crossBC;
     protected double dyInvAC, dyInvAB, dyInvBC;
     
+    // pomocne hodnoty - interpolace hloubky
+    protected double zInvA, zInvB, zInvC;
+    protected double dzInvAC, dzInvAB, dzInvBC;
+    protected double kAC, kAB, kBC;
+    
+    
     public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, AbstractTexture texture) {
         super(frameBuffer, depthBuffer, texture);
     }
@@ -63,7 +69,7 @@ public class RasterizerSolid extends RasterizerAbstract {
         tmp2 = cZ; cZ = aZ; aZ = tmp2;
     }
     
-    public void preprocess() {
+    public void preprocessTriangle() {
         
         dxAC = cX - aX;
         dxAB = bX - aX;
@@ -82,22 +88,30 @@ public class RasterizerSolid extends RasterizerAbstract {
         crossBC = cY * bX - bY * cX;
     }
     
+    public void preprocessDepthInterpolation() {
+        
+        zInvA = 1.0d / aZ;
+        zInvB = 1.0d / bZ;
+        zInvC = 1.0d / cZ;
+        
+        dzInvAC = zInvC - zInvA;
+        dzInvAB = zInvB - zInvA;
+        dzInvBC = zInvC - zInvB;
+        
+        kAC = 0;
+        kAB = 0;
+        kBC = 0;
+    }
+    
     @Override
     public void drawTriangle() {
         
         sortVertices();
+        preprocessTriangle();
+        preprocessDepthInterpolation();
         
-        preprocess();
-        
-        double zInvA = 1.0d / aZ;
-        double zInvB = 1.0d / bZ;
-        double zInvC = 1.0d / cZ;
-        
-        double dzInvAC = zInvC - zInvA;
-        double dzInvAB = zInvB - zInvA;
-        double dzInvBC = zInvC - zInvB;
-        
-        double kAC = 0, kAB = 0, kBC = 0;
+        double uA=123, uB=123, uC=123;
+        double vA=123, vB=123, vC=123;
         
         // horni cast trojuhelniku
         for (int line = aY; line < bY; line++) {
@@ -107,9 +121,15 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
             
             // interpolace z
+            double zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
+            double zAB_k = 1.0d / (zInvA + kAB * dzInvAB);
             
-            double zAC_k = 1.0d / ( zInvA + kAC * (dzInvAC) );
-            double zAB_k = 1.0d / ( zInvA + kAB * (dzInvAB) );
+            // interpolace tex coord u
+            double uAC_k = ( uA*zInvA + kAC * (uC*zInvC - uA*zInvA)) * zAC_k;
+            double uAB_k = ( uA*zInvA + kAB * (uB*zInvB - uA*zInvA)) * zAB_k;
+            // interpolace tex coord v
+            double vAC_k = ( vA*zInvA + kAC * (vC*zInvC - vA*zInvA)) * zAC_k;
+            double vAB_k = ( vA*zInvA + kAB * (vB*zInvB - vA*zInvA)) * zAB_k;
             
             scanLine(xAC, xAB, line, zAC_k, zAB_k, aR, aG, aB);
             
@@ -125,8 +145,15 @@ public class RasterizerSolid extends RasterizerAbstract {
             int xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
             
             // interpolace z
-            double zAC_k = 1.0d / ( zInvA + kAC * (dzInvAC) );
-            double zBC_k = 1.0d / ( zInvB + kBC * (dzInvBC) );
+            double zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
+            double zBC_k = 1.0d / (zInvB + kBC * dzInvBC);
+            
+            // interpolace tex coord u
+            double uAC_k = ( uA*zInvA + kAC * (uC*zInvC - uA*zInvA)) * zAC_k;
+            double uBC_k = ( uB*zInvB + kBC * (uC*zInvC - uB*zInvB)) * zBC_k;
+            // interpolace tex coord v
+            double vAC_k = ( vA*zInvA + kAC * (vC*zInvC - vA*zInvA)) * zAC_k;
+            double vBC_k = ( vB*zInvB + kBC * (vC*zInvC - vB*zInvB)) * zBC_k;
             
             scanLine(xAC, xBC, line, zAC_k, zBC_k, aR, aG, aB);
             
