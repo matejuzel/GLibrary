@@ -75,7 +75,7 @@ public class GLibrary {
         depthBuffer = new DepthBufferDouble(width, height);
         frameBuffer = new FrameBuffer(width, height);
         
-        matrixViewPort.loadViewport(width, height);
+        matrixViewPort.loadViewport(width, height, 0, 0);
         
         TextureAbstract texture = textureUnit.getCurrentTexture();
         
@@ -281,7 +281,7 @@ public class GLibrary {
         
         int sum = 0;
         for (int i=0; i<vertexBufferArray.size(); i++) {
-            sum += vertexBufferArray.get(i).vertexArray.size();
+            sum += vertexBufferArray.get(i).vertexArray.size() / 3;
         }
         
         return "pocet vertexu: "+sum;

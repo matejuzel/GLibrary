@@ -29,7 +29,7 @@ public class TextureNearest extends TextureAbstract {
         
         try {
             // Load the PNG image from a file
-            File imageFile = new File("your_image.png");
+            File imageFile = new File(filename);
             image = ImageIO.read(imageFile);
         } catch (IOException e) {
             e.printStackTrace();

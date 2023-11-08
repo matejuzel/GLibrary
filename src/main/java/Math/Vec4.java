@@ -83,6 +83,27 @@ public class Vec4 {
         return this;
     }
     
+    public double getSize() {
+        return Math.sqrt(data[0]*data[0] + data[1]*data[1] + data[2]*data[2] + data[3]*data[3]);
+    }
+    
+    public Vec4 normal() {
+        double size = getSize();
+        this.data[0] /= size;
+        this.data[1] /= size;
+        this.data[2] /= size;
+        this.data[3] /= size;
+        return this;
+    }
+    
+    public Vec4 subtract(Vec4 v) {
+        data[0] =- v.getX();
+        data[1] =- v.getY();
+        data[2] =- v.getZ();
+        data[3] =- v.getW();
+        return this;
+    }
+    
     public double getX() {
         return this.data[0];
     }
@@ -112,6 +133,28 @@ public class Vec4 {
             +this.data[2]+" \n"
             +this.data[3]+" \n"
             +"]";*/
+    }
+    
+    static Vec4 crossProduct(Vec4 a, Vec4 b) {
+        return new Vec4(
+                a.getY()*b.getZ() - a.getZ()*b.getY(), 
+                a.getZ()*b.getX() - a.getX()*b.getZ(), 
+                a.getX()*b.getY() - a.getY()*b.getX(),
+                1
+        );
+    }
+    
+    static double dotProduct(Vec4 a, Vec4 b) {
+        return a.getX()*b.getX() + a.getY()*b.getY() + a.getZ()*b.getZ() + a.getW()*b.getW();
+    }
+    
+    static Vec4 subtract(Vec4 a, Vec4 b) {
+        return new Vec4(
+                a.getX() - b.getX(),
+                a.getY() - b.getY(),
+                a.getZ() - b.getZ(),
+                a.getW() - b.getW()
+        );
     }
     
     public Vec4 stdOutPrintln(String name) {

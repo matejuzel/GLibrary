@@ -9,6 +9,7 @@ import GL.GLibrary;
 import Math.MFloat;
 import Math.Mtx4;
 import Math.Utils;
+import Math.Vec4;
 import Texture.TextureNearest;
 
 /**
@@ -22,6 +23,7 @@ public class AppGL extends AbstractAppGL {
     int hTexture0, hTexture1;
     
     Mtx4 mtxCamera = new Mtx4();
+    Mtx4 mtxLookAt = new Mtx4();
     Mtx4 mtxCube0 = new Mtx4();
     Mtx4 mtxCube1 = new Mtx4();
     
@@ -40,8 +42,10 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
         gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
         
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
+        
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(800, 500, 0, 0));
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(1, 0, 0);
@@ -50,6 +54,10 @@ public class AppGL extends AbstractAppGL {
         // umisteni kamery
         mtxCamera.loadIdentity().translate(0, 0, -3);
         
+        mtxLookAt.loadLookAt(new Vec4(8,9,3,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
+        
+        System.out.println(mtxLookAt);
+        
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.9);
@@ -57,8 +65,8 @@ public class AppGL extends AbstractAppGL {
         vbaCube1 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
         
-        hTexture0 = gLibrary.getTextureUnit().addTexture(new TextureNearest("file0.png"));
-        hTexture1 = gLibrary.getTextureUnit().addTexture(new TextureNearest("file1.png"));
+        hTexture0 = gLibrary.getTextureUnit().addTexture(new TextureNearest("data/tex0.png"));
+        hTexture1 = gLibrary.getTextureUnit().addTexture(new TextureNearest("data/tex0.png"));
         
         System.out.println(gLibrary.toString());
     }
@@ -69,6 +77,8 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getFrameBuffer().clear();
         gLibrary.getDepthBuffer().clear();
         
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(800, 500, 0, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
@@ -78,6 +88,21 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture1);
         gLibrary.render(vbaCube1);
+        
+        // obraz 2
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(48), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(600, 480, 850, 200));
+        // objekt 1 - krychle
+        gLibrary.setMatrixModelView(new Mtx4(mtxLookAt).multiply(mtxCube0));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.render(vbaCube0);
+        
+        // objekt 2 - krychle
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture1);
+        gLibrary.render(vbaCube1);
+        
+        
         
         // do object transformations
         mtxCube0.multiply(Mtx4.getRotationX(0.005d));
@@ -92,63 +117,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
- /*
-        float[] arr = {
-            0.0f,
-            0.01f,
-            0.001f,
-            0.0001f,
-            0.00001f,
-            0.123456f,
-            0.1f,
-            0.2f,
-            0.3f,
-            0.4f,
-            0.5f,
-            0.6f,
-            0.7f,
-            0.8f,
-            0.9f,
-            1.0f
-        };
-        
-        long samples = 100000000000L;
-        
-        int rawInt;
-        float floatval = 0.34553f;
-        
-        float out1;
-        int out2;
-        
-        long time0 = System.currentTimeMillis();
-        
-        for (long i=0; i<samples; i++) {
-            
-            //float fla =  1.0f / ( 1.0f/34.4224f + 1.0f/4.43233f );
-            
-            //out1 = floatval * 8388608;
-        }
-        
-        long time1 = System.currentTimeMillis();
-        
-        for (long i=0; i<samples; i++) {
-            
-            //double fla =  1.0d / ( 1.0d/34.4224d + 1.0d/4.43233d );
-            
-            //rawInt = Float.floatToRawIntBits(floatval);
-            //out2 = ((rawInt & 0x007fffff) | 0x00800000) >>> (-(((rawInt & 0x7f800000) >>> 23) - 127));
-        }
-        
-        long time2 = System.currentTimeMillis();
-        
-        System.out.println((time1 - time0)+" vs. "+(time2 - time1));
-        
-        
-        System.out.println("done");
-        
-        if (true) return;
-        */
-        AbstractAppGL app = new AppGL(200, 180);
+        AbstractAppGL app = new AppGL(1800, 1020);
         app.initCallback();
         app.runLoop(5);
         //app.run();

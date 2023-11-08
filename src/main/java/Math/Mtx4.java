@@ -121,17 +121,37 @@ public final class Mtx4 {
         return this;
     }
     
-    public Mtx4 loadViewport(int width, int height) {
+    public Mtx4 loadViewport(int width, int height, int offsetX, int offsetY) {
         
         double w_half = width / 2.0d;
         double h_half = height / 2.0d;
         
         this.setData(
-            w_half,   0.0d, 0.0d, w_half,
-              0.0d, h_half, 0.0d, h_half,
+            w_half,   0.0d, 0.0d, w_half + offsetX,
+              0.0d, h_half, 0.0d, h_half + offsetY,
               0.0d,   0.0d, 1.0d,   0.0d,
               0.0d,   0.0d, 0.0d,   1.0d
         );
+        return this;
+    }
+    
+    public Mtx4 loadLookAt(Vec4 eye, Vec4 center, Vec4 up) {
+        
+        Vec4 zAxis = Vec4.subtract(center, eye).normal();
+        Vec4 xAxis = Vec4.crossProduct(up, zAxis).normal();
+        Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis);
+        
+        System.out.println(zAxis);
+        System.out.println(xAxis);
+        System.out.println(yAxis);
+        
+        this.setData(
+                xAxis.getX(), xAxis.getY(), xAxis.getZ(), -Vec4.dotProduct(xAxis, eye),
+                yAxis.getX(), yAxis.getY(), yAxis.getZ(), -Vec4.dotProduct(yAxis, eye),
+                zAxis.getX(), zAxis.getY(), zAxis.getZ(), -Vec4.dotProduct(zAxis, eye),
+                0.0d, 0.0d, 0.0d, 1.0d
+        );
+        
         return this;
     }
     
@@ -198,9 +218,9 @@ public final class Mtx4 {
         return mtx;
     }
     
-    public static Mtx4 getViewport(int width, int height) {
+    public static Mtx4 getViewport(int width, int height, int offsetX, int offsetY) {
         Mtx4 mtx = new Mtx4();
-        mtx.loadViewport(width, height);
+        mtx.loadViewport(width, height, offsetX, offsetY);
         return mtx;
     }
     
