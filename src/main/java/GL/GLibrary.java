@@ -89,7 +89,7 @@ public class GLibrary {
         }
     }
     
-    public GLibrary vertexBufferRender(int handler) {
+    public GLibrary render(int handler) {
         
         textureWork = getTextureUnit().getCurrentTexture();
         

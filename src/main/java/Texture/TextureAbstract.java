@@ -4,6 +4,8 @@
  */
 package Texture;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author matej uzel
@@ -13,6 +15,8 @@ public abstract class TextureAbstract {
     protected int width;
     protected int height;
     protected int textels[];
+    
+    BufferedImage image;
     
     public TextureAbstract(int width, int height) {
         this.width = width;

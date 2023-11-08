@@ -4,6 +4,15 @@
  */
 package Texture;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+
 /**
  *
  * @author matej uzel
@@ -17,6 +26,15 @@ public class TextureNearest extends TextureAbstract {
     
     public TextureNearest(String filename) {
         super(filename);
+        
+        try {
+            // Load the PNG image from a file
+            File imageFile = new File("your_image.png");
+            image = ImageIO.read(imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         
     }
 

@@ -72,12 +72,12 @@ public class AppGL extends AbstractAppGL {
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
-        gLibrary.vertexBufferRender(vbaCube0);
+        gLibrary.render(vbaCube0);
         
         // objekt 2 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture1);
-        gLibrary.vertexBufferRender(vbaCube1);
+        gLibrary.render(vbaCube1);
         
         // do object transformations
         mtxCube0.multiply(Mtx4.getRotationX(0.005d));
@@ -148,7 +148,7 @@ public class AppGL extends AbstractAppGL {
         
         if (true) return;
         */
-        AbstractAppGL app = new AppGL(100, 80);
+        AbstractAppGL app = new AppGL(200, 180);
         app.initCallback();
         app.runLoop(5);
         //app.run();
