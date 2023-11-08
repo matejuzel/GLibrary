@@ -34,20 +34,20 @@ public class GLibrary {
         FRONT_AND_BACK
     }
     
-    public enum PrimitiveMode {
+     public enum PrimitiveMode {
         POINTS,
         LINES,
         SOLID,
         TEXTURES
     }
     
-    private FrameBuffer frameBuffer;
-    private DepthBufferAbstract depthBuffer;
+    private final FrameBuffer frameBuffer;
+    private final DepthBufferAbstract depthBuffer;
     
-    private RasterizerAbstract rasterizerPoints;
-    private RasterizerAbstract rasterizerLines;
-    private RasterizerAbstract rasterizerSolid;
-    private RasterizerAbstract rasterizerTextures;
+    private final RasterizerAbstract rasterizerPoints;
+    private final RasterizerAbstract rasterizerLines;
+    private final RasterizerAbstract rasterizerSolid;
+    private final RasterizerAbstract rasterizerTextures;
     private RasterizerAbstract rasterizer;
     
     private FaceCullingMode faceCullingMode = FaceCullingMode.NONE;
@@ -133,21 +133,23 @@ public class GLibrary {
                     Vec4 vertB = this.vertexBufferWork[i+1];
                     Vec4 vertC = this.vertexBufferWork[i+2];
                     
-                    Vec4 vAB = new Vec4(vertB.getX() - vertA.getX(), vertB.getY() - vertA.getY(), 0);
-                    Vec4 vAC = new Vec4(vertC.getX() - vertA.getX(), vertC.getY() - vertA.getY(), 0);
+                    // pro cross product
+                    double vABx = vertB.getX() - vertA.getX();
+                    double vABy = vertB.getY() - vertA.getY();
+                    double vACx = vertC.getX() - vertA.getX();
+                    double vACy = vertC.getY() - vertA.getY();
                     
-                    // corss product: (ax, ay, 0) x (bx, by, 0) = (ax*by-ay*bx)
-                    double crossProductZ = vAB.getX()*vAC.getY() - vAB.getY()*vAC.getX();
-                    
-                    System.out.println(crossProductZ);
                     switch (faceCullingMode) {
                         case NONE:
+                            // nic
                             break;
                         case BACK:
-                            if (crossProductZ < 0) continue;
+                            // corss product: (ax, ay, 0) x (bx, by, 0) = (ax*by-ay*bx)
+                            if (vABx*vACy - vABy*vACx < 0) continue;
                             break;
                         case FRONT:
-                            if (crossProductZ > 0) continue;
+                            // corss product: (ax, ay, 0) x (bx, by, 0) = (ax*by-ay*bx)
+                            if (vABx*vACy - vABy*vACx > 0) continue;
                             break;
                         case FRONT_AND_BACK:
                             throw new UnsupportedOperationException("faceCullingMode=FRONT_AND_BACK is not supported yet");
