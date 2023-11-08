@@ -8,11 +8,16 @@ package Texture;
  *
  * @author matej uzel
  */
-public class TextureNearest extends AbstractTexture {
+public class TextureNearest extends TextureAbstract {
     
     public TextureNearest(int width, int height) {
         super(width, height);
         this.textels = new int[width * height * 3];
+    }
+    
+    public TextureNearest(String filename) {
+        super(filename);
+        
     }
 
     @Override

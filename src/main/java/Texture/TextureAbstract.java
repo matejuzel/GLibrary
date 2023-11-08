@@ -8,15 +8,19 @@ package Texture;
  *
  * @author matej uzel
  */
-public abstract class AbstractTexture {
+public abstract class TextureAbstract {
     
     protected int width;
     protected int height;
     protected int textels[];
     
-    public AbstractTexture(int width, int height) {
+    public TextureAbstract(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+    
+    public TextureAbstract(String filename) {
+        
     }
     
     public abstract int mapFunction(int x, int y);

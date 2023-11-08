@@ -9,6 +9,7 @@ import GL.GLibrary;
 import Math.MFloat;
 import Math.Mtx4;
 import Math.Utils;
+import Texture.TextureNearest;
 
 /**
  *
@@ -17,6 +18,8 @@ import Math.Utils;
 public class AppGL extends AbstractAppGL {
     
     int vbaCube0, vbaCube1; // handler vertex buffer array
+    
+    int hTexture0, hTexture1;
     
     Mtx4 mtxCamera = new Mtx4();
     Mtx4 mtxCube0 = new Mtx4();
@@ -54,6 +57,9 @@ public class AppGL extends AbstractAppGL {
         vbaCube1 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
         
+        hTexture0 = gLibrary.getTextureUnit().addTexture(new TextureNearest("file0.png"));
+        hTexture1 = gLibrary.getTextureUnit().addTexture(new TextureNearest("file1.png"));
+        
         System.out.println(gLibrary.toString());
     }
 
@@ -65,10 +71,12 @@ public class AppGL extends AbstractAppGL {
         
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.vertexBufferRender(vbaCube0);
         
         // objekt 2 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture1);
         gLibrary.vertexBufferRender(vbaCube1);
         
         // do object transformations

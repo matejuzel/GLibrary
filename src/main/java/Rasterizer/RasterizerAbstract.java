@@ -8,7 +8,7 @@ import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
 import GL.FrameBuffer;
 import Math.Vec4;
-import Texture.AbstractTexture;
+import Texture.TextureAbstract;
 
 /**
  *
@@ -18,7 +18,7 @@ public abstract class RasterizerAbstract {
     
     protected FrameBuffer frameBuffer;
     protected DepthBufferAbstract depthBuffer; // prizpusobit datovy typ
-    protected AbstractTexture texture;
+    protected TextureAbstract texture;
     
     // vertex coordinates
     int aX, aY;
@@ -38,7 +38,7 @@ public abstract class RasterizerAbstract {
     int bR, bG, bB;
     int cR, cG, cB;
     
-    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, AbstractTexture texture) {
+    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         this.frameBuffer = frameBuffer;
         this.depthBuffer = depthBuffer;
         this.texture = texture;

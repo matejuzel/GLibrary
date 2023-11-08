@@ -8,7 +8,7 @@ import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
 import GL.FrameBuffer;
 import Math.Vec4;
-import Texture.AbstractTexture;
+import Texture.TextureAbstract;
 
 /**
  *
@@ -28,7 +28,7 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected double kAC, kAB, kBC;
     
     
-    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, AbstractTexture texture) {
+    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         super(frameBuffer, depthBuffer, texture);
     }
 

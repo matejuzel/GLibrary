@@ -13,7 +13,7 @@ import Rasterizer.RasterizerPoints;
 import Rasterizer.RasterizerLines;
 import Rasterizer.RasterizerSolid;
 import Rasterizer.RasterizerTextures;
-import Texture.AbstractTexture;
+import Texture.TextureAbstract;
 import Texture.TextureNearest;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -56,10 +56,15 @@ public class GLibrary {
     private Mtx4 matrixModelView = new Mtx4();
     private Mtx4 matrixProjection = new Mtx4();
     private Mtx4 matrixViewPort = new Mtx4();
-    private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
     
     private ArrayList<VertexBuffer> vertexBufferArray = new ArrayList<>();
     
+    private final TextureUnit textureUnit = new TextureUnit();
+    
+    
+    private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
+    private TextureAbstract textureWork;
+
     // odkladiste pro transformovane vertexy
     Vec4[] vertexBufferWork = new Vec4[1024];
     
@@ -72,7 +77,7 @@ public class GLibrary {
         
         matrixViewPort.loadViewport(width, height);
         
-        AbstractTexture texture = new TextureNearest(256, 256);
+        TextureAbstract texture = new TextureNearest(256, 256);
         
         rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, texture);
         rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, texture);
@@ -85,6 +90,8 @@ public class GLibrary {
     }
     
     public GLibrary vertexBufferRender(int handler) {
+        
+        textureWork = getTextureUnit().getCurrentTexture();
         
         int[] colors = {
             255,0,0,255,0,0,
@@ -263,6 +270,9 @@ public class GLibrary {
         return matrixViewPort;
     }
     
+    public TextureUnit getTextureUnit() {
+        return textureUnit;
+    }
     
     
     
