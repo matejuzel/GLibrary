@@ -16,13 +16,11 @@ import Math.Utils;
  */
 public class AppGL extends AbstractAppGL {
     
-    int vbaCube0 = 0, vbaCube1 = 0; // handler vertex buffer array
+    int vbaCube0, vbaCube1; // handler vertex buffer array
     
     Mtx4 mtxCamera = new Mtx4();
-    
     Mtx4 mtxCube0 = new Mtx4();
     Mtx4 mtxCube1 = new Mtx4();
-    
     
     public AppGL(int width, int height) {
         super(width, height);
@@ -33,17 +31,17 @@ public class AppGL extends AbstractAppGL {
         
         // nastaveni vychozi barvy pozadi - clearColor
         gLibrary.getFrameBuffer().setClearColor(0, 0, 0);
-        
         gLibrary.getDepthBuffer().setClearValue(1.0f);
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.LESS);
         
-        // nastaveni projekcni a model-view matice
-        //gLibrary.matrixPush(Mtx4.getProjectionPerspective(-0.1d, 0.1d, -0.1d, 0.1d, -0.1d, -10.0d), GLibrary.MatrixType.PROJECTION);
-        gLibrary.matrixPush(Mtx4.getProjectionPerspective(Math.toRadians(45), this.gLibrary.getWidth()/this.gLibrary.getHeight(), -0.5d, -5.0d), GLibrary.MatrixType.PROJECTION);
-        gLibrary.matrixPush(Mtx4.getIdentity(), GLibrary.MatrixType.MODELVIEW);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
+        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
+        
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
+        gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
         // umisteni objektu cube
-        mtxCube0.loadIdentity().translate(1, 0,0);
+        mtxCube0.loadIdentity().translate(1, 0, 0);
         mtxCube1.loadIdentity().translate(-0.5, 0.4, 0).multiply(Mtx4.getRotationZ(2.8));
         
         // umisteni kamery
@@ -52,19 +50,7 @@ public class AppGL extends AbstractAppGL {
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube0).addCube(0.9);
-        
-        /*gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-        gLibrary.getVertexBuffer(vbaCube0).addCube(0.8);
-*/
+
         vbaCube1 = gLibrary.addVertexBuffer();
         gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
         
@@ -77,11 +63,12 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getFrameBuffer().clear();
         gLibrary.getDepthBuffer().clear();
         
-        // set modelview matrix
-        gLibrary.matrixSet(mtxCamera.getOrthonormalInverted().multiply(mtxCube0), GLibrary.MatrixType.MODELVIEW);
+        // objekt 1 - krychle
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.vertexBufferRender(vbaCube0);
         
-        gLibrary.matrixSet(mtxCamera.getOrthonormalInverted().multiply(mtxCube1), GLibrary.MatrixType.MODELVIEW);
+        // objekt 2 - krychle
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.vertexBufferRender(vbaCube1);
         
         // do object transformations

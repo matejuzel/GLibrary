@@ -12,6 +12,7 @@ import Rasterizer.RasterizerAbstract;
 import Rasterizer.RasterizerPoints;
 import Rasterizer.RasterizerLines;
 import Rasterizer.RasterizerSolid;
+import Rasterizer.RasterizerTextures;
 import Texture.AbstractTexture;
 import Texture.TextureNearest;
 import java.awt.Color;
@@ -26,11 +27,6 @@ import java.util.Stack;
  */
 public class GLibrary {
 
-    public enum MatrixType {
-        MODELVIEW,
-        PROJECTION
-    }
-    
     public enum FaceCullingMode {
         NONE,
         FRONT,
@@ -42,22 +38,27 @@ public class GLibrary {
         POINTS,
         LINES,
         SOLID,
-        TEXTURED
+        TEXTURES
     }
     
     private FrameBuffer frameBuffer;
     private DepthBufferAbstract depthBuffer;
+    
+    private RasterizerAbstract rasterizerPoints;
+    private RasterizerAbstract rasterizerLines;
+    private RasterizerAbstract rasterizerSolid;
+    private RasterizerAbstract rasterizerTextures;
     private RasterizerAbstract rasterizer;
-    private FaceCullingMode faceCullingMode = FaceCullingMode.BACK;
+    
+    private FaceCullingMode faceCullingMode = FaceCullingMode.NONE;
     private PrimitiveMode primitiveMode = PrimitiveMode.SOLID;
     
-    Mtx4 mtxViewPort = new Mtx4();
+    private Mtx4 matrixModelView = new Mtx4();
+    private Mtx4 matrixProjection = new Mtx4();
+    private Mtx4 matrixViewPort = new Mtx4();
+    private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
     
-    Stack<Mtx4> stackMatrixModelView = new Stack<>();
-    Stack<Mtx4> stackMatrixProjection = new Stack<>();
-    
-    ArrayList<VertexBuffer> vertexBufferArray = new ArrayList<>();
-    
+    private ArrayList<VertexBuffer> vertexBufferArray = new ArrayList<>();
     
     // odkladiste pro transformovane vertexy
     Vec4[] vertexBufferWork = new Vec4[1024];
@@ -69,13 +70,14 @@ public class GLibrary {
         depthBuffer = new DepthBufferDouble(width, height);
         frameBuffer = new FrameBuffer(width, height);
         
-        stackMatrixModelView.push(new Mtx4());
-        stackMatrixProjection.push(new Mtx4());
-        mtxViewPort.loadViewport(width, height);
+        matrixViewPort.loadViewport(width, height);
         
         AbstractTexture texture = new TextureNearest(256, 256);
-        //rasterizer = new RasterizerLines(frameBuffer, 0, texture);
-        rasterizer = new RasterizerSolid(frameBuffer, depthBuffer, texture);
+        
+        rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, texture);
+        rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, texture);
+        rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, texture);
+        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, texture);
         
         for (int i=0; i<vertexBufferWork.length; i++) {
             vertexBufferWork[i] = new Vec4(0.0d, 0.0d, 0.0d, 0.0d);
@@ -83,48 +85,40 @@ public class GLibrary {
     }
     
     public GLibrary vertexBufferRender(int handler) {
-        /*
-        rasterizer.setVertexCoordinates(new Vec4(34, 50, 0, 1), new Vec4(254, 70, 0, 1), new Vec4(100, 400, 0, 1));
-        rasterizer.setColorA(255, 0, 0);
-        rasterizer.setColorB(0, 255, 0);
-        rasterizer.setColorC(0, 0, 255);
-        rasterizer.drawTriangle();
-        */
+        
+        int[] colors = {
+            255,0,0,255,0,0,
+            0,255,0,0,255,0,
+            0,0,255,0,0,255,
+            255,255,0,255,255,0,
+            255,0,255,255,0,255,
+            255,255,255,255,255,255,
+        };
         
         VertexBuffer vb = this.vertexBufferArray.get(handler);
         
-        Mtx4 mtx = Mtx4.getIdentity();
-        mtx.multiply(this.getMatrix(MatrixType.PROJECTION));
-        mtx.multiply(this.getMatrix(MatrixType.MODELVIEW));
-        
-        
-        
+        matrixFinal.loadIdentity();
+        matrixFinal.multiply(matrixProjection);
+        matrixFinal.multiply(matrixModelView);
         
         for (int i=0; i<vb.vertexArray.size(); i++) {
-            
-            
-            
             this.vertexBufferWork[i].setData(vb.vertexArray.get(i));
-            this.vertexBufferWork[i].transform(mtx).divideByW();
+            this.vertexBufferWork[i].transform(matrixFinal).divideByW();
         }
         
-        
-        int[] colors = {
-            255,0,0,
-            255,0,0,
-            0,255,0,
-            0,255,0,
-            0,0,255,
-            0,0,255,
-            
-            255,255,0,
-            255,255,0,
-            255,0,255,
-            255,0,255,
-            255,255,255,
-            255,255,255,
-        };
-        
+        switch (primitiveMode) {
+            case POINTS:
+                rasterizer = rasterizerPoints;
+                break;
+            case LINES:
+                rasterizer = rasterizerLines;
+                break;
+            case SOLID:
+                rasterizer = rasterizerSolid;
+                break;
+            default:
+                throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
+        }
         
         switch (vb.triangleMode) {
             case SIMPLE:
@@ -161,9 +155,9 @@ public class GLibrary {
                             throw new UnsupportedOperationException("faceCullingMode option is not set");
                     }
                     
-                    vertA.transform(mtxViewPort);
-                    vertB.transform(mtxViewPort);
-                    vertC.transform(mtxViewPort);
+                    vertA.transform(matrixViewPort);
+                    vertB.transform(matrixViewPort);
+                    vertC.transform(matrixViewPort);
                     
                     rasterizer.setVertexCoordinates(vertA, vertB, vertC);
                     rasterizer.setColorA(colorR, colorG, colorB);
@@ -182,102 +176,13 @@ public class GLibrary {
         return this;
     }
     
-    public GLibrary matrixSet(Mtx4 matrix, MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                stackMatrixModelView.peek().setData(matrix);
-                break;
-            case PROJECTION:
-                stackMatrixProjection.peek().setData(matrix);
-                break;
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-        return this;
-    }
-    
-    public GLibrary matrixLoadIdentity(MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                stackMatrixModelView.peek().loadIdentity();
-                break;
-            case PROJECTION:
-                stackMatrixProjection.peek().loadIdentity();
-                break;
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-        return this;
-    }
-    
-    public GLibrary matrixMultiply(Mtx4 matrix, MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                stackMatrixModelView.peek().multiply(matrix);
-                break;
-            case PROJECTION:
-                stackMatrixProjection.peek().multiply(matrix);
-                break;
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-        return this;
-    }
-    
-    public GLibrary matrixPush(Mtx4 matrix, MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                stackMatrixModelView.push(matrix);
-                break;
-            case PROJECTION:
-                stackMatrixProjection.push(matrix);
-                break;
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-        return this;
-    }
-    
-    public GLibrary matrixPop(Mtx4 matrix, MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                stackMatrixModelView.pop();
-                break;
-            case PROJECTION:
-                stackMatrixProjection.pop();
-                break;
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-        return this;
-    }
-    public Mtx4 getMatrix(MatrixType matrixType) {
-        
-        switch (matrixType) {
-            case MODELVIEW:
-                return stackMatrixModelView.peek();
-            case PROJECTION:
-                return stackMatrixProjection.peek();
-            default:
-                throw new UnsupportedOperationException("setMatrix() nespravny typ matice");
-        }
-    }
-    
     public int addVertexBuffer() {
-    
         VertexBuffer vertexBuffer = new VertexBuffer();
-        
         this.vertexBufferArray.add(vertexBuffer);
         return this.vertexBufferArray.size()-1;
     }
     
     public VertexBuffer getVertexBuffer(int handler) {
-        
         return this.vertexBufferArray.get(handler);
     }
     
@@ -303,15 +208,60 @@ public class GLibrary {
     public FrameBuffer getFrameBuffer() {
         return this.frameBuffer;
     }
+    
     public DepthBufferAbstract getDepthBuffer() {
         return this.depthBuffer;
     }
+    
     public int getWidth() {
         return this.frameBuffer.getWidth();
     }
+    
     public int getHeight() {
         return this.frameBuffer.getHeight();
     }
+    
+    public void setFaceCullingMode(FaceCullingMode faceCullingMode) {
+        this.faceCullingMode = faceCullingMode;
+    }
+
+    public void setPrimitiveMode(PrimitiveMode primitiveMode) {
+        this.primitiveMode = primitiveMode;
+    }
+
+    public void setMatrixModelView(Mtx4 matrixModelView) {
+        this.matrixModelView = matrixModelView;
+    }
+
+    public void setMatrixProjection(Mtx4 matrixProjection) {
+        this.matrixProjection = matrixProjection;
+    }
+
+    public void setMatrixViewPort(Mtx4 matrixViewPort) {
+        this.matrixViewPort = matrixViewPort;
+    }
+
+    public FaceCullingMode getFaceCullingMode() {
+        return faceCullingMode;
+    }
+
+    public PrimitiveMode getPrimitiveMode() {
+        return primitiveMode;
+    }
+
+    public Mtx4 getMatrixModelView() {
+        return matrixModelView;
+    }
+
+    public Mtx4 getMatrixProjection() {
+        return matrixProjection;
+    }
+
+    public Mtx4 getMatrixViewPort() {
+        return matrixViewPort;
+    }
+    
+    
     
     
     @Override
