@@ -77,7 +77,7 @@ public class GLibrary {
         
         matrixViewPort.loadViewport(width, height);
         
-        TextureAbstract texture = new TextureNearest(256, 256);
+        TextureAbstract texture = textureUnit.getCurrentTexture();
         
         rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, texture);
         rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, texture);
