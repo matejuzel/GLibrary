@@ -39,17 +39,17 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().setClearValue(1.0f);
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.LESS);
         
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.LINES);
         gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
         gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(800, 500, 0, 0));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-10, height, 0, 0));
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(1, 0, 0);
-        mtxCube1.loadIdentity().translate(-0.5, 0.4, 0).multiply(Mtx4.getRotationZ(2.8));
+        mtxCube1.loadIdentity().translate(-0.5, 0.0, 0).multiply(Mtx4.getRotationZ(0));
         
         // umisteni kamery
         mtxCamera.loadIdentity().translate(0, 0, -3);
@@ -78,7 +78,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().clear();
         
         gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(800, 500, 0, 0));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-10, height, 0, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
@@ -91,7 +91,7 @@ public class AppGL extends AbstractAppGL {
         
         // obraz 2
         gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(48), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(600, 480, 850, 200));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-10, height, width/2, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(new Mtx4(mtxLookAt).multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
@@ -116,11 +116,23 @@ public class AppGL extends AbstractAppGL {
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
     
-    public static void main(String[] args) {
-        AbstractAppGL app = new AppGL(1800, 1020);
+    public static void runAnimation() {
+        AbstractAppGL app = new AppGL(400, 150);
         app.initCallback();
         app.runLoop(5);
-        //app.run();
+    }
+    
+    public static void runWork() {
         
+        Mtx4 m = new Mtx4();
+        m.loadLookAt(new Vec4(5,0,-10,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
+        m = m.getOrthonormalInverted();
+        
+        System.out.println(m);
+    }
+    
+    public static void main(String[] args) {
+        //runAnimation();
+        runWork();
     }
 }

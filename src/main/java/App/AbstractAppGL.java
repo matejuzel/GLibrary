@@ -22,11 +22,15 @@ public abstract class AbstractAppGL {
     GLibrary gLibrary = null;
     Viewer viewer = null;
     
+    protected int width, height;
+    
     public abstract void initCallback();
     
     public abstract void loopCallback();
     
     public AbstractAppGL(int width, int height) {
+        this.width = width;
+        this.height = height;
         gLibrary = new GLibrary(width, height);
         viewer = new Viewer(width+20, height+44, gLibrary.getFrameBuffer());
     }

@@ -123,16 +123,9 @@ public class Vec4 {
         String patternFormat = "%+10.2f;\n";
         String patternRow = patternFormat.repeat(4);
         
-        return String.format("VECTOR 4x4 [\n"+patternRow+"]", 
-                this.data[0], this.data[1], this.data[2], this.data[3]
+        return String.format("VECTOR 4x4 [\n"+patternRow+"] ; delka: %+10.2f;", 
+                this.data[0], this.data[1], this.data[2], this.data[3], getSize()
         );
-        /*
-        return "VECTOR 4 [\n"
-            +this.data[0]+" \n"
-            +this.data[1]+" \n"
-            +this.data[2]+" \n"
-            +this.data[3]+" \n"
-            +"]";*/
     }
     
     static Vec4 crossProduct(Vec4 a, Vec4 b) {
@@ -140,7 +133,7 @@ public class Vec4 {
                 a.getY()*b.getZ() - a.getZ()*b.getY(), 
                 a.getZ()*b.getX() - a.getX()*b.getZ(), 
                 a.getX()*b.getY() - a.getY()*b.getX(),
-                1
+                0
         );
     }
     

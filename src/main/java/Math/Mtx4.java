@@ -139,16 +139,16 @@ public final class Mtx4 {
         
         Vec4 zAxis = Vec4.subtract(center, eye).normal();
         Vec4 xAxis = Vec4.crossProduct(up, zAxis).normal();
-        Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis);
+        Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis).normal();
         
-        System.out.println(zAxis);
-        System.out.println(xAxis);
-        System.out.println(yAxis);
+        System.out.println("xAxis:"+xAxis);
+        System.out.println("yAxis"+yAxis);
+        System.out.println("zAxis: "+zAxis);
         
         this.setData(
-                xAxis.getX(), xAxis.getY(), xAxis.getZ(), -Vec4.dotProduct(xAxis, eye),
-                yAxis.getX(), yAxis.getY(), yAxis.getZ(), -Vec4.dotProduct(yAxis, eye),
-                zAxis.getX(), zAxis.getY(), zAxis.getZ(), -Vec4.dotProduct(zAxis, eye),
+                xAxis.getX(), xAxis.getY(), xAxis.getZ(), Vec4.dotProduct(xAxis, eye),
+                yAxis.getX(), yAxis.getY(), yAxis.getZ(), Vec4.dotProduct(yAxis, eye),
+                zAxis.getX(), zAxis.getY(), zAxis.getZ(), Vec4.dotProduct(zAxis, eye),
                 0.0d, 0.0d, 0.0d, 1.0d
         );
         
