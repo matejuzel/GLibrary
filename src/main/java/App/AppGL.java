@@ -124,8 +124,9 @@ public class AppGL extends AbstractAppGL {
     
     public static void runWork() {
         
+        
         Mtx4 m = new Mtx4();
-        m.loadLookAt(new Vec4(5,0,-10,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
+        m.loadLookAt(new Vec4(50,-7,-10,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
         m = m.getOrthonormalInverted();
         
         System.out.println(m);

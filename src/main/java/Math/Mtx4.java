@@ -139,16 +139,16 @@ public final class Mtx4 {
         
         Vec4 zAxis = Vec4.subtract(center, eye).normal();
         Vec4 xAxis = Vec4.crossProduct(up, zAxis).normal();
-        Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis).normal();
+        Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis);
         
         System.out.println("xAxis:"+xAxis);
         System.out.println("yAxis"+yAxis);
         System.out.println("zAxis: "+zAxis);
         
         this.setData(
-                xAxis.getX(), xAxis.getY(), xAxis.getZ(), Vec4.dotProduct(xAxis, eye),
-                yAxis.getX(), yAxis.getY(), yAxis.getZ(), Vec4.dotProduct(yAxis, eye),
-                zAxis.getX(), zAxis.getY(), zAxis.getZ(), Vec4.dotProduct(zAxis, eye),
+                xAxis.getX(), xAxis.getY(), xAxis.getZ(), -Vec4.dotProduct(xAxis, eye),
+                yAxis.getX(), yAxis.getY(), yAxis.getZ(), -Vec4.dotProduct(yAxis, eye),
+                zAxis.getX(), zAxis.getY(), zAxis.getZ(), -Vec4.dotProduct(zAxis, eye),
                 0.0d, 0.0d, 0.0d, 1.0d
         );
         
@@ -259,6 +259,74 @@ public final class Mtx4 {
                 0.0d, 0.0d, 0.0d, 1.0d
         );
         return this;
+    }
+    
+    public Mtx4 orthonormalInvertion2() {
+        
+        Vec4 offset = getColumn(3);
+        this.setColumn(Vec4.ZERO_AFFINE_VERTEX, 3); // treti sloupec vynulujeme
+        transpose();
+        
+        this.setData(
+                this.data[0], this.data[4], this.data[8], -offset.getX(),
+                this.data[1], this.data[5], this.data[9], -offset.getY(),
+                this.data[2], this.data[6], this.data[10], -offset.getZ(),
+                0.0d, 0.0d, 0.0d, 1.0d
+        );
+        
+        throw new RuntimeException("Mtx4:orthonormalInvertion2() - neni dokonceno");
+        
+        //return this;
+    }
+    
+    public Mtx4 transpose() {
+        setData(
+                data[0], data[4], data[8], data[12], 
+                data[1], data[5], data[9], data[13], 
+                data[2], data[6], data[10], data[14], 
+                data[3], data[7], data[11], data[15]
+        );
+        return this;
+    }
+    
+    public Mtx4 setColumn(Vec4 vec, int columnIndex) {
+        if (columnIndex < 0 || columnIndex > 3) throw new UnsupportedOperationException("Mtx3:setColumn(columnIndex); columnIndex="+columnIndex+" mimo dovolene rozmezi.");
+        data[columnIndex] = vec.getX();
+        data[columnIndex+4] = vec.getY();
+        data[columnIndex+8] = vec.getZ();
+        data[columnIndex+12] = vec.getW();
+        return this;
+    }
+    
+    public Mtx4 setRow(Vec4 vec, int rowIndex) {
+        if (rowIndex < 0 || rowIndex > 3) throw new UnsupportedOperationException("Mtx3:setColumn(rowIndex); rowIndex="+rowIndex+" mimo dovolene rozmezi.");
+        int offset = rowIndex * 4;
+        data[offset] = vec.getX();
+        data[offset+1] = vec.getY();
+        data[offset+2] = vec.getZ();
+        data[offset+3] = vec.getW();
+        return this;
+    }
+    
+    public Vec4 getRow(int rowIndex) {
+        if (rowIndex < 0 || rowIndex > 3) throw new UnsupportedOperationException("Mtx3:getRow(rowIndex); rowIndex="+rowIndex+" mimo dovolene rozmezi.");
+        int offset = rowIndex * 4;
+        return new Vec4(
+                data[offset], 
+                data[offset+1], 
+                data[offset+2], 
+                data[offset+3]
+        );
+    }
+    
+    public Vec4 getColumn(int columnIndex) {
+        if (columnIndex < 0 || columnIndex > 3) throw new UnsupportedOperationException("Mtx3:getColumn(columnIndex); columnIndex="+columnIndex+" mimo dovolene rozmezi.");
+        return new Vec4(
+                data[columnIndex], 
+                data[columnIndex+4], 
+                data[columnIndex+8], 
+                data[columnIndex+12]
+        );
     }
     
     public Mtx4 getOrthonormalInverted() {

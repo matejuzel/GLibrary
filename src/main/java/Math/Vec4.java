@@ -12,6 +12,9 @@ public class Vec4 {
     
     private final double data[] = new double[4];
     
+    public static final Vec4 ZERO = new Vec4(0,0,0,0);
+    public static final Vec4 ZERO_AFFINE_VERTEX = new Vec4(0,0,0,1);
+    
     public Vec4(double x, double y, double z, double w) {
         
         data[0] = x;
