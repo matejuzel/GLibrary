@@ -77,11 +77,15 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getFrameBuffer().clear();
         gLibrary.getDepthBuffer().clear();
         
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(45), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-10, height, 0, 0));
+        int w0, h0, w1, h1;
+        w0 = width/2-10;
+        h0 = height;
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.5d, -80.0d));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(w0, h0, 0, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
         gLibrary.render(vbaCube0);
         
         // objekt 2 - krychle
@@ -90,11 +94,14 @@ public class AppGL extends AbstractAppGL {
         gLibrary.render(vbaCube1);
         
         // obraz 2
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(48), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -20.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-10, height, width/2, 0));
+        w1 = width/2-10;
+        h1 = height;
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(48), w1/(double)h1, -0.5d, -20.0d));
+        gLibrary.setMatrixViewPort(Mtx4.getViewport(w1, h1, w0, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(new Mtx4(mtxLookAt).multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.LINES);
         gLibrary.render(vbaCube0);
         
         // objekt 2 - krychle
@@ -117,7 +124,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void runAnimation() {
-        AbstractAppGL app = new AppGL(400, 150);
+        AbstractAppGL app = new AppGL(1800, 900);
         app.initCallback();
         app.runLoop(5);
     }
@@ -133,7 +140,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        //runAnimation();
-        runWork();
+        runAnimation();
+        //runWork();
     }
 }
