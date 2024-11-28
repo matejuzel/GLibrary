@@ -55,7 +55,7 @@ public class AppGL extends AbstractAppGL {
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(1, 0, 0);
-        //mtxCube1.loadIdentity().translate(-0.5, 0.0, 0).multiply(Mtx4.getRotationZ(0));
+        mtxCube1.loadIdentity().translate(-0.5, 0.0, 0).multiply(Mtx4.getRotationZ(1));
         
         // umisteni kamery
         mtxCamera.loadIdentity().translate(0, 0, -3);
@@ -63,7 +63,10 @@ public class AppGL extends AbstractAppGL {
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
+        vbaCube1 = gLibrary.addVertexBuffer();
+        
         gLibrary.getVertexBuffer(vbaCube0).addCube(1.0);
+        gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
         
         //System.out.println(gLibrary.toString());
     }
@@ -86,10 +89,22 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
         gLibrary.render(vbaCube0);
         
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
+        gLibrary.render(vbaCube1);
+        
         // do object transformations
         mtxCube0.multiply(Mtx4.getRotationX(0.005d));
         mtxCube0.multiply(Mtx4.getRotationY(0.002d));
-        mtxCube0.translate(0, 0, -0.0000);
+        mtxCube0.multiply(Mtx4.getRotationZ(-0.0002d));
+        mtxCube0.translate(0, 0, 0.0000);
+        
+        
+        mtxCube1.multiply(Mtx4.getRotationX(-0.005d));
+        mtxCube1.multiply(Mtx4.getRotationY( 0.001d));
+        mtxCube1.multiply(Mtx4.getRotationZ( 0.0002d));
+        mtxCube1.translate(0.0001, 0, 0.000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
         
@@ -100,7 +115,7 @@ public class AppGL extends AbstractAppGL {
         
         //200, 80
         
-        int scale = 3;
+        int scale = 6;
         
         int[] dim = new int[] {
             200 * scale,
