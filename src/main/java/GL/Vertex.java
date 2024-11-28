@@ -25,6 +25,11 @@ public class Vertex {
         textureCoord = new Vec4(0, 0, 0, 1);
     }
     
+    public Vertex(Vec4 pos, Vec4 texCoord) {
+        vertex = new Vec4(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
+        textureCoord = new Vec4(texCoord.getX(), texCoord.getY(), texCoord.getZ(), texCoord.getW());
+    }
+    
     public Vertex transform(Mtx4 transformation) {
         vertex.transform(transformation);
         return this;
@@ -73,6 +78,18 @@ public class Vertex {
     
     public Vec4 getTextureCoordExt1() {
         return this.textureCoordExt1;
+    }
+    
+    @Override
+    public String toString() {
+    
+        String str = "";
+        str += "Vertex:\n";
+        str += this.vertex.toString() + "\n";
+        str += "texture coord: " + this.textureCoord.toString() + "\n";
+        str += "\n";
+        
+        return str;
     }
     
 }

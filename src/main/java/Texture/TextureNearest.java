@@ -4,14 +4,7 @@
  */
 package Texture;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import GL.Color;
 
 /**
  *
@@ -19,25 +12,25 @@ import javax.imageio.ImageIO;
  */
 public class TextureNearest extends TextureAbstract {
     
-    public TextureNearest(int width, int height) {
-        super(width, height);
-        this.textels = new int[width * height * 3];
-    }
-    
-    public TextureNearest(String filename) {
-        super(filename);
-        
-        try {
-            // Load the PNG image from a file
-            File imageFile = new File(filename);
-            image = ImageIO.read(imageFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        
+    public TextureNearest(String path) {
+        super(path);
     }
 
+    @Override
+    public Color getColor(double x, double y) {
+        
+        int x_mapped = (int) Math.round(x * this.width);
+        int y_mapped = (int) Math.round(y * this.height);
+        
+        if (x_mapped < 0) x_mapped = 0;
+        if (y_mapped < 0) y_mapped = 0;
+        
+        if (x_mapped >= this.width) x_mapped = this.width-1;
+        if (y_mapped >= this.height) y_mapped = this.height-1;
+        
+        return this.textels[this.mapFunction(x_mapped,y_mapped)];
+    }
+    
     @Override
     public int mapFunction(int x, int y) {
         return y*this.height + x;

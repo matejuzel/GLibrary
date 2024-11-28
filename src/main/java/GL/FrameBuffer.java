@@ -108,9 +108,9 @@ public class FrameBuffer extends BufferedImage {
     
     void putTriangleFilled(Vec4 vertexA, Vec4 vertexB, Vec4 vertexC, int r, int g, int b) {
         
-        vertexA.stdOutPrintln("A");
-        vertexB.stdOutPrintln("B");
-        vertexC.stdOutPrintln("C");
+        //vertexA.stdOutPrintln("A");
+        //vertexB.stdOutPrintln("B");
+        //vertexC.stdOutPrintln("C");
         
         Vec4 pom;
         if (vertexB.getY() < vertexA.getY()) {

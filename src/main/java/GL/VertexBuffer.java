@@ -20,6 +20,7 @@ public class VertexBuffer {
     }
     
     ArrayList<Vec4> vertexArray = new ArrayList<>();
+    ArrayList<Vec4> texCoordArray = new ArrayList<>();
     TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public VertexBuffer(TriangleMode triangleMode) {
@@ -32,19 +33,23 @@ public class VertexBuffer {
         this(TriangleMode.SIMPLE);
     }
     
-    public VertexBuffer add(Vec4 vertex) {
+    public VertexBuffer add(Vec4 vertex, Vec4 texCoord) {
         
         this.vertexArray.add(vertex);
-        
         return this;
     }
     
-    public VertexBuffer addTriangle(Vec4 vertex1, Vec4 vertex2, Vec4 vertex3) {
+    public VertexBuffer addTriangle(Vertex vertex1, Vertex vertex2, Vertex vertex3) {
         switch (this.triangleMode) {
             case SIMPLE:
-                this.vertexArray.add(vertex1);
-                this.vertexArray.add(vertex2);
-                this.vertexArray.add(vertex3);
+                this.vertexArray.add(vertex1.getVertex());
+                this.vertexArray.add(vertex2.getVertex());
+                this.vertexArray.add(vertex3.getVertex());
+                
+                this.texCoordArray.add(vertex1.getTextureCoord());
+                this.texCoordArray.add(vertex2.getTextureCoord());
+                this.texCoordArray.add(vertex3.getTextureCoord());
+                
                 break;
             case FAN:
                 throw new RuntimeException("Traingle mode FAN neni zatim implementovan.");
@@ -54,32 +59,47 @@ public class VertexBuffer {
         return this;
     }
     
-    public VertexBuffer addQuad(Vec4 vertex1, Vec4 vertex2, Vec4 vertex3, Vec4 vertex4) {
+    public VertexBuffer addQuad(Vertex vertex1, Vertex vertex2, Vertex vertex3, Vertex vertex4) {
         this.addTriangle(vertex1, vertex2, vertex3);
         this.addTriangle(vertex1, vertex3, vertex4);
         return this;
     }
     
+    
     public VertexBuffer addCube(double size) {
         
-        Vec4 a = new Vec4(-size,-size,-size,1);
-        Vec4 b = new Vec4( size,-size,-size,1);
-        Vec4 c = new Vec4( size, size,-size,1);
-        Vec4 d = new Vec4(-size, size,-size,1);
+        // front
+        this.addQuad(
+            new Vertex(new Vec4(-size, -size, -size, 1), new Vec4(0,0,0,1)),
+            new Vertex(new Vec4( size, -size, -size, 1), new Vec4(0,1,0,1)),
+            new Vertex(new Vec4( size,  size, -size, 1), new Vec4(1,1,0,1)),
+            new Vertex(new Vec4(-size,  size, -size, 1), new Vec4(1,0,0,1))
+        );
         
-        Vec4 e = new Vec4(-size,-size, size,1);
-        Vec4 f = new Vec4( size,-size, size,1);
-        Vec4 g = new Vec4( size, size, size,1);
-        Vec4 h = new Vec4(-size, size, size,1);
+        // back
+        this.addQuad(
+            new Vertex(new Vec4(-size, -size,  size, 1), new Vec4(0,0,0,1)),
+            new Vertex(new Vec4( size, -size,  size, 1), new Vec4(0,1,0,1)),
+            new Vertex(new Vec4( size,  size,  size, 1), new Vec4(1,1,0,1)),
+            new Vertex(new Vec4(-size,  size,  size, 1), new Vec4(1,0,0,1))
+        );
         
-        this.addQuad(a,b,c,d); // front
-        this.addQuad(f,e,h,g); // back
+        // left
+        this.addQuad(
+            new Vertex(new Vec4(-size, -size, -size, 1), new Vec4(0,0,0,1)),
+            new Vertex(new Vec4(-size,  size, -size, 1), new Vec4(0,1,0,1)),
+            new Vertex(new Vec4(-size,  size,  size, 1), new Vec4(1,1,0,1)),
+            new Vertex(new Vec4(-size, -size,  size, 1), new Vec4(1,0,0,1))
+        );
         
-        this.addQuad(d,c,g,h); // top
-        this.addQuad(e,f,b,a); // bottom
+        // right
+        this.addQuad(
+            new Vertex(new Vec4( size, -size, -size, 1), new Vec4(0,0,0,1)),
+            new Vertex(new Vec4( size,  size, -size, 1), new Vec4(0,1,0,1)),
+            new Vertex(new Vec4( size,  size,  size, 1), new Vec4(1,1,0,1)),
+            new Vertex(new Vec4( size, -size,  size, 1), new Vec4(1,0,0,1))
+        );
         
-        this.addQuad(e,a,d,h); // left
-        this.addQuad(b,f,g,c); // right
         return this;
     }
     

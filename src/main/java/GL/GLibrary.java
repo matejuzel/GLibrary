@@ -15,7 +15,6 @@ import Rasterizer.RasterizerSolid;
 import Rasterizer.RasterizerTextures;
 import Texture.TextureAbstract;
 import Texture.TextureNearest;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,8 @@ public class GLibrary {
         TEXTURES
     }
     
+    public boolean debug = false;
+     
     private final FrameBuffer frameBuffer;
     private final DepthBufferAbstract depthBuffer;
     
@@ -70,7 +71,9 @@ public class GLibrary {
     
     //TriangleMode triangleMode = TriangleMode.SIMPLE;
     
-    public GLibrary(int width, int height) {
+    public GLibrary(int width, int height, boolean debug) {
+        
+        this.debug = debug;
         
         depthBuffer = new DepthBufferDouble(width, height);
         frameBuffer = new FrameBuffer(width, height);
@@ -123,9 +126,14 @@ public class GLibrary {
             case SOLID:
                 rasterizer = rasterizerSolid;
                 break;
+            case TEXTURES:
+                rasterizer = rasterizerTextures;
+                break;
             default:
                 throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
         }
+        
+        rasterizer.debug = this.debug;
         
         switch (vb.triangleMode) {
             case SIMPLE:
@@ -139,6 +147,7 @@ public class GLibrary {
                     Vec4 vertA = this.vertexBufferWork[i];
                     Vec4 vertB = this.vertexBufferWork[i+1];
                     Vec4 vertC = this.vertexBufferWork[i+2];
+                    
                     
                     // pro cross product
                     double vABx = vertB.getX() - vertA.getX();
@@ -173,7 +182,10 @@ public class GLibrary {
                     rasterizer.setColorB(colorR, colorG, colorB);
                     rasterizer.setColorC(colorR, colorG, colorB);
                     
-                    rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
+                    //rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
+                    
+                    rasterizer.setTextureCoordinates(vb.texCoordArray.get(i), vb.texCoordArray.get(i+1), vb.texCoordArray.get(i+2));
+                    
                     rasterizer.drawTriangle();
                 }
                 
@@ -274,6 +286,23 @@ public class GLibrary {
         return textureUnit;
     }
     
+    public void render2DTexture(TextureAbstract texture) {
+        
+        var color = new Color(0, 0, 0);
+        
+        for (int y = 0; y < texture.getHeight(); y++) {
+            
+            for (int x = 0; x < texture.getWidth(); x++) {
+                
+                color.setR(texture.getColor(x, y).getR());
+                color.setG(texture.getColor(x, y).getG());
+                color.setB(texture.getColor(x, y).getB());
+                
+                this.frameBuffer.putPixel(x, y, color.getR(), color.getG(), color.getB());
+            }
+        }
+        
+    }
     
     
     @Override

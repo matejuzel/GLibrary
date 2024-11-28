@@ -16,6 +16,8 @@ import Texture.TextureAbstract;
  */
 public abstract class RasterizerAbstract {
     
+    public boolean debug = false;
+    
     protected FrameBuffer frameBuffer;
     protected DepthBufferAbstract depthBuffer; // prizpusobit datovy typ
     protected TextureAbstract texture;
@@ -26,9 +28,9 @@ public abstract class RasterizerAbstract {
     int cX, cY;
     
     // texture coordinates
-    int aU, aV;
-    int bU, bV;
-    int cU, cV;
+    double aU, aV;
+    double bU, bV;
+    double cU, cV;
     
     // z coordinates
     double aZ, bZ, cZ;

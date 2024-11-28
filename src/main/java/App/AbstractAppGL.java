@@ -22,20 +22,25 @@ public abstract class AbstractAppGL {
     GLibrary gLibrary = null;
     Viewer viewer = null;
     
+    int sleepMillis;
+    int frameLimit;
+    
     protected int width, height;
     
     public abstract void initCallback();
     
     public abstract void loopCallback();
     
-    public AbstractAppGL(int width, int height) {
+    public AbstractAppGL(int width, int height, int sleepMillis, int frameLimit, boolean debug) {
         this.width = width;
         this.height = height;
-        gLibrary = new GLibrary(width, height);
+        this.sleepMillis = sleepMillis;
+        this.frameLimit = frameLimit;
+        gLibrary = new GLibrary(width, height, debug);
         viewer = new Viewer(width+20, height+44, gLibrary.getFrameBuffer());
     }
     
-    public void runLoop(int sleepMillis) {
+    public void runLoop() {
         
         long time0, time1, time2;
         
@@ -46,7 +51,7 @@ public abstract class AbstractAppGL {
         
         
         
-        for (int i=1; i<10000; i++) {
+        for (int i=1; i<=frameLimit; i++) {
             
             time1 = System.currentTimeMillis();
             

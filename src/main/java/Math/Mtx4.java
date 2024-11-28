@@ -141,9 +141,9 @@ public final class Mtx4 {
         Vec4 xAxis = Vec4.crossProduct(up, zAxis).normal();
         Vec4 yAxis = Vec4.crossProduct(zAxis, xAxis);
         
-        System.out.println("xAxis:"+xAxis);
-        System.out.println("yAxis"+yAxis);
-        System.out.println("zAxis: "+zAxis);
+        //System.out.println("xAxis:"+xAxis);
+        //System.out.println("yAxis"+yAxis);
+        //System.out.println("zAxis: "+zAxis);
         
         this.setData(
                 xAxis.getX(), xAxis.getY(), xAxis.getZ(), -Vec4.dotProduct(xAxis, eye),

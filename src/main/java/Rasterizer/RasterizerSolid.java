@@ -106,6 +106,8 @@ public class RasterizerSolid extends RasterizerAbstract {
     @Override
     public void drawTriangle() {
         
+        if (this.debug) System.out.println("drawTriangle() - part 1");
+        
         sortVertices();
         preprocessTriangle();
         preprocessDepthInterpolation();
@@ -137,6 +139,8 @@ public class RasterizerSolid extends RasterizerAbstract {
             kAB += dyInvAB;
         }
         
+        if (this.debug) System.out.println("drawTriangle() - part 2");
+        
         // dolni cast trojuhelniku
         for (int line = bY; line < cY; line++) {
             
@@ -160,6 +164,8 @@ public class RasterizerSolid extends RasterizerAbstract {
             kAC += dyInvAC;
             kBC += dyInvBC;
         }
+        
+        if (this.debug) System.out.println("");
     }
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, int r, int g, int b) {
@@ -168,6 +174,8 @@ public class RasterizerSolid extends RasterizerAbstract {
             scanLine(x1, x0, y, z1, z0, r, g, b);
             return;
         }
+        
+        if (this.debug) System.out.println("scanLine(" + x0 + "," + x1 + "," + y + "," + z0 + "," + z1 + "); " + "line_length: " + (Math.abs(x1-x0)+1) + " lr_flag: "+(x0 < x1));
         
         int dx = x1 - x0;
         double dxInv = 1.0d / dx;
