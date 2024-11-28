@@ -44,7 +44,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.LESS);
         
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
-        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.NONE);
+        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
