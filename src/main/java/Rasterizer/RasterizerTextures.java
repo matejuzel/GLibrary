@@ -115,7 +115,7 @@ public class RasterizerTextures extends RasterizerAbstract {
         preprocessTriangle();
         preprocessDepthInterpolation();
         
-        int xAC = 0, xAB = 0, xBC = 0;
+        int xAC, xAB, xBC;
         
         double aUzInvA = this.aU*zInvA;
         double bUzInvB = this.bU*zInvB;
