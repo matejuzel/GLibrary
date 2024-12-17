@@ -65,16 +65,10 @@ public class RasterizerTextures extends RasterizerAbstract {
         tmp2 = bV; bV = cV; cV = tmp2;
     }
     
-    public void swapCA() {
-        int tmp; double tmp2;
-        tmp  = cX; cX = aX; aX = tmp;
-        tmp  = cY; cY = aY; aY = tmp;
-        tmp2 = cZ; cZ = aZ; aZ = tmp2;
-        tmp2 = cU; cU = aU; aU = tmp2;
-        tmp2 = cV; cV = aV; aV = tmp2;
-    }
-    
-    public void preprocessTriangle() {
+    @Override
+    public void drawTriangle() {
+        
+        sortVertices();
         
         dxAC = cX - aX;
         dxAB = bX - aX;
@@ -91,9 +85,6 @@ public class RasterizerTextures extends RasterizerAbstract {
         crossAC = cY * aX - aY * cX;
         crossAB = bY * aX - aY * bX;
         crossBC = cY * bX - bY * cX;
-    }
-    
-    public void preprocessDepthInterpolation() {
         
         zInvA = 1.0d / aZ;
         zInvB = 1.0d / bZ;
@@ -102,20 +93,6 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzInvAC = zInvC - zInvA;
         dzInvAB = zInvB - zInvA;
         dzInvBC = zInvC - zInvB;
-        
-        kAC = 0;
-        kAB = 0;
-        kBC = 0;
-    }
-    
-    @Override
-    public void drawTriangle() {
-        
-        sortVertices();
-        preprocessTriangle();
-        preprocessDepthInterpolation();
-        
-        int xAC, xAB, xBC;
         
         double aUzInvA = this.aU*zInvA;
         double bUzInvB = this.bU*zInvB;
@@ -132,6 +109,9 @@ public class RasterizerTextures extends RasterizerAbstract {
         double dACvzInv = cVzInvC - aVzInvA;
         double dABvzInv = bVzInvB - aVzInvA;
         double dBCvzInv = cVzInvC - bVzInvB;
+        
+        kAC = kAB = kBC = 0;
+        int xAC, xAB, xBC;
         
         // horni cast trojuhelniku
         for (int line = aY; line < bY; line++) {
