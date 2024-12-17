@@ -125,11 +125,11 @@ public class AppGL extends AbstractAppGL {
         
         //200, 80
         
-        int scale = 6;
+        int scale = 1;
         
         int[] dim = new int[] {
-            200 * scale,
-            140 * scale
+            1920 * scale,
+            1080 * scale
         };
         
         int sleepMillis = 5;
