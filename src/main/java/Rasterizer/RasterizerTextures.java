@@ -178,18 +178,6 @@ public class RasterizerTextures extends RasterizerAbstract {
             kAC += dyInvAC;
             kBC += dyInvBC;
         }
-        
-        if (this.debug) System.out.println("");
-        
-        
-        if (this.debug) {
-            
-            this.frameBuffer.putPixel(this.aX, this.aY, 255, 0, 0, 6);
-            this.frameBuffer.putPixel(this.bX, this.bY, 0, 255, 0, 6);
-            this.frameBuffer.putPixel(this.cX, this.cY, 0, 0, 255, 6);
-        }
-        
-        
     }
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, double u0, double u1, double v0, double v1) {
@@ -207,13 +195,20 @@ public class RasterizerTextures extends RasterizerAbstract {
         double k = 0;
         double z_k;
         
+        double u0z0Inv = u0*z0Inv;
+        double u1z1Inv = u1*z1Inv;
+        double v0z0Inv = v0*z0Inv;
+        double v1z1Inv = v1*z1Inv;
+        double duzInv = u1z1Inv - u0z0Inv;
+        double dvzInv = v1z1Inv - v0z0Inv;
+        
         int x = x0;
         for (int i=0; i<dx + 1; i++) {
             
             z_k = 1.0d / (z0Inv + k * dzInv);
             
-            double u_k = ( u0*z0Inv + k * (u1*z1Inv - u0*z0Inv)) * z_k;
-            double v_k = ( v0*z0Inv + k * (v1*z1Inv - v0*z0Inv)) * z_k;
+            double u_k = ( u0z0Inv + k * duzInv) * z_k;
+            double v_k = ( v0z0Inv + k * dvzInv) * z_k;
             
             if (depthBuffer.write(x, y, z_k)) {
                 
