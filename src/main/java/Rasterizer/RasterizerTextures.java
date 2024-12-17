@@ -115,12 +115,15 @@ public class RasterizerTextures extends RasterizerAbstract {
         preprocessTriangle();
         preprocessDepthInterpolation();
         
+        int xAC = 0, xAB = 0;
+        
         // horni cast trojuhelniku
         for (int line = aY; line < bY; line++) {
             
+            
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
-            int xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
+            xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
+            xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
             
             // interpolace z
             double zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
@@ -139,13 +142,17 @@ public class RasterizerTextures extends RasterizerAbstract {
             kAB += dyInvAB;
         }
         
+        
+        
+        //this.frameBuffer.putLine(xAC, bY-1, xAB, bY-1, 0, 255, 0);
+        
         if (this.debug) System.out.println("drawTriangle() - part 2");
         
         // dolni cast trojuhelniku
         for (int line = bY; line < cY; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
-            int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
+            xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
             int xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
             
             // interpolace z
@@ -185,6 +192,11 @@ public class RasterizerTextures extends RasterizerAbstract {
             scanLine(x1, x0, y, z1, z0, u1, u0, v1, v0, r, g, b);
             return;
         }
+        
+        //this.frameBuffer.putPixel(x0, y, 0, 255, 0);
+        //this.frameBuffer.putPixel(x1, y, 0, 0, 255);
+        //this.depthBuffer.write(x0, y, 0);
+        //this.depthBuffer.write(x1, y, 0);
         
         int dx = x1 - x0;
         double dxInv = 1.0d / (double) dx;

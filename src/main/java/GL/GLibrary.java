@@ -113,7 +113,7 @@ public class GLibrary {
         
         for (int i=0; i<vb.vertexArray.size(); i++) {
             this.vertexBufferWork[i].setData(vb.vertexArray.get(i));
-            this.vertexBufferWork[i].transform(matrixFinal).divideByW();
+            //this.vertexBufferWork[i].divideByW();
         }
         
         switch (primitiveMode) {
@@ -144,10 +144,21 @@ public class GLibrary {
                     int colorG = colors[i%36+1];
                     int colorB = colors[i%36+2];
                     
-                    Vec4 vertA = this.vertexBufferWork[i];
-                    Vec4 vertB = this.vertexBufferWork[i+1];
-                    Vec4 vertC = this.vertexBufferWork[i+2];
+                    Vec4 vertA = new Vec4(this.vertexBufferWork[i]);
+                    Vec4 vertB = new Vec4(this.vertexBufferWork[i+1]);
+                    Vec4 vertC = new Vec4(this.vertexBufferWork[i+2]);
                     
+                    vertA.transform(matrixFinal);
+                    vertB.transform(matrixFinal);
+                    vertC.transform(matrixFinal);
+                    
+                    double wA = vertA.getW();
+                    double wB = vertB.getW();
+                    double wC = vertC.getW();
+                    
+                    vertA.divideByW();
+                    vertB.divideByW();
+                    vertC.divideByW();
                     
                     // pro cross product
                     double vABx = vertB.getX() - vertA.getX();
@@ -177,7 +188,11 @@ public class GLibrary {
                     vertB.transform(matrixViewPort);
                     vertC.transform(matrixViewPort);
                     
-                    rasterizer.setVertexCoordinates(vertA, vertB, vertC);
+                    rasterizer.setVertexCoordinates(
+                            new Vec4(vertA.getX(), vertA.getY(), wA, 1), 
+                            new Vec4(vertB.getX(), vertB.getY(), wB, 1), 
+                            new Vec4(vertC.getX(), vertC.getY(), wC, 1)
+                    );
                     rasterizer.setColorA(colorR, colorG, colorB);
                     rasterizer.setColorB(colorR, colorG, colorB);
                     rasterizer.setColorC(colorR, colorG, colorB);

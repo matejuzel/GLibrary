@@ -25,7 +25,7 @@ public final class TextureUnit {
         textures = new ArrayList<>();
         
         // vlozeni prazdne textury
-        emptyTexture = new TextureNearest("data/sach64.png");
+        emptyTexture = new TextureNearest("data/suri256.png");
         addTexture(emptyTexture);
     }
     
