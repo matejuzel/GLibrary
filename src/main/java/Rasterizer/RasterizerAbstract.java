@@ -32,6 +32,15 @@ public abstract class RasterizerAbstract {
     double bU, bV;
     double cU, cV;
     
+    int idxA = 0, idxB = 1, idxC = 2;
+    
+    double[][] atrs = {
+        {1.0d, 1.0d, 1.0d, 1.0d},
+        {1.0d, 1.0d, 1.0d, 1.0d},
+        {1.0d, 1.0d, 1.0d, 1.0d}
+    };
+    
+    
     // z coordinates
     double aZ, bZ, cZ;
     
@@ -68,6 +77,15 @@ public abstract class RasterizerAbstract {
         bV = (int) b.getY();
         cU = (int) c.getX();
         cV = (int) c.getY();
+        
+        atrs[idxA][0] = (int) a.getX();
+        atrs[idxA][1] = (int) a.getY();
+        
+        atrs[idxB][0] = (int) b.getX();
+        atrs[idxB][1] = (int) b.getY();
+        
+        atrs[idxC][0] = (int) c.getX();
+        atrs[idxC][1] = (int) c.getY();
     }
     
     public void setDepthValues(double a, double b, double c) {
