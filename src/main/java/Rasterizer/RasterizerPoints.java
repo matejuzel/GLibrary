@@ -22,9 +22,9 @@ public class RasterizerPoints extends RasterizerAbstract {
     @Override
     public void drawTriangle() {
         
-        frameBuffer.putPixel(aX, aY, aR, aG, bB, 4);
-        frameBuffer.putPixel(bX, bY, bR, bG, bB, 4);
-        frameBuffer.putPixel(cX, cY, cR, cG, bB, 4);
+        frameBuffer.putPixel(xA, yA, aR, aG, bB, 4);
+        frameBuffer.putPixel(xB, yB, bR, bG, bB, 4);
+        frameBuffer.putPixel(xC, yC, cR, cG, bB, 4);
     }
     
 }

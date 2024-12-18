@@ -19,17 +19,17 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected int dxAC, dxAB, dxBC;
     protected int dyAC, dyAB, dyBC;
     protected int crossAC, crossAB, crossBC;
-    protected double dyInvAC, dyInvAB, dyInvBC;
+    protected double dyACInv, dyABInv, dyBCInv;
     
     // pomocne hodnoty - interpolace hloubky
-    protected double zInvA, zInvB, zInvC;
-    protected double dzInvAC, dzInvAB, dzInvBC;
-    protected double kAC, kAB, kBC;
+    protected double zAInv, zBInv, zCInv;
+    protected double dzACInv, dzABInv, dzBCInv;
+    protected double kAC;
     
-    double aUzInvA, bUzInvB, cUzInvC;
-    double aVzInvA, bVzInvB, cVzInvC;
-    double dACuzInv, dABuzInv, dBCuzInv;
-    double dACvzInv, dABvzInv, dBCvzInv;
+    double uzAInv, uzBInv, uzCInv;
+    double vzAInv, vzBInv, vzCInv;
+    double duzACInv, duzABInv, duzBCInv;
+    double dvzACInv, dvzABInv, dvzBCInv;
     double zAC_k, zAB_k, zBC_k, uAC_k, uAB_k, uBC_k, vAC_k, vAB_k, vBC_k;
     
     
@@ -42,12 +42,12 @@ public class RasterizerTextures extends RasterizerAbstract {
      */
     public void sortVertices() {
         
-        if (bY < aY) {
+        if (yB < yA) {
             swapAB();
         }
-        if (cY < bY) {
+        if (yC < yB) {
             swapBC();
-            if (bY < aY) {
+            if (yB < yA) {
                 swapAB();
             }
         }
@@ -55,8 +55,8 @@ public class RasterizerTextures extends RasterizerAbstract {
     
     public void swapAB() {
         int tmp; double tmp2;
-        tmp  = aX; aX = bX; bX = tmp;
-        tmp  = aY; aY = bY; bY = tmp;
+        tmp  = xA; xA = xB; xB = tmp;
+        tmp  = yA; yA = yB; yB = tmp;
         tmp2 = aZ; aZ = bZ; bZ = tmp2;
         tmp2 = aU; aU = bU; bU = tmp2;
         tmp2 = aV; aV = bV; bV = tmp2;
@@ -64,8 +64,8 @@ public class RasterizerTextures extends RasterizerAbstract {
     
     public void swapBC() {
         int tmp; double tmp2;
-        tmp  = bX; bX = cX; cX = tmp;
-        tmp  = bY; bY = cY; cY = tmp;
+        tmp  = xB; xB = xC; xC = tmp;
+        tmp  = yB; yB = yC; yC = tmp;
         tmp2 = bZ; bZ = cZ; cZ = tmp2;
         tmp2 = bU; bU = cU; cU = tmp2;
         tmp2 = bV; bV = cV; cV = tmp2;
@@ -76,67 +76,71 @@ public class RasterizerTextures extends RasterizerAbstract {
         
         sortVertices();
         
-        dxAC = cX - aX;
-        dxAB = bX - aX;
-        dxBC = cX - bX;
+        dxAC = xC - xA;
+        dxAB = xB - xA;
+        dxBC = xC - xB;
         
-        dyAC = cY - aY;
-        dyAB = bY - aY;
-        dyBC = cY - bY;
+        dyAC = yC - yA;
+        dyAB = yB - yA;
+        dyBC = yC - yB;
         
-        dyInvAC = 1.0d / dyAC;
-        dyInvAB = 1.0d / dyAB;
-        dyInvBC = 1.0d / dyBC;
+        dyACInv = 1.0d / dyAC;
+        dyABInv = 1.0d / dyAB;
+        dyBCInv = 1.0d / dyBC;
         
-        crossAC = cY * aX - aY * cX;
-        crossAB = bY * aX - aY * bX;
-        crossBC = cY * bX - bY * cX;
+        crossAC = yC * xA - yA * xC;
+        crossAB = yB * xA - yA * xB;
+        crossBC = yC * xB - yB * xC;
         
-        zInvA = 1.0d / aZ;
-        zInvB = 1.0d / bZ;
-        zInvC = 1.0d / cZ;
+        zAInv = 1.0d / aZ;
+        zBInv = 1.0d / bZ;
+        zCInv = 1.0d / cZ;
         
-        dzInvAC = zInvC - zInvA;
-        dzInvAB = zInvB - zInvA;
-        dzInvBC = zInvC - zInvB;
+        dzACInv = zCInv - zAInv;
+        dzABInv = zBInv - zAInv;
+        dzBCInv = zCInv - zBInv;
         
-        aUzInvA = aU * zInvA;
-        bUzInvB = bU * zInvB;
-        cUzInvC = cU * zInvC;
+        uzAInv = aU * zAInv;
+        uzBInv = bU * zBInv;
+        uzCInv = cU * zCInv;
         
-        aVzInvA = aV * zInvA;
-        bVzInvB = bV * zInvB;
-        cVzInvC = cV * zInvC;
+        vzAInv = aV * zAInv;
+        vzBInv = bV * zBInv;
+        vzCInv = cV * zCInv;
         
-        dACuzInv = cUzInvC - aUzInvA;
-        dABuzInv = bUzInvB - aUzInvA;
-        dBCuzInv = cUzInvC - bUzInvB;
+        duzACInv = uzCInv - uzAInv;
+        duzABInv = uzBInv - uzAInv;
+        duzBCInv = uzCInv - uzBInv;
         
-        dACvzInv = cVzInvC - aVzInvA;
-        dABvzInv = bVzInvB - aVzInvA;
-        dBCvzInv = cVzInvC - bVzInvB;
-        
-        kAC = kAB = kBC = 0;
+        dvzACInv = vzCInv - vzAInv;
+        dvzABInv = vzBInv - vzAInv;
+        dvzBCInv = vzCInv - vzBInv;
         
         kAC = scanEdge(
-            aY, bY, crossAC, crossAB, dxAC, dxAB, dyInvAC, dyInvAB,
-            zInvA, dzInvAC, zInvA, dzInvAB,
-            aUzInvA, dACuzInv, aUzInvA, dABuzInv, aVzInvA, dACvzInv, aVzInvA, dABvzInv,
-            kAC
+            yA, yB, 
+            crossAC, crossAB, dxAC, dxAB, dyACInv, dyABInv,
+            zAInv, dzACInv, zAInv, dzABInv,
+            uzAInv, duzACInv, uzAInv, duzABInv, 
+            vzAInv, dvzACInv, vzAInv, dvzABInv,
+            0
         );
         
         scanEdge(
-            bY, cY, crossAC, crossBC, dxAC, dxBC, dyInvAC, dyInvBC,
-            zInvA, dzInvAC, zInvB, dzInvBC,
-            aUzInvA, dACuzInv, bUzInvB, dBCuzInv, aVzInvA, dACvzInv, bVzInvB, dBCvzInv, 
+            yB, yC, 
+            crossAC, crossBC, dxAC, dxBC, dyACInv, dyBCInv,
+            zAInv, dzACInv, zBInv, dzBCInv,
+            uzAInv, duzACInv, uzBInv, duzBCInv, 
+            vzAInv, dvzACInv, vzBInv, dvzBCInv, 
             kAC
         );
     }
     
     public double scanEdge(
-                    int lineL, int lineR, double crossL, double crossR, double dxL, double dxR, double dyInvL, double dyInvR,
+                    int lineL, int lineR, 
+                    double crossL, double crossR, double dxL, double dxR, double dyInvL, double dyInvR,
                     double zL0, double dzL, double zR0, double dzR,
-                    double uL0, double duL, double uR0, double duR, double vL0, double dvL, double vR0, double dvR,
+                    double uL0, double duL, double uR0, double duR, 
+                    double vL0, double dvL, double vR0, double dvR,
                     double kL) {
     
         double kR = 0;

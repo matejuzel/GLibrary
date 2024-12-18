@@ -37,12 +37,12 @@ public class RasterizerSolid extends RasterizerAbstract {
      */
     public void sortVertices() {
         
-        if (bY < aY) {
+        if (yB < yA) {
             swapAB();
         }
-        if (cY < bY) {
+        if (yC < yB) {
             swapBC();
-            if (bY < aY) {
+            if (yB < yA) {
                 swapAB();
             }
         }
@@ -50,42 +50,42 @@ public class RasterizerSolid extends RasterizerAbstract {
     
     public void swapAB() {
         int tmp; double tmp2;
-        tmp = aX; aX = bX; bX = tmp;
-        tmp = aY; aY = bY; bY = tmp;
+        tmp = xA; xA = xB; xB = tmp;
+        tmp = yA; yA = yB; yB = tmp;
         tmp2 = aZ; aZ = bZ; bZ = tmp2;
     }
     
     public void swapBC() {
         int tmp; double tmp2;
-        tmp = bX; bX = cX; cX = tmp;
-        tmp = bY; bY = cY; cY = tmp;
+        tmp = xB; xB = xC; xC = tmp;
+        tmp = yB; yB = yC; yC = tmp;
         tmp2 = bZ; bZ = cZ; cZ = tmp2;
     }
     
     public void swapCA() {
         int tmp; double tmp2;
-        tmp = cX; cX = aX; aX = tmp;
-        tmp = cY; cY = aY; aY = tmp;
+        tmp = xC; xC = xA; xA = tmp;
+        tmp = yC; yC = yA; yA = tmp;
         tmp2 = cZ; cZ = aZ; aZ = tmp2;
     }
     
     public void preprocessTriangle() {
         
-        dxAC = cX - aX;
-        dxAB = bX - aX;
-        dxBC = cX - bX;
+        dxAC = xC - xA;
+        dxAB = xB - xA;
+        dxBC = xC - xB;
         
-        dyAC = cY - aY;
-        dyAB = bY - aY;
-        dyBC = cY - bY;
+        dyAC = yC - yA;
+        dyAB = yB - yA;
+        dyBC = yC - yB;
         
         dyInvAC = 1.0d / dyAC;
         dyInvAB = 1.0d / dyAB;
         dyInvBC = 1.0d / dyBC;
         
-        crossAC = cY * aX - aY * cX;
-        crossAB = bY * aX - aY * bX;
-        crossBC = cY * bX - bY * cX;
+        crossAC = yC * xA - yA * xC;
+        crossAB = yB * xA - yA * xB;
+        crossBC = yC * xB - yB * xC;
     }
     
     public void preprocessDepthInterpolation() {
@@ -116,7 +116,7 @@ public class RasterizerSolid extends RasterizerAbstract {
         double vA=123, vB=123, vC=123;
         
         // horni cast trojuhelniku
-        for (int line = aY; line < bY; line++) {
+        for (int line = yA; line < yB; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
             int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
@@ -142,7 +142,7 @@ public class RasterizerSolid extends RasterizerAbstract {
         if (this.debug) System.out.println("drawTriangle() - part 2");
         
         // dolni cast trojuhelniku
-        for (int line = bY; line < cY; line++) {
+        for (int line = yB; line < yC; line++) {
             
             // pruseciky svislych usecek - krajni body pro scanline
             int xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);

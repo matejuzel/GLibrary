@@ -23,9 +23,9 @@ public abstract class RasterizerAbstract {
     protected TextureAbstract texture;
     
     // vertex coordinates
-    int aX, aY;
-    int bX, bY;
-    int cX, cY;
+    int xA, yA;
+    int xB, yB;
+    int xC, yC;
     
     // texture coordinates
     double aU, aV;
@@ -49,12 +49,12 @@ public abstract class RasterizerAbstract {
     public abstract void drawTriangle();
     
     public void setVertexCoordinates(Vec4 a, Vec4 b, Vec4 c) {
-        aX = (int) a.getX();
-        aY = (int) a.getY();
-        bX = (int) b.getX();
-        bY = (int) b.getY();
-        cX = (int) c.getX();
-        cY = (int) c.getY();
+        xA = (int) a.getX();
+        yA = (int) a.getY();
+        xB = (int) b.getX();
+        yB = (int) b.getY();
+        xC = (int) c.getX();
+        yC = (int) c.getY();
         
         aZ = a.getZ();
         bZ = b.getZ();

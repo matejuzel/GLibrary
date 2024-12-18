@@ -22,8 +22,8 @@ public class RasterizerLines extends RasterizerAbstract {
     @Override
     public void drawTriangle() {
         
-        frameBuffer.putLine(aX, aY, bX, bY, aR, aG, aB);
-        frameBuffer.putLine(bX, bY, cX, cY, bR, bG, bB);
-        frameBuffer.putLine(cX, cY, aX, aY, cR, cG, cB);
+        frameBuffer.putLine(xA, yA, xB, yB, aR, aG, aB);
+        frameBuffer.putLine(xB, yB, xC, yC, bR, bG, bB);
+        frameBuffer.putLine(xC, yC, xA, yA, cR, cG, cB);
     }
 }
