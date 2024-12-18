@@ -100,13 +100,13 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzInvAB = zInvB - zInvA;
         dzInvBC = zInvC - zInvB;
         
-        aUzInvA = this.aU*zInvA;
-        bUzInvB = this.bU*zInvB;
-        cUzInvC = this.cU*zInvC;
+        aUzInvA = aU * zInvA;
+        bUzInvB = bU * zInvB;
+        cUzInvC = cU * zInvC;
         
-        aVzInvA = this.aV*zInvA;
-        bVzInvB = this.bV*zInvB;
-        cVzInvC = this.cV*zInvC;
+        aVzInvA = aV * zInvA;
+        bVzInvB = bV * zInvB;
+        cVzInvC = cV * zInvC;
         
         dACuzInv = cUzInvC - aUzInvA;
         dABuzInv = bUzInvB - aUzInvA;
@@ -117,56 +117,50 @@ public class RasterizerTextures extends RasterizerAbstract {
         dBCvzInv = cVzInvC - bVzInvB;
         
         kAC = kAB = kBC = 0;
-        int xAC, xAB, xBC;
         
-        // horni cast trojuhelniku
-        for (int line = aY; line < bY; line++) {
-            
-            // pruseciky svislych usecek - krajni body pro scanline
-            xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
-            xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
-            
-            // interpolace z
-            zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
-            zAB_k = 1.0d / (zInvA + kAB * dzInvAB);
-            
-            // interpolace tex coord
-            uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
-            uAB_k = (aUzInvA + kAB * dABuzInv) * zAB_k;
-            vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
-            vAB_k = (aVzInvA + kAB * dABvzInv) * zAB_k;
-            
-            scanLine(xAC, xAB, line, zAC_k, zAB_k, uAC_k, uAB_k, vAC_k, vAB_k);
-            
-            kAC += dyInvAC;
-            kAB += dyInvAB;
-        }
+        kAC = scanEdge(
+            aY, bY, crossAC, crossAB, dxAC, dxAB, dyInvAC, dyInvAB,
+            zInvA, dzInvAC, zInvA, dzInvAB,
+            aUzInvA, dACuzInv, aUzInvA, dABuzInv, aVzInvA, dACvzInv, aVzInvA, dABvzInv,
+            kAC
+        );
         
-        // dolni cast trojuhelniku
-        for (int line = bY; line < cY; line++) {
-            
-            // pruseciky svislych usecek - krajni body pro scanline
-            xAC = (int) Math.round((crossAC + line * dxAC) * dyInvAC);
-            xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
-            
-            // interpolace z
-            zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
-            zBC_k = 1.0d / (zInvB + kBC * dzInvBC);
-            
-            // interpolace tex coord
-            uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
-            uBC_k = (bUzInvB + kBC * dBCuzInv) * zBC_k;
-            vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
-            vBC_k = (bVzInvB + kBC * dBCvzInv) * zBC_k;
-            
-            scanLine(xAC, xBC, line, zAC_k, zBC_k, uAC_k, uBC_k, vAC_k, vBC_k);
-            
-            kAC += dyInvAC;
-            kBC += dyInvBC;
-        }
+        scanEdge(
+            bY, cY, crossAC, crossBC, dxAC, dxBC, dyInvAC, dyInvBC,
+            zInvA, dzInvAC, zInvB, dzInvBC,
+            aUzInvA, dACuzInv, bUzInvB, dBCuzInv, aVzInvA, dACvzInv, bVzInvB, dBCvzInv, 
+            kAC
+        );
     }
     
+    public double scanEdge(
+                    int lineL, int lineR, double crossL, double crossR, double dxL, double dxR, double dyInvL, double dyInvR,
+                    double zL0, double dzL, double zR0, double dzR,
+                    double uL0, double duL, double uR0, double duR, double vL0, double dvL, double vR0, double dvR,
+                    double kL) {
     
+        double kR = 0;
+        
+        for (int line = lineL; line < lineR; line++) {
+            
+            int xL = (int) Math.round((crossL + line * dxL) * dyInvL);
+            int xR = (int) Math.round((crossR + line * dxR) * dyInvR);
+            
+            double zL_k = 1.0d / (zL0 + kL * dzL);
+            double zR_k = 1.0d / (zR0 + kR * dzR);
+            
+            double uL_k = (uL0 + kL * duL) * zL_k;
+            double uR_k = (uR0 + kR * duR) * zR_k;
+            double vL_k = (vL0 + kL * dvL) * zL_k;
+            double vR_k = (vR0 + kR * dvR) * zR_k;
+            
+            scanLine(xL, xR, line, zL_k, zR_k, uL_k, uR_k, vL_k, vR_k);
+            
+            kL += dyInvL;
+            kR += dyInvR;
+        }
+        return kL;
+    }
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, double u0, double u1, double v0, double v1) {
         
@@ -195,10 +189,10 @@ public class RasterizerTextures extends RasterizerAbstract {
             
             z_k = 1.0d / (z0Inv + k * dzInv);
             
-            double u_k = ( u0z0Inv + k * duzInv) * z_k;
-            double v_k = ( v0z0Inv + k * dvzInv) * z_k;
-            
             if (depthBuffer.write(x, y, z_k)) {
+                
+                double u_k = ( u0z0Inv + k * duzInv) * z_k;
+                double v_k = ( v0z0Inv + k * dvzInv) * z_k;
                 
                 Color color = this.texture.getColor(u_k, v_k);
                 frameBuffer.putPixel(x, y, color.getR(),color.getG(),color.getB());
