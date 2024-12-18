@@ -26,6 +26,12 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected double dzInvAC, dzInvAB, dzInvBC;
     protected double kAC, kAB, kBC;
     
+    double aUzInvA, bUzInvB, cUzInvC;
+    double aVzInvA, bVzInvB, cVzInvC;
+    double dACuzInv, dABuzInv, dBCuzInv;
+    double dACvzInv, dABvzInv, dBCvzInv;
+    double zAC_k, zAB_k, zBC_k, uAC_k, uAB_k, uBC_k, vAC_k, vAB_k, vBC_k;
+    
     
     public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         super(frameBuffer, depthBuffer, texture);
@@ -94,21 +100,21 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzInvAB = zInvB - zInvA;
         dzInvBC = zInvC - zInvB;
         
-        double aUzInvA = this.aU*zInvA;
-        double bUzInvB = this.bU*zInvB;
-        double cUzInvC = this.cU*zInvC;
+        aUzInvA = this.aU*zInvA;
+        bUzInvB = this.bU*zInvB;
+        cUzInvC = this.cU*zInvC;
         
-        double aVzInvA = this.aV*zInvA;
-        double bVzInvB = this.bV*zInvB;
-        double cVzInvC = this.cV*zInvC;
+        aVzInvA = this.aV*zInvA;
+        bVzInvB = this.bV*zInvB;
+        cVzInvC = this.cV*zInvC;
         
-        double dACuzInv = cUzInvC - aUzInvA;
-        double dABuzInv = bUzInvB - aUzInvA;
-        double dBCuzInv = cUzInvC - bUzInvB;
+        dACuzInv = cUzInvC - aUzInvA;
+        dABuzInv = bUzInvB - aUzInvA;
+        dBCuzInv = cUzInvC - bUzInvB;
         
-        double dACvzInv = cVzInvC - aVzInvA;
-        double dABvzInv = bVzInvB - aVzInvA;
-        double dBCvzInv = cVzInvC - bVzInvB;
+        dACvzInv = cVzInvC - aVzInvA;
+        dABvzInv = bVzInvB - aVzInvA;
+        dBCvzInv = cVzInvC - bVzInvB;
         
         kAC = kAB = kBC = 0;
         int xAC, xAB, xBC;
@@ -121,14 +127,14 @@ public class RasterizerTextures extends RasterizerAbstract {
             xAB = (int) Math.round((crossAB + line * dxAB) * dyInvAB);
             
             // interpolace z
-            double zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
-            double zAB_k = 1.0d / (zInvA + kAB * dzInvAB);
+            zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
+            zAB_k = 1.0d / (zInvA + kAB * dzInvAB);
             
             // interpolace tex coord
-            double uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
-            double uAB_k = (aUzInvA + kAB * dABuzInv) * zAB_k;
-            double vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
-            double vAB_k = (aVzInvA + kAB * dABvzInv) * zAB_k;
+            uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
+            uAB_k = (aUzInvA + kAB * dABuzInv) * zAB_k;
+            vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
+            vAB_k = (aVzInvA + kAB * dABvzInv) * zAB_k;
             
             scanLine(xAC, xAB, line, zAC_k, zAB_k, uAC_k, uAB_k, vAC_k, vAB_k);
             
@@ -144,14 +150,14 @@ public class RasterizerTextures extends RasterizerAbstract {
             xBC = (int) Math.round((crossBC + line * dxBC) * dyInvBC);
             
             // interpolace z
-            double zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
-            double zBC_k = 1.0d / (zInvB + kBC * dzInvBC);
+            zAC_k = 1.0d / (zInvA + kAC * dzInvAC);
+            zBC_k = 1.0d / (zInvB + kBC * dzInvBC);
             
             // interpolace tex coord
-            double uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
-            double uBC_k = (bUzInvB + kBC * dBCuzInv) * zBC_k;
-            double vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
-            double vBC_k = (bVzInvB + kBC * dBCvzInv) * zBC_k;
+            uAC_k = (aUzInvA + kAC * dACuzInv) * zAC_k;
+            uBC_k = (bUzInvB + kBC * dBCuzInv) * zBC_k;
+            vAC_k = (aVzInvA + kAC * dACvzInv) * zAC_k;
+            vBC_k = (bVzInvB + kBC * dBCvzInv) * zBC_k;
             
             scanLine(xAC, xBC, line, zAC_k, zBC_k, uAC_k, uBC_k, vAC_k, vBC_k);
             
@@ -159,6 +165,8 @@ public class RasterizerTextures extends RasterizerAbstract {
             kBC += dyInvBC;
         }
     }
+    
+    
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, double u0, double u1, double v0, double v1) {
         
