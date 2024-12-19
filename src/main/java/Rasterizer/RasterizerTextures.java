@@ -202,10 +202,10 @@ public class RasterizerTextures extends RasterizerAbstract {
         return kL;
     }
     
-    public void scanLine(int x0, int x1, int y, double z0, double z1, double[] atrs0, double[] atrs1) {
+    public void scanLine(int x0, int x1, int y, double z0, double z1, double[] atrs_0, double[] atrs_1) {
         
         if (x0 > x1) {
-            scanLine(x1, x0, y, z1, z0, atrs1, atrs0);
+            scanLine(x1, x0, y, z1, z0, atrs_1, atrs_0);
             return;
         }
         
@@ -217,27 +217,14 @@ public class RasterizerTextures extends RasterizerAbstract {
         double k = 0;
         double z_k;
         
-        double[] atrs_0z0Inv = {
-            atrs0[0]*z0Inv,
-            atrs0[1]*z0Inv,
-            atrs0[2]*z0Inv,
-            atrs0[3]*z0Inv,
-            atrs0[4]*z0Inv,
-        };
-        double[] atrs_1z1Inv = {
-            atrs1[0]*z1Inv,
-            atrs1[1]*z1Inv,
-            atrs1[2]*z1Inv,
-            atrs1[3]*z1Inv,
-            atrs1[4]*z1Inv,
-        };
-        double[] atrs_dzInv = {
-            atrs_1z1Inv[0] - atrs_0z0Inv[0],
-            atrs_1z1Inv[1] - atrs_0z0Inv[1],
-            atrs_1z1Inv[2] - atrs_0z0Inv[2],
-            atrs_1z1Inv[3] - atrs_0z0Inv[3],
-            atrs_1z1Inv[4] - atrs_0z0Inv[4],
-        };
+        double[] atrs_0inv = {0.0d,0.0d,0.0d,0.0d,0.0d};
+        double[] atrs_k = {0.0d,0.0d,0.0d,0.0d,0.0d};
+        
+        atrs_0inv[0] = atrs_0[0] * z0Inv;
+        atrs_0inv[1] = atrs_0[1] * z0Inv;
+        atrs_0inv[2] = atrs_0[2] * z0Inv;
+        atrs_0inv[3] = atrs_0[3] * z0Inv;
+        atrs_0inv[4] = atrs_0[4] * z0Inv;
         
         int x = x0;
         for (int i=0; i<dx + 1; i++) {
@@ -246,13 +233,11 @@ public class RasterizerTextures extends RasterizerAbstract {
             
             if (depthBuffer.write(x, y, z_k)) {
                 
-                double[] atrs_k = {
-                    (atrs_0z0Inv[0] + k * atrs_dzInv[0]) * z_k,
-                    (atrs_0z0Inv[1] + k * atrs_dzInv[1]) * z_k,
-                    (atrs_0z0Inv[2] + k * atrs_dzInv[2]) * z_k,
-                    (atrs_0z0Inv[3] + k * atrs_dzInv[3]) * z_k,
-                    (atrs_0z0Inv[4] + k * atrs_dzInv[4]) * z_k,
-                };
+                atrs_k[0] = (atrs_0inv[0] + k * (atrs_1[0] * z1Inv - atrs_0inv[0])) * z_k;
+                atrs_k[1] = (atrs_0inv[1] + k * (atrs_1[1] * z1Inv - atrs_0inv[1])) * z_k;
+                atrs_k[2] = (atrs_0inv[2] + k * (atrs_1[2] * z1Inv - atrs_0inv[2])) * z_k;
+                atrs_k[3] = (atrs_0inv[3] + k * (atrs_1[3] * z1Inv - atrs_0inv[3])) * z_k;
+                atrs_k[4] = (atrs_0inv[4] + k * (atrs_1[4] * z1Inv - atrs_0inv[4])) * z_k;
                 
                 Color color = this.texture.getColor(atrs_k[0], atrs_k[1]);
                 
