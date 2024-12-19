@@ -27,17 +27,12 @@ public abstract class RasterizerAbstract {
     int xB, yB;
     int xC, yC;
     
-    // texture coordinates
-    double aU, aV;
-    double bU, bV;
-    double cU, cV;
-    
     int idxA = 0, idxB = 1, idxC = 2;
     
     double[][] atrs = {
-        {1.0d, 1.0d, 1.0d, 1.0d},
-        {1.0d, 1.0d, 1.0d, 1.0d},
-        {1.0d, 1.0d, 1.0d, 1.0d}
+        {0.0d, 0.0d, 0.0d, 0.0d, 0.0d},
+        {0.0d, 0.0d, 0.0d, 0.0d, 0.0d},
+        {0.0d, 0.0d, 0.0d, 0.0d, 0.0d}
     };
     
     
@@ -71,12 +66,6 @@ public abstract class RasterizerAbstract {
     }
     
     public void setTextureCoordinates(Vec4 a, Vec4 b, Vec4 c) {
-        aU = (int) a.getX();
-        aV = (int) a.getY();
-        bU = (int) b.getX();
-        bV = (int) b.getY();
-        cU = (int) c.getX();
-        cV = (int) c.getY();
         
         atrs[idxA][0] = (int) a.getX();
         atrs[idxA][1] = (int) a.getY();
@@ -108,6 +97,15 @@ public abstract class RasterizerAbstract {
         cR = r;
         cG = g;
         cB = b;
+    }
+    public void setAtrsA(int idx, double value) {
+        atrs[idxA][idx] = value;
+    }
+    public void setAtrsB(int idx, double value) {
+        atrs[idxB][idx] = value;
+    }
+    public void setAtrsC(int idx, double value) {
+        atrs[idxC][idx] = value;
     }
     
 

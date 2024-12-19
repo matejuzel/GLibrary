@@ -201,6 +201,18 @@ public class GLibrary {
                     
                     rasterizer.setTextureCoordinates(vb.texCoordArray.get(i), vb.texCoordArray.get(i+1), vb.texCoordArray.get(i+2));
                     
+                    rasterizer.setAtrsA(2, 255);
+                    rasterizer.setAtrsA(3, 0);
+                    rasterizer.setAtrsA(4, 0);
+                    
+                    rasterizer.setAtrsB(2, 0);
+                    rasterizer.setAtrsB(3, 255);
+                    rasterizer.setAtrsB(4, 0);
+                    
+                    rasterizer.setAtrsC(2, 0);
+                    rasterizer.setAtrsC(3, 0);
+                    rasterizer.setAtrsC(4, 255);
+                    
                     rasterizer.drawTriangle();
                 }
                 
