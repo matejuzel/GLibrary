@@ -254,7 +254,7 @@ public class RasterizerTextures extends RasterizerAbstract {
     public void fragmentShader(int x, int y, double z, double[] atrs) {
     
         
-        System.out.println(z);
+        //System.out.println(z);
         
         Color color = this.texture.getColor(atrs[0], atrs[1]);
         frameBuffer.putPixel(x, y, color.getR(),color.getG(),color.getB());
