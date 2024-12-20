@@ -44,6 +44,8 @@ public abstract class RasterizerAbstract {
     int bR, bG, bB;
     int cR, cG, cB;
     
+    double aNorm, bNorm, cNorm;
+    
     public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         this.frameBuffer = frameBuffer;
         this.depthBuffer = depthBuffer;
@@ -51,6 +53,50 @@ public abstract class RasterizerAbstract {
     }
     
     public abstract void drawTriangle();
+    
+    public void setParams(
+                    double ax, double ay, double az, double aNorm,
+                    double bx, double by, double bz, double bNorm,
+                    double cx, double cy, double cz, double cNorm,
+                    
+                    double[] atrsA, double[] atrsB, double[] atrsC
+                    ) {
+        
+        idxA = 0; idxB = 1; idxC = 2;
+        
+        this.xA = (int) ax;
+        this.yA = (int) ay;
+        this.aZ = (int) az;
+        this.aNorm = aNorm;
+        
+        this.xB = (int) bx;
+        this.yB = (int) by;
+        this.aB = (int) bz;
+        this.bNorm = bNorm;
+        
+        this.xC = (int) cx;
+        this.yC = (int) cy;
+        this.cZ = (int) cz;
+        this.cNorm = cNorm;
+        
+        this.atrs[idxA][0] = atrsA[0];
+        this.atrs[idxA][1] = atrsA[1];
+        this.atrs[idxA][2] = atrsA[2];
+        this.atrs[idxA][3] = atrsA[3];
+        this.atrs[idxA][4] = atrsA[4];
+        
+        this.atrs[idxB][0] = atrsB[0];
+        this.atrs[idxB][1] = atrsB[1];
+        this.atrs[idxB][2] = atrsB[2];
+        this.atrs[idxB][3] = atrsB[3];
+        this.atrs[idxB][4] = atrsB[4];
+        
+        this.atrs[idxC][0] = atrsC[0];
+        this.atrs[idxC][1] = atrsC[1];
+        this.atrs[idxC][2] = atrsC[2];
+        this.atrs[idxC][3] = atrsC[3];
+        this.atrs[idxC][4] = atrsC[4];
+    }
     
     public void setVertexCoordinates(Vec4 a, Vec4 b, Vec4 c) {
         xA = (int) a.getX();

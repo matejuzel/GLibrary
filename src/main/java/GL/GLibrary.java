@@ -213,6 +213,16 @@ public class GLibrary {
                     rasterizer.setAtrsC(3, 0);
                     rasterizer.setAtrsC(4, 255);
                     
+                    rasterizer.setParams(
+                            vertA.getX(), vertA.getY(), wA, ,
+                            vertA.getX(), vertA.getY(), wA, 1,
+                            vertA.getX(), vertA.getY(), wA, 1,
+                            
+                            new double[]{0,0,0,0,0},
+                            new double[]{0,0,0,0,0},
+                            new double[]{0,0,0,0,0}
+                    );
+                    
                     rasterizer.drawTriangle();
                 }
                 
