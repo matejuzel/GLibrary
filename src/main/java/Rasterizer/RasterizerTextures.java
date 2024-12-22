@@ -261,6 +261,11 @@ public class RasterizerTextures extends RasterizerAbstract {
         g = color.getG();
         b = color.getB();
         
+        
+        double zNorm = 1.222222222d +1.111111111d/z;
+        
+        System.out.println(zNorm);
+        
         /*
         r = (int)atrs[2];
         g = (int)atrs[3];
