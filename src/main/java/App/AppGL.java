@@ -44,7 +44,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.GREATER);
         
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
-        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.NONE);
+        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
@@ -125,7 +125,7 @@ public class AppGL extends AbstractAppGL {
         
         //200, 80
         
-        int scale = 1;
+        int scale = 4;
         
         int[] dim = new int[] {
             300 * scale,
