@@ -232,7 +232,13 @@ public class RasterizerTextures extends RasterizerAbstract {
         //int x = x0;
         //for (int i=0; i<dx + 1; i++) {
         for (int x = x0; x <= x1; x++) {
-            z_k = 1.0d / (z0Inv + k * dzInv);
+            
+            // z_faktor a z_offset budou z projekcni matice
+            double z_faktor = 1.1111111111d;
+            double z_offset = 1.2222222222d;
+            
+            double z_k_inv = z0Inv + k * dzInv;
+            z_k = 1.0d / (z_k_inv);
             
             if (depthBuffer.write(x, y, z_k)) {
                 
@@ -242,7 +248,7 @@ public class RasterizerTextures extends RasterizerAbstract {
                 atrs_k[3] = (atrs_0inv[3] + k * (atrs_1[3] * z1Inv - atrs_0inv[3])) * z_k;
                 atrs_k[4] = (atrs_0inv[4] + k * (atrs_1[4] * z1Inv - atrs_0inv[4])) * z_k;
                 
-                this.fragmentShader(x, y, z_k, atrs_k);
+                this.fragmentShader(x, y, z_k_inv * z_faktor + z_offset, atrs_k);
                 
             }
             
@@ -251,7 +257,7 @@ public class RasterizerTextures extends RasterizerAbstract {
     }
     
     
-    public void fragmentShader(int x, int y, double z, double[] atrs) {
+    public void fragmentShader(int x, int y, double zNorm, double[] atrs) {
     
         int r,g,b;
         
@@ -262,9 +268,7 @@ public class RasterizerTextures extends RasterizerAbstract {
         b = color.getB();
         
         
-        double zNorm = 1.222222222d +1.111111111d/z;
-        
-        System.out.println(zNorm);
+        //System.out.println(zNorm);
         
         /*
         r = (int)atrs[2];

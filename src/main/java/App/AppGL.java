@@ -48,8 +48,8 @@ public class AppGL extends AbstractAppGL {
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(10), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
-        gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-100, height, 0, 0));
+        //gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(10), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
+        //gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-100, height, 0, 0));
         
         hTexture0 = gLibrary.getTextureUnit().addTexture(new TextureNearest("data/tex32.png"));
         
@@ -58,14 +58,14 @@ public class AppGL extends AbstractAppGL {
         mtxCube1.loadIdentity().translate(-0.5, 0.0, 0).multiply(Mtx4.getRotationZ(1));
         
         // umisteni kamery
-        mtxCamera.loadIdentity().translate(0, 0, -3);
+        mtxCamera.loadIdentity().translate(0, 0, -2.3);
         mtxLookAt.loadLookAt(new Vec4(8,9,3,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
         //vbaCube1 = gLibrary.addVertexBuffer();
         
-        gLibrary.getVertexBuffer(vbaCube0).addCube(1.0);
+        gLibrary.getVertexBuffer(vbaCube0).addCube(1);
         
         /*
         gLibrary.getVertexBuffer(vbaCube0).addQuad(
@@ -91,7 +91,7 @@ public class AppGL extends AbstractAppGL {
         w0 = width;
         h0 = height;
         //gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.01d, -8.0d));
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.3, -1.6d));
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.5, -5.0d));
         gLibrary.setMatrixViewPort(Mtx4.getViewport(w0, h0, 0, 0));
         // objekt 1 - krychle
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
@@ -125,7 +125,7 @@ public class AppGL extends AbstractAppGL {
         
         //200, 80
         
-        int scale = 1;
+        int scale = 4;
         
         int[] dim = new int[] {
             300 * scale,
