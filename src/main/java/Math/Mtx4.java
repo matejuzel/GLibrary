@@ -108,15 +108,23 @@ public final class Mtx4 {
         
         double f = Math.tan(2.0d/fovy);
         
-        double dZ = zFar - zNear;
-        double dSum = zNear + zFar;
+        double dZ = 1;//zFar - zNear;
+        double dSum = 10;//zNear + zFar;
         
+        this.setData(
+                f/aspect, 0,       0,                0,
+                0,        f,       0,                0,
+                0,        0, dSum/dZ, -2*zNear*zFar/dZ,
+                0,        0,      -1,                0
+        );
+        
+        /*
         this.setData(
                 f/aspect, 0,0,0,
                 0, f, 0,0,
                 0, 0,-dZ/dSum,-2*zNear*zFar/dZ,
                 0, 0,-1,0
-        );
+        );*/
         
         return this;
     }
