@@ -266,27 +266,19 @@ public class RasterizerTextures extends RasterizerAbstract {
         g = color.getG();
         b = color.getB();
         
-        Vec4 light = new Vec4(lightX, lightY, lightZ, 1.0d);
+        Vec4 light = new Vec4(lightX, lightY, lightZ, 0.0d);
+        Vec4 normal = new Vec4(atrs[2], atrs[3], atrs[4], 0.0d).normal();
         
-        Vec4 normal = new Vec4(atrs[2], atrs[3], atrs[4]);
-        normal.normal();
-        double dot = light.getX()*normal.getX() + light.getY()*normal.getY() + light.getZ()*normal.getZ();
+        double dot = dotProduct(light, normal);
         
-        r = (int) Math.round(clamp(dot, -1.0d, 1.0d, 40, 255));//Math.round(dot * 128 + 127);
-        g = r;
-        b = r;
-        
-        //System.out.println(String.format("R=%d ; G=%d ; B=%d", r,g,b));
+        double dotFaktor = clamp(dot, -1.0d, 1.0d, 0.2d, 1.0d);
+        r *= dotFaktor;
+        g *= dotFaktor;
+        b *= dotFaktor;
         
         /*
-        r = (int)atrs[2];
-        g = (int)atrs[3];
-        b = (int)atrs[4];
-        */
-        
-        //*
-        //x += Math.round((Math.random()-0.5d) * 5);
-        //y += Math.round((Math.random()-0.5d) * 5);
+        x += Math.round((Math.random()-0.5d) * 5);
+        y += Math.round((Math.random()-0.5d) * 5);
         //*/
         
         frameBuffer.putPixel(x, y, r, g, b);
@@ -294,6 +286,9 @@ public class RasterizerTextures extends RasterizerAbstract {
     
     public double clamp(double value, double valueMin, double valueMax, double clampMin, double clampMax) {
         return (clampMax - clampMin) * (value - valueMin) / (valueMax - valueMin) + clampMin;
+    }
+    public double dotProduct(Vec4 a, Vec4 b) {
+        return a.getX()*b.getX() + a.getY()*b.getY() + a.getZ()*b.getZ() + a.getW()*b.getW();
     }
     
 }
