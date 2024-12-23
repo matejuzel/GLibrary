@@ -125,7 +125,7 @@ public class AppGL extends AbstractAppGL {
         
         //200, 80
         
-        int scale = 4;
+        int scale = 1;
         
         int[] dim = new int[] {
             300 * scale,

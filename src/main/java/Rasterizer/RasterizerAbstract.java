@@ -44,7 +44,9 @@ public abstract class RasterizerAbstract {
     int bR, bG, bB;
     int cR, cG, cB;
     
-    double aNorm, bNorm, cNorm;
+    double z_faktor, z_offset;
+    
+    double lightX, lightY, lightZ;
     
     public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         this.frameBuffer = frameBuffer;
@@ -55,9 +57,13 @@ public abstract class RasterizerAbstract {
     public abstract void drawTriangle();
     
     public void setParams(
-                    double ax, double ay, double az, double aNorm,
-                    double bx, double by, double bz, double bNorm,
-                    double cx, double cy, double cz, double cNorm,
+                    double ax, double ay, double az,
+                    double bx, double by, double bz,
+                    double cx, double cy, double cz,
+                    
+                    double lightX, double lightY, double lightZ,
+                    
+                    double z_faktor, double z_offset,
                     
                     double[] atrsA, double[] atrsB, double[] atrsC
                     ) {
@@ -66,18 +72,19 @@ public abstract class RasterizerAbstract {
         
         this.xA = (int) ax;
         this.yA = (int) ay;
-        this.aZ = (int) az;
-        this.aNorm = aNorm;
+        this.aZ = az;
         
         this.xB = (int) bx;
         this.yB = (int) by;
-        this.aB = (int) bz;
-        this.bNorm = bNorm;
+        this.bZ = bz;
         
         this.xC = (int) cx;
         this.yC = (int) cy;
-        this.cZ = (int) cz;
-        this.cNorm = cNorm;
+        this.cZ = cz;
+        
+        this.lightX = lightX;
+        this.lightY = lightY;
+        this.lightZ = lightZ;
         
         this.atrs[idxA][0] = atrsA[0];
         this.atrs[idxA][1] = atrsA[1];

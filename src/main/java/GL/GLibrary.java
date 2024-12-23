@@ -65,9 +65,6 @@ public class GLibrary {
     
     private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
     private TextureAbstract textureWork;
-
-    // odkladiste pro transformovane vertexy
-    Vec4[] vertexBufferWork = new Vec4[1024];
     
     //TriangleMode triangleMode = TriangleMode.SIMPLE;
     
@@ -87,23 +84,11 @@ public class GLibrary {
         rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, texture);
         rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, texture);
         
-        for (int i=0; i<vertexBufferWork.length; i++) {
-            vertexBufferWork[i] = new Vec4(0.0d, 0.0d, 0.0d, 0.0d);
-        }
     }
     
     public GLibrary render(int handler) {
         
         textureWork = getTextureUnit().getCurrentTexture();
-        
-        int[] colors = {
-            255,0,0,255,0,0,
-            0,255,0,0,255,0,
-            0,0,255,0,0,255,
-            255,255,0,255,255,0,
-            255,0,255,255,0,255,
-            255,255,255,255,255,255,
-        };
         
         VertexBuffer vb = this.vertexBufferArray.get(handler);
         
@@ -111,10 +96,6 @@ public class GLibrary {
         matrixFinal.multiply(matrixProjection);
         matrixFinal.multiply(matrixModelView);
         
-        for (int i=0; i<vb.vertexArray.size(); i++) {
-            this.vertexBufferWork[i].setData(vb.vertexArray.get(i));
-            //this.vertexBufferWork[i].divideByW();
-        }
         
         switch (primitiveMode) {
             case POINTS:
@@ -140,13 +121,31 @@ public class GLibrary {
                 
                 for (int i=0; i<vb.vertexArray.size(); i+=3) {
                     
-                    int colorR = colors[i%36];
-                    int colorG = colors[i%36+1];
-                    int colorB = colors[i%36+2];
+                    Vec4 vertA = new Vec4(vb.vertexArray.get(i));
+                    Vec4 vertB = new Vec4(vb.vertexArray.get(i+1));
+                    Vec4 vertC = new Vec4(vb.vertexArray.get(i+2));
                     
-                    Vec4 vertA = new Vec4(this.vertexBufferWork[i]);
-                    Vec4 vertB = new Vec4(this.vertexBufferWork[i+1]);
-                    Vec4 vertC = new Vec4(this.vertexBufferWork[i+2]);
+                    
+                    Vec4 vec_a = new Vec4(vertB.getX() - vertA.getX(), vertB.getY() - vertA.getY(), vertB.getZ() - vertA.getZ(), 1.0d);
+                    Vec4 vec_b = new Vec4(vertC.getX() - vertB.getX(), vertC.getY() - vertB.getY(), vertC.getZ() - vertB.getZ(), 1.0d);
+                    
+                    Vec4 norm = new Vec4(
+                            vec_a.getX()*vec_b.getY() - vec_b.getX()*vec_a.getY(), // ax*by - bx*ay
+                            vec_a.getY()*vec_b.getZ() - vec_b.getY()*vec_a.getZ(), // ay*bz - by*az
+                            vec_a.getZ()*vec_b.getX() - vec_b.getZ()*vec_a.getX(), // az*bx - bz*ax
+                            1
+                    );
+                    
+                    Vec4 normalA = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
+                    Vec4 normalB = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
+                    Vec4 normalC = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
+                    
+                    Vec4 texCoordA = new Vec4(vb.texCoordArray.get(i));
+                    Vec4 texCoordB = new Vec4(vb.texCoordArray.get(i+1));
+                    Vec4 texCoordC = new Vec4(vb.texCoordArray.get(i+2));
+                    
+                    Vec4 lightDirection = new Vec4(0,0,-1,0);
+                    lightDirection = lightDirection.transform(matrixModelView.getOrthonormalInverted());
                     
                     vertA.transform(matrixFinal);
                     vertB.transform(matrixFinal);
@@ -188,41 +187,43 @@ public class GLibrary {
                     vertB.transform(matrixViewPort);
                     vertC.transform(matrixViewPort);
                     
-                    rasterizer.setVertexCoordinates(
-                            new Vec4(vertA.getX(), vertA.getY(), wA, 1), 
-                            new Vec4(vertB.getX(), vertB.getY(), wB, 1), 
-                            new Vec4(vertC.getX(), vertC.getY(), wC, 1)
-                    );
-                    rasterizer.setColorA(colorR, colorG, colorB);
-                    rasterizer.setColorB(colorR, colorG, colorB);
-                    rasterizer.setColorC(colorR, colorG, colorB);
                     
-                    //rasterizer.setTextureCoordinates(new Vec4(0.0d, 0.0d, 0.0d), new Vec4(1.0d, 0.0d, 0.0d), new Vec4(0.5d, 1.0d, 0.0d));
+                    // RASTERIZACE:
                     
-                    rasterizer.setTextureCoordinates(vb.texCoordArray.get(i), vb.texCoordArray.get(i+1), vb.texCoordArray.get(i+2));
-                    
-                    rasterizer.setAtrsA(2, 255);
-                    rasterizer.setAtrsA(3, 0);
-                    rasterizer.setAtrsA(4, 0);
-                    
-                    rasterizer.setAtrsB(2, 0);
-                    rasterizer.setAtrsB(3, 255);
-                    rasterizer.setAtrsB(4, 0);
-                    
-                    rasterizer.setAtrsC(2, 0);
-                    rasterizer.setAtrsC(3, 0);
-                    rasterizer.setAtrsC(4, 255);
-                    
-                    /*
                     rasterizer.setParams(
-                            vertA.getX(), vertA.getY(), wA, ,
-                            vertA.getX(), vertA.getY(), wA, 1,
-                            vertA.getX(), vertA.getY(), wA, 1,
+                            vertA.getX(), vertA.getY(), wA,
+                            vertB.getX(), vertB.getY(), wB,
+                            vertC.getX(), vertC.getY(), wC,
                             
-                            new double[]{0,0,0,0,0},
-                            new double[]{0,0,0,0,0},
-                            new double[]{0,0,0,0,0}
-                    );*/
+                            lightDirection.getX(),
+                            lightDirection.getY(),
+                            lightDirection.getZ(),
+                            
+                            this.getMatrixProjection().getData(11), // normalizacni z-faktor: -2*n*f + (n+f)/(f-n)
+                            this.getMatrixProjection().getData(10), // normalizacni z-offset: (n+f)/(f-n)
+                            
+                            new double[] {
+                                texCoordA.getX(),
+                                texCoordA.getY(),
+                                normalA.getX(), 
+                                normalA.getY(), 
+                                normalA.getZ()
+                            },
+                            new double[] {
+                                texCoordB.getX(), 
+                                texCoordB.getY(), 
+                                normalB.getX(), 
+                                normalB.getY(), 
+                                normalB.getZ()
+                            },
+                            new double[] {
+                                texCoordC.getX(), 
+                                texCoordC.getY(), 
+                                normalC.getX(), 
+                                normalC.getY(), 
+                                normalC.getZ()
+                            }
+                    );
                     
                     rasterizer.drawTriangle();
                 }

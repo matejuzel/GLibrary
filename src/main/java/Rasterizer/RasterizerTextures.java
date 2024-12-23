@@ -7,6 +7,7 @@ package Rasterizer;
 import GL.Color;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.FrameBuffer;
+import Math.Vec4;
 import Texture.TextureAbstract;
 
 /**
@@ -234,8 +235,6 @@ public class RasterizerTextures extends RasterizerAbstract {
         for (int x = x0; x <= x1; x++) {
             
             // z_faktor a z_offset budou z projekcni matice
-            double z_faktor = 1.1111111111d;
-            double z_offset = 1.2222222222d;
             
             double z_k_inv = z0Inv + k * dzInv;
             z_k = 1.0d / (z_k_inv);
@@ -267,8 +266,17 @@ public class RasterizerTextures extends RasterizerAbstract {
         g = color.getG();
         b = color.getB();
         
+        Vec4 light = new Vec4(lightX, lightY, lightZ, 1.0d);
         
-        //System.out.println(zNorm);
+        Vec4 normal = new Vec4(atrs[2], atrs[3], atrs[4]);
+        normal.normal();
+        double dot = light.getX()*normal.getX() + light.getY()*normal.getY() + light.getZ()*normal.getZ();
+        
+        r = (int) Math.round(clamp(dot, -1.0d, 1.0d, 40, 255));//Math.round(dot * 128 + 127);
+        g = r;
+        b = r;
+        
+        //System.out.println(String.format("R=%d ; G=%d ; B=%d", r,g,b));
         
         /*
         r = (int)atrs[2];
@@ -276,12 +284,16 @@ public class RasterizerTextures extends RasterizerAbstract {
         b = (int)atrs[4];
         */
         
-        /*
-        x += Math.round((Math.random()-0.5d) * 5);
-        y += Math.round((Math.random()-0.5d) * 5);
-        */
+        //*
+        //x += Math.round((Math.random()-0.5d) * 5);
+        //y += Math.round((Math.random()-0.5d) * 5);
+        //*/
         
         frameBuffer.putPixel(x, y, r, g, b);
+    }
+    
+    public double clamp(double value, double valueMin, double valueMax, double clampMin, double clampMax) {
+        return (clampMax - clampMin) * (value - valueMin) / (valueMax - valueMin) + clampMin;
     }
     
 }
