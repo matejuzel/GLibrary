@@ -7,6 +7,7 @@ package Rasterizer;
 import GL.Color;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.FrameBuffer;
+import Math.Utils;
 import Math.Vec4;
 import Texture.TextureAbstract;
 
@@ -269,26 +270,19 @@ public class RasterizerTextures extends RasterizerAbstract {
         Vec4 light = new Vec4(lightX, lightY, lightZ, 0.0d);
         Vec4 normal = new Vec4(atrs[2], atrs[3], atrs[4], 0.0d).normal();
         
-        double dot = dotProduct(light, normal);
+        double dot = Utils.dotProduct(light, normal);
         
-        double dotFaktor = clamp(dot, -1.0d, 1.0d, 0.2d, 1.0d);
+        double dotFaktor = Utils.clamp(dot, -1.0d, 1.0d, 0.2d, 1.0d);
         r *= dotFaktor;
         g *= dotFaktor;
         b *= dotFaktor;
         
         /*
-        x += Math.round((Math.random()-0.5d) * 5);
-        y += Math.round((Math.random()-0.5d) * 5);
+        x += Math.round((2*Math.random()-1.0d) * dotFaktor * 5);
+        y += Math.round((2*Math.random()-1.0d) * dotFaktor * 5);
         //*/
         
         frameBuffer.putPixel(x, y, r, g, b);
-    }
-    
-    public double clamp(double value, double valueMin, double valueMax, double clampMin, double clampMax) {
-        return (clampMax - clampMin) * (value - valueMin) / (valueMax - valueMin) + clampMin;
-    }
-    public double dotProduct(Vec4 a, Vec4 b) {
-        return a.getX()*b.getX() + a.getY()*b.getY() + a.getZ()*b.getZ() + a.getW()*b.getW();
     }
     
 }

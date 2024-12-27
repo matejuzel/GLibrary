@@ -18,6 +18,15 @@ public class Utils {
     public static int MASK_EXPONENT_FLOAT = 0x7f800000; // 30-23
     public static int MASK_SIGN_FLOAT = 0x80000000; // 22-0
     
+    
+    public static double clamp(double value, double valueMin, double valueMax, double clampMin, double clampMax) {
+        return (clampMax - clampMin) * (value - valueMin) / (valueMax - valueMin) + clampMin;
+    }
+    
+    public static double dotProduct(Vec4 a, Vec4 b) {
+        return a.getX()*b.getX() + a.getY()*b.getY() + a.getZ()*b.getZ() + a.getW()*b.getW();
+    }
+    
     public static int remapFloatToInt8Bit(float value, float minVal, float maxVal) {
         // Step 1: Scale the float to the range [0.0, 1.0]
         float scaledValue = (value - minVal) / (maxVal - minVal);
