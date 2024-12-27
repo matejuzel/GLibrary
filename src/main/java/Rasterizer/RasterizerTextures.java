@@ -33,8 +33,8 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected double[] atrs_L_k, atrs_R_k;
     protected double[] atrs_0inv, atrs_k;
     
-    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
-        super(frameBuffer, depthBuffer, texture);
+    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount) {
+        super(frameBuffer, depthBuffer, texture, atrsCount);
         
         this.atrs_zAInv = new double[this.atrsCount];
         this.atrs_zBInv = new double[this.atrsCount];

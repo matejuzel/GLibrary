@@ -29,7 +29,7 @@ public class RasterizerSolid extends RasterizerAbstract {
     
     
     public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
-        super(frameBuffer, depthBuffer, texture);
+        super(frameBuffer, depthBuffer, texture, 1);
     }
 
     /**

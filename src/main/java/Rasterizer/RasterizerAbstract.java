@@ -29,11 +29,13 @@ public abstract class RasterizerAbstract {
     
     int idxA = 0, idxB = 1, idxC = 2;
     
+    double[][] atrs;
+    /*
     double[][] atrs = {
         {0.0d, 0.0d, 0.0d, 0.0d, 0.0d},
         {0.0d, 0.0d, 0.0d, 0.0d, 0.0d},
         {0.0d, 0.0d, 0.0d, 0.0d, 0.0d}
-    };
+    };*/
     
     
     
@@ -51,10 +53,14 @@ public abstract class RasterizerAbstract {
     
     protected int atrsCount = 5;
     
-    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
+    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount) {
         this.frameBuffer = frameBuffer;
         this.depthBuffer = depthBuffer;
         this.texture = texture;
+        this.atrsCount = atrsCount;
+        
+        this.atrs = new double[3][atrsCount];
+        
     }
     
     public abstract void drawTriangle();
