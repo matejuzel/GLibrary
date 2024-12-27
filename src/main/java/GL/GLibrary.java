@@ -236,6 +236,42 @@ public class GLibrary {
         return this;
     }
     
+    /* PRUSECIK ROVINY S PRIMKOU
+rovina dana body A, B, C
+primka data body D, E
+prusecny bod P.
+
+A + k1*u +k2*v = D + k3*p
+k1*u + k2*v - k3*p = A - D
+
+u1*k1 + v1*k2 - p1*k3 = A1 - D1
+u2*k1 + v2*k2 - p2*k3 = A2 - D2
+u3*k1 + v3*k2 - p3*k3 = A3 - D3
+
+| u1 v1 -p1 |   | k1 |   | A1 - D1 |
+| u2 v2 -p2 | x | k2 | = | A2 - D2 |
+| u3 v3 -p3 |   | k3 |   | A3 - D3 |
+
+M x k = d
+M^-1 * M * k = M^-1 * d
+k = M^-1 * d
+
+| k1 |          | A1 - D1 |
+| k2 | = M^-1 * | A2 - D2 |
+| k3 |          | A3 - D3 |
+
+M^-1 = inverse{{u1,v1,-p1},{u2,v2,-p2},{u3,v3,-p3}} 
+     = 1/(p1*u2*v3 - p1*u3*v2 - p2*u1*v3 + p2*u3*v1 + p3*u1*v2 - p3*u2*v1) *
+         | p3*v2-p2*v3  p1*v3-p3*v1  p2*v1-p1*v2 |
+         | p2*u3-p3*u2  p3*u1-p1*u3  p1*u2-p2*u1 |
+         | u3*v2-u2*v3  u1*v3-u3_v1  u2*v1-u1*v2 |
+
+
+
+
+
+    */
+    
     public int addVertexBuffer() {
         VertexBuffer vertexBuffer = new VertexBuffer();
         this.vertexBufferArray.add(vertexBuffer);
