@@ -28,15 +28,27 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected double dzACInv, dzABInv, dzBCInv;
     protected double kAC;
     
-    
-    
-    double zAC_k, zAB_k, zBC_k, uAC_k, uAB_k, uBC_k, vAC_k, vAB_k, vBC_k;
-    
-    
-    
+    protected double[] atrs_zAInv, atrs_zBInv, atrs_zCInv;
+    protected double[] atrs_dzACInv, atrs_dzABInv, atrs_dzBCInv;
+    protected double[] atrs_L_k, atrs_R_k;
+    protected double[] atrs_0inv, atrs_k;
     
     public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         super(frameBuffer, depthBuffer, texture);
+        
+        this.atrs_zAInv = new double[this.atrsCount];
+        this.atrs_zBInv = new double[this.atrsCount];
+        this.atrs_zCInv = new double[this.atrsCount];
+        
+        this.atrs_dzABInv = new double[this.atrsCount];
+        this.atrs_dzBCInv = new double[this.atrsCount];
+        this.atrs_dzACInv = new double[this.atrsCount];
+        
+        this.atrs_L_k = new double[this.atrsCount];
+        this.atrs_R_k = new double[this.atrsCount];
+        
+        this.atrs_0inv = new double[this.atrsCount];
+        this.atrs_k = new double[this.atrsCount];
     }
 
     /**
@@ -102,50 +114,15 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzABInv = zBInv - zAInv;
         dzBCInv = zCInv - zBInv;
         
-        
-        double[] atrs_zAInv = {
-            atrs[idxA][0] * zAInv,
-            atrs[idxA][1] * zAInv,
-            atrs[idxA][2] * zAInv,
-            atrs[idxA][3] * zAInv,
-            atrs[idxA][4] * zAInv,
-        };
-        
-        double[] atrs_zBInv = {
-            atrs[idxB][0] * zBInv,
-            atrs[idxB][1] * zBInv,
-            atrs[idxB][2] * zBInv,
-            atrs[idxB][3] * zBInv,
-            atrs[idxB][4] * zBInv
-        };
-        double[] atrs_zCInv = {
-            atrs[idxC][0] * zCInv,
-            atrs[idxC][1] * zCInv,
-            atrs[idxC][2] * zCInv,
-            atrs[idxC][3] * zCInv,
-            atrs[idxC][4] * zCInv,
-        };
-        double[] atrs_dzACInv = {
-            atrs_zCInv[0] - atrs_zAInv[0],
-            atrs_zCInv[1] - atrs_zAInv[1],
-            atrs_zCInv[2] - atrs_zAInv[2],
-            atrs_zCInv[3] - atrs_zAInv[3],
-            atrs_zCInv[4] - atrs_zAInv[4],
-        };
-        double[] atrs_dzABInv = {
-            atrs_zBInv[0] - atrs_zAInv[0],
-            atrs_zBInv[1] - atrs_zAInv[1],
-            atrs_zBInv[2] - atrs_zAInv[2],
-            atrs_zBInv[3] - atrs_zAInv[3],
-            atrs_zBInv[4] - atrs_zAInv[4]
-        };
-        double[] atrs_dzBCInv = {
-            atrs_zCInv[0] - atrs_zBInv[0],
-            atrs_zCInv[1] - atrs_zBInv[1],
-            atrs_zCInv[2] - atrs_zBInv[2],
-            atrs_zCInv[3] - atrs_zBInv[3],
-            atrs_zCInv[4] - atrs_zBInv[4]
-        };
+        for (int i=0; i<this.atrsCount; i++) {
+            atrs_zAInv[i] = atrs[idxA][i] * zAInv;
+            atrs_zBInv[i] = atrs[idxB][i] * zBInv;
+            atrs_zCInv[i] = atrs[idxC][i] * zCInv;
+            
+            atrs_dzACInv[i] = atrs_zCInv[i] - atrs_zAInv[i];
+            atrs_dzABInv[i] = atrs_zBInv[i] - atrs_zAInv[i];
+            atrs_dzBCInv[i] = atrs_zCInv[i] - atrs_zBInv[i];
+        }
         
         kAC = scanEdge(
             yA, yB, 
@@ -174,8 +151,6 @@ public class RasterizerTextures extends RasterizerAbstract {
         
         int xL, xR;
         double kR, zL_k, zR_k;
-        double[] atrs_L_k = {0,0,0,0,0};
-        double[] atrs_R_k = {0,0,0,0,0};
         
         kR = 0;
         
@@ -187,17 +162,10 @@ public class RasterizerTextures extends RasterizerAbstract {
             zL_k = 1.0d / (zL0 + kL * dzL);
             zR_k = 1.0d / (zR0 + kR * dzR);
             
-            atrs_L_k[0] = (atrs_L0[0] + kL * atrs_dL[0]) * zL_k;
-            atrs_L_k[1] = (atrs_L0[1] + kL * atrs_dL[1]) * zL_k;
-            atrs_L_k[2] = (atrs_L0[2] + kL * atrs_dL[2]) * zL_k;
-            atrs_L_k[3] = (atrs_L0[3] + kL * atrs_dL[3]) * zL_k;
-            atrs_L_k[4] = (atrs_L0[4] + kL * atrs_dL[4]) * zL_k;
-            
-            atrs_R_k[0] = (atrs_R0[0] + kR * atrs_dR[0]) * zR_k;
-            atrs_R_k[1] = (atrs_R0[1] + kR * atrs_dR[1]) * zR_k;
-            atrs_R_k[2] = (atrs_R0[2] + kR * atrs_dR[2]) * zR_k;
-            atrs_R_k[3] = (atrs_R0[3] + kR * atrs_dR[3]) * zR_k;
-            atrs_R_k[4] = (atrs_R0[4] + kR * atrs_dR[4]) * zR_k;
+            for (int i=0; i<this.atrsCount; i++) {
+                atrs_L_k[i] = (atrs_L0[i] + kL * atrs_dL[i]) * zL_k;
+                atrs_R_k[i] = (atrs_R0[i] + kR * atrs_dR[i]) * zR_k;
+            }
             
             scanLine(xL, xR, line, zL_k, zR_k, atrs_L_k, atrs_R_k);
             
@@ -222,34 +190,23 @@ public class RasterizerTextures extends RasterizerAbstract {
         double k = 0;
         double z_k;
         
-        double[] atrs_0inv = {0,0,0,0,0};
-        double[] atrs_k = {0,0,0,0,0};
+        for (int i=0; i<this.atrsCount; i++) {
+            atrs_0inv[i] = atrs_0[i] * z0Inv;
+        }
         
-        atrs_0inv[0] = atrs_0[0] * z0Inv;
-        atrs_0inv[1] = atrs_0[1] * z0Inv;
-        atrs_0inv[2] = atrs_0[2] * z0Inv;
-        atrs_0inv[3] = atrs_0[3] * z0Inv;
-        atrs_0inv[4] = atrs_0[4] * z0Inv;
-        
-        //int x = x0;
-        //for (int i=0; i<dx + 1; i++) {
         for (int x = x0; x <= x1; x++) {
             
-            // z_faktor a z_offset budou z projekcni matice
-            
             double z_k_inv = z0Inv + k * dzInv;
-            z_k = 1.0d / (z_k_inv);
+            double z_k_norm = z_k_inv * z_faktor + z_offset;
+            z_k = 1.0d / z_k_inv;
             
             if (depthBuffer.write(x, y, z_k)) {
                 
-                atrs_k[0] = (atrs_0inv[0] + k * (atrs_1[0] * z1Inv - atrs_0inv[0])) * z_k;
-                atrs_k[1] = (atrs_0inv[1] + k * (atrs_1[1] * z1Inv - atrs_0inv[1])) * z_k;
-                atrs_k[2] = (atrs_0inv[2] + k * (atrs_1[2] * z1Inv - atrs_0inv[2])) * z_k;
-                atrs_k[3] = (atrs_0inv[3] + k * (atrs_1[3] * z1Inv - atrs_0inv[3])) * z_k;
-                atrs_k[4] = (atrs_0inv[4] + k * (atrs_1[4] * z1Inv - atrs_0inv[4])) * z_k;
+                for (int i=0; i<this.atrsCount; i++) {
+                    atrs_k[i] = (atrs_0inv[i] + k * (atrs_1[i] * z1Inv - atrs_0inv[i])) * z_k;
+                }
                 
-                this.fragmentShader(x, y, z_k_inv * z_faktor + z_offset, atrs_k);
-                
+                this.fragmentShader(x, y, z_k_norm, atrs_k);   
             }
             
             k += dxInv;

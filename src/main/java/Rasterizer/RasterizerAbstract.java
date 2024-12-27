@@ -36,6 +36,7 @@ public abstract class RasterizerAbstract {
     };
     
     
+    
     // z coordinates
     double aZ, bZ, cZ;
     
@@ -47,6 +48,8 @@ public abstract class RasterizerAbstract {
     double z_faktor, z_offset;
     
     double lightX, lightY, lightZ;
+    
+    protected int atrsCount = 5;
     
     public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
         this.frameBuffer = frameBuffer;
