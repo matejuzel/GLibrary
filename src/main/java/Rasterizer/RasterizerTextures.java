@@ -207,7 +207,7 @@ public class RasterizerTextures extends RasterizerAbstract {
                 }
                 
                 this.fragmentShader(x, y, z_k_norm, atrs_k);   
-                System.out.println(z_k_inv);
+                //System.out.println(z_k_inv);
             }
             
             k += dxInv;
