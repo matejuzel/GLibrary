@@ -76,12 +76,15 @@ public abstract class RasterizerAbstract {
         
         if (debug) {
             
-            String fF = "%+8.2f";
+            int rndDigits = 8;
+            int rndPrecision = 2;
+            String fF = "%+"+rndDigits+"."+rndPrecision+"f";
+            String fF0 = "%."+rndDigits+"f";
             String fTriple = fF + "; " + fF + "; " + fF;
 
             System.out.println(
                     String.format(
-                            "RASTERIZER\n A["+fTriple+"]\n B["+fTriple+"]\n C["+fTriple+"]\n light["+fTriple+"]\n z("+fF+"*x "+fF+")", 
+                            "RASTERIZER\n A  ["+fTriple+"]\n B  ["+fTriple+"]\n C  ["+fTriple+"]\n lig["+fTriple+"]\n zFaktor: "+fF0+"\n zOffset: "+fF0, 
                             ax, ay, az, 
                             bx, by, bz, 
                             cx, cy, cz, 
@@ -119,6 +122,9 @@ public abstract class RasterizerAbstract {
         this.lightX = lightX;
         this.lightY = lightY;
         this.lightZ = lightZ;
+        
+        this.z_faktor = z_faktor;
+        this.z_offset = z_offset;
         
         this.atrs[idxA][0] = atrsA[0];
         this.atrs[idxA][1] = atrsA[1];
