@@ -187,7 +187,6 @@ public class GLibrary {
                     vertB.transform(matrixViewPort);
                     vertC.transform(matrixViewPort);
                     
-                    
                     // RASTERIZACE:
                     
                     rasterizer.setParams(

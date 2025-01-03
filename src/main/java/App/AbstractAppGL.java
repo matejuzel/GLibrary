@@ -23,7 +23,9 @@ public abstract class AbstractAppGL {
     Viewer viewer = null;
     
     int sleepMillis;
+    int frames;
     int frameLimit;
+    int frameOffset;
     
     protected int width, height;
     
@@ -31,11 +33,15 @@ public abstract class AbstractAppGL {
     
     public abstract void loopCallback();
     
-    public AbstractAppGL(int width, int height, int sleepMillis, int frameLimit, boolean debug) {
+    public abstract void render();
+    
+    public AbstractAppGL(int width, int height, int sleepMillis, int frames, int frameLimit, int frameOffset, boolean debug) {
         this.width = width;
         this.height = height;
         this.sleepMillis = sleepMillis;
+        this.frames = frames;
         this.frameLimit = frameLimit;
+        this.frameOffset = frameOffset;
         gLibrary = new GLibrary(width, height, debug);
         viewer = new Viewer(width+20, height+44, gLibrary.getFrameBuffer());
     }
@@ -49,13 +55,9 @@ public abstract class AbstractAppGL {
         
         time0 = System.currentTimeMillis();
         
-        
-        
-        for (int i=1; i<=frameLimit; i++) {
+        for (int i=0; i<frames; i++) {
             
             time1 = System.currentTimeMillis();
-            
-            
             
             //gLibrary.getFrameBuffer().getGraphics();
             /*
@@ -66,7 +68,12 @@ public abstract class AbstractAppGL {
             g2dScene.drawString("mean: "+fpsMean, 20, 40);
             */
             loopCallback();
-            viewer.repaint();
+            
+            if (i > frameOffset && i <= frameOffset + frameLimit) {
+            
+                render();
+                viewer.repaint();    
+            }
             
             if (sleepMillis > 0) {
                 try {

@@ -5,7 +5,6 @@
 package Rasterizer;
 
 import GL.DepthBuffer.DepthBufferAbstract;
-import GL.DepthBuffer.DepthBufferDouble;
 import GL.FrameBuffer;
 import Math.Vec4;
 import Texture.TextureAbstract;
@@ -36,8 +35,6 @@ public abstract class RasterizerAbstract {
         {0.0d, 0.0d, 0.0d, 0.0d, 0.0d},
         {0.0d, 0.0d, 0.0d, 0.0d, 0.0d}
     };*/
-    
-    
     
     // z coordinates
     double aZ, bZ, cZ;
@@ -76,6 +73,34 @@ public abstract class RasterizerAbstract {
                     
                     double[] atrsA, double[] atrsB, double[] atrsC
                     ) {
+        
+        if (debug) {
+            
+            String fF = "%+8.2f";
+            String fTriple = fF + "; " + fF + "; " + fF;
+
+            System.out.println(
+                    String.format(
+                            "RASTERIZER\n A["+fTriple+"]\n B["+fTriple+"]\n C["+fTriple+"]\n light["+fTriple+"]\n z("+fF+"*x "+fF+")", 
+                            ax, ay, az, 
+                            bx, by, bz, 
+                            cx, cy, cz, 
+                            lightX, lightY, lightZ,
+                            z_faktor, z_offset
+                    )
+            );
+            
+            System.out.println(" Attributes:");
+            for (int i=0; i<atrsCount; i++) {
+                System.out.print(" (");
+                System.out.print(String.format(fF + "; ", atrsA[i]));
+                System.out.print(String.format(fF + "; ", atrsB[i]));
+                System.out.print(String.format(fF + "", atrsC[i]));
+                System.out.println(")");
+            }
+            System.out.println("");
+        }
+        
         
         idxA = 0; idxB = 1; idxC = 2;
         

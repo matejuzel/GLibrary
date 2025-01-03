@@ -31,8 +31,8 @@ public class AppGL extends AbstractAppGL {
     Mtx4 mtxCube0 = new Mtx4();
     Mtx4 mtxCube1 = new Mtx4();
     
-    public AppGL(int width, int height, int sleepMillis, int frameLimit, boolean debug) {
-        super(width, height, sleepMillis, frameLimit, debug);
+    public AppGL(int width, int height, int sleepMillis, int frames, int frameLimit, int frameOffset, boolean debug) {
+        super(width, height, sleepMillis, frames, frameLimit, frameOffset, debug);
     }
     
     @Override
@@ -97,12 +97,12 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        gLibrary.render(vbaCube0);
+        //gLibrary.render(vbaCube0);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        gLibrary.render(vbaCube1);
+        //gLibrary.render(vbaCube1);
         
         // do object transformations
         mtxCube0.multiply(Mtx4.getRotationX(0.005d));
@@ -121,13 +121,22 @@ public class AppGL extends AbstractAppGL {
         //gLibrary.render2DTexture(new TextureNearest("data/tex256.png"));
     }
     
+    @Override
+    public void render() {
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
+        gLibrary.render(vbaCube0);
+        
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
+        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
+        gLibrary.render(vbaCube1);
+    }
+    
     public static void main(String[] args) {
         
-        //200, 80
-       
-                
-        
-        int scale = 5;
+        int scale = 1;
         
         int[] dim = new int[] {
             380 * scale,
@@ -135,10 +144,12 @@ public class AppGL extends AbstractAppGL {
         };
         
         int sleepMillis = 5;
-        int frameLimit = 1000;
-        boolean debug = false;
+        int frames = 1000;
+        int frameLimit = 1;
+        int frameOffset = 204;
+        boolean debug = true;
         
-        AbstractAppGL app = new AppGL(dim[0], dim[1], sleepMillis, frameLimit, debug);
+        AbstractAppGL app = new AppGL(dim[0], dim[1], sleepMillis, frames, frameLimit, frameOffset, debug);
         app.initCallback();
         app.runLoop();
     }
