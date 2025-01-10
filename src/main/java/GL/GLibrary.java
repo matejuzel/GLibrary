@@ -136,9 +136,9 @@ public class GLibrary {
                             1
                     );
                     
-                    Vec4 normalA = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
-                    Vec4 normalB = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
-                    Vec4 normalC = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 1.0d);
+                    Vec4 normalA = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
+                    Vec4 normalB = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
+                    Vec4 normalC = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
                     
                     Vec4 texCoordA = new Vec4(vb.texCoordArray.get(i));
                     Vec4 texCoordB = new Vec4(vb.texCoordArray.get(i+1));

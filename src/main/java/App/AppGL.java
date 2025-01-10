@@ -6,15 +6,10 @@ package App;
 
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.GLibrary;
-import GL.Vertex;
-import Math.MFloat;
 import Math.Mtx4;
-import Math.Utils;
 import Math.Vec4;
+import Other.ParallelTasks;
 import Texture.TextureNearest;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -134,23 +129,22 @@ public class AppGL extends AbstractAppGL {
         gLibrary.render(vbaCube1);
     }
     
-    public static void main(String[] args) {
+    public static void scene01(double ratio, int height) {
         
-        int scale = 1;
-        
-        int[] dim = new int[] {
-            380 * scale,
-            200 * scale
-        };
-        
+        int width = (int) Math.round(ratio * height);
         int sleepMillis = 5;
         int frames = 1000;
         int frameLimit = 1;
         int frameOffset = 204;
         boolean debug = true;
         
-        AbstractAppGL app = new AppGL(dim[0], dim[1], sleepMillis, frames, frameLimit, frameOffset, debug);
+        AbstractAppGL app = new AppGL(width, height, sleepMillis, frames, frameLimit, frameOffset, debug);
         app.initCallback();
         app.runLoop();
+    }
+    
+    public static void main(String[] args) {
+        scene01(20/9.0, 100);
+        //ParallelTasks.sceneParallelStreamTest();
     }
 }
