@@ -206,7 +206,7 @@ public class RasterizerTextures extends RasterizerAbstract {
                     atrs_k[i] = (atrs_0inv[i] + k * (atrs_1[i] * z1Inv - atrs_0inv[i])) * z_k;
                 }
                 
-                this.fragmentShader(x, y, z_k_norm, atrs_k);   
+                this.fragmentShader(x, y, z_k_norm, atrs_k);
                 //System.out.println(z_k_inv);
             }
             

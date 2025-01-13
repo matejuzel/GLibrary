@@ -134,9 +134,9 @@ public class AppGL extends AbstractAppGL {
         int width = (int) Math.round(ratio * height);
         int sleepMillis = 5;
         int frames = 1000;
-        int frameLimit = 1;
-        int frameOffset = 204;
-        boolean debug = true;
+        int frameLimit = 1000;
+        int frameOffset = 0;
+        boolean debug = false;
         
         AbstractAppGL app = new AppGL(width, height, sleepMillis, frames, frameLimit, frameOffset, debug);
         app.initCallback();
@@ -144,7 +144,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        scene01(20/9.0, 100);
+        scene01(20/9.0, 200);
         //ParallelTasks.sceneParallelStreamTest();
     }
 }
