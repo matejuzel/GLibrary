@@ -33,8 +33,10 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected double[] atrs_L_k, atrs_R_k;
     protected double[] atrs_0inv, atrs_k;
     
-    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount) {
-        super(frameBuffer, depthBuffer, texture, atrsCount);
+    protected int step;
+    
+    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount, boolean linesFlag) {
+        super(frameBuffer, depthBuffer, texture, atrsCount, linesFlag);
         
         this.atrs_zAInv = new double[this.atrsCount];
         this.atrs_zBInv = new double[this.atrsCount];
@@ -65,6 +67,7 @@ public class RasterizerTextures extends RasterizerAbstract {
                 swapAB();
             }
         }
+        
     }
     
     public void swapAB() {
@@ -113,6 +116,9 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzACInv = zCInv - zAInv;
         dzABInv = zBInv - zAInv;
         dzBCInv = zCInv - zBInv;
+        
+        // podle levotocivosti/pravotocivosti trojuhelniku rozhodneme, jestli Scan Line bude probihat zleva doprava nebo zprava doleva
+        step = ((dxAB * dyAC - dyAB * dxAC) > 0) ? 1 : -1;
         
         for (int i=0; i<this.atrsCount; i++) {
             atrs_zAInv[i] = atrs[idxA][i] * zAInv;
@@ -176,26 +182,29 @@ public class RasterizerTextures extends RasterizerAbstract {
     }
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, double[] atrs_0, double[] atrs_1) {
-        
-        if (x0 > x1) {
-            scanLine(x1, x0, y, z1, z0, atrs_1, atrs_0);
+       
+        if (linesFlag) {
+            this.fragmentShader(x0, y, z0, atrs_0);
+            this.fragmentShader(x1, y, z1, atrs_1);
             return;
         }
         
-        int dx = x1 - x0;
+        int dx = step * (x1 - x0);
         double dxInv = 1.0d / (double) dx;
         double z0Inv = 1.0d / z0;
         double z1Inv = 1.0d / z1;
         double dzInv = z1Inv - z0Inv;
         double k = 0;
         double z_k;
+        int x = x0;
         
         for (int i=0; i<this.atrsCount; i++) {
             atrs_0inv[i] = atrs_0[i] * z0Inv;
         }
         
-        for (int x = x0; x <= x1; x++) {
-            
+        
+        for (int j=0; j<=dx; j++) {
+        
             double z_k_inv = z0Inv + k * dzInv;
             double z_k_norm = z_k_inv * z_faktor + z_offset;
             z_k = 1.0d / z_k_inv;
@@ -207,9 +216,9 @@ public class RasterizerTextures extends RasterizerAbstract {
                 }
                 
                 this.fragmentShader(x, y, z_k_norm, atrs_k);
-                //System.out.println(z_k_inv);
             }
             
+            x += step;
             k += dxInv;
         }
     }

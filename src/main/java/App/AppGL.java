@@ -108,7 +108,7 @@ public class AppGL extends AbstractAppGL {
         
         mtxCube1.multiply(Mtx4.getRotationX(-0.005d));
         mtxCube1.multiply(Mtx4.getRotationY( 0.001d));
-        mtxCube1.multiply(Mtx4.getRotationZ( 0.0002d));
+        mtxCube1.multiply(Mtx4.getRotationZ( 0.02d));
         mtxCube1.translate(0.0001, 0, 0.000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
@@ -144,7 +144,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        scene01(20/9.0, 200);
+        scene01(20/9.0, 150);
         //ParallelTasks.sceneParallelStreamTest();
     }
 }

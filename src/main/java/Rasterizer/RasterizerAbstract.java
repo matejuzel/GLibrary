@@ -50,11 +50,14 @@ public abstract class RasterizerAbstract {
     
     protected int atrsCount = 5;
     
-    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount) {
+    protected boolean linesFlag = true;
+    
+    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount, boolean linesFlag) {
         this.frameBuffer = frameBuffer;
         this.depthBuffer = depthBuffer;
         this.texture = texture;
         this.atrsCount = atrsCount;
+        this.linesFlag = linesFlag;
         
         this.atrs = new double[3][atrsCount];
         

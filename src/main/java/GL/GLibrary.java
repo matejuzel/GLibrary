@@ -82,7 +82,7 @@ public class GLibrary {
         rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, texture);
         rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, texture);
         rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, texture);
-        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, texture, 5);
+        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, texture, 5, false);
         
     }
     

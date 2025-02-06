@@ -16,7 +16,7 @@ import Texture.TextureAbstract;
 public class RasterizerPoints extends RasterizerAbstract {
 
     public RasterizerPoints(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
-        super(frameBuffer, depthBuffer, texture, 1);
+        super(frameBuffer, depthBuffer, texture, 1, false);
     }
 
     @Override
