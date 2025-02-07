@@ -89,7 +89,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getFrameBuffer().clear();
         gLibrary.getDepthBuffer().clear();
         
-        int w0, h0, w1, h1;
+        int w0, h0;
         w0 = width;
         h0 = height;
         //gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.01d, -8.0d));
