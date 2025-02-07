@@ -7,6 +7,7 @@ package Rasterizer;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.FrameBuffer;
 import Math.Vec4;
+import Shader.FragmentShader;
 import Texture.TextureAbstract;
 
 /**
@@ -19,7 +20,8 @@ public abstract class RasterizerAbstract {
     
     protected FrameBuffer frameBuffer;
     protected DepthBufferAbstract depthBuffer; // prizpusobit datovy typ
-    protected TextureAbstract texture;
+    
+    FragmentShader fragmentShader;
     
     // vertex coordinates
     int xA, yA;
@@ -46,16 +48,16 @@ public abstract class RasterizerAbstract {
     
     double z_faktor, z_offset;
     
-    double lightX, lightY, lightZ;
+    //double lightX, lightY, lightZ;
     
     protected int atrsCount = 5;
     
     protected boolean linesFlag = true;
     
-    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount, boolean linesFlag) {
+    public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader, int atrsCount, boolean linesFlag) {
         this.frameBuffer = frameBuffer;
         this.depthBuffer = depthBuffer;
-        this.texture = texture;
+        this.fragmentShader = fragmentShader;
         this.atrsCount = atrsCount;
         this.linesFlag = linesFlag;
         
@@ -122,9 +124,12 @@ public abstract class RasterizerAbstract {
         this.yC = (int) cy;
         this.cZ = cz;
         
+        fragmentShader.setLight(new Vec4(lightX, lightY, -lightZ, 0));
+        /*
         this.lightX = lightX;
         this.lightY = lightY;
         this.lightZ = lightZ;
+        */
         
         this.z_faktor = z_faktor;
         this.z_offset = z_offset;
@@ -146,6 +151,40 @@ public abstract class RasterizerAbstract {
         this.atrs[idxC][2] = atrsC[2];
         this.atrs[idxC][3] = atrsC[3];
         this.atrs[idxC][4] = atrsC[4];
+    }
+    
+    /**
+     * seradi vertexy shora dolu v poradi A,B,C
+     */
+    public void sortVertices() {
+        
+        if (yB < yA) {
+            swapAB();
+        }
+        if (yC < yB) {
+            swapBC();
+            if (yB < yA) {
+                swapAB();
+            }
+        }
+    }
+    
+    public void swapAB() {
+        int tmp; double tmp2;
+        tmp  = xA; xA = xB; xB = tmp;
+        tmp  = yA; yA = yB; yB = tmp;
+        tmp2 = aZ; aZ = bZ; bZ = tmp2;
+        
+        tmp = idxA; idxA = idxB; idxB = tmp;
+    }
+    
+    public void swapBC() {
+        int tmp; double tmp2;
+        tmp  = xB; xB = xC; xC = tmp;
+        tmp  = yB; yB = yC; yC = tmp;
+        tmp2 = bZ; bZ = cZ; cZ = tmp2;
+        
+        tmp = idxB; idxB = idxC; idxC = tmp;
     }
     
     public void setVertexCoordinates(Vec4 a, Vec4 b, Vec4 c) {
@@ -205,5 +244,12 @@ public abstract class RasterizerAbstract {
     }
     
 
+    public FragmentShader getFragmentShader() {
+        return fragmentShader;
+    }
+    
+    public void setFragmentShader(FragmentShader fragmentShader) {
+        this.fragmentShader = fragmentShader;
+    }
     
 }

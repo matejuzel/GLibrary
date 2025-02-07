@@ -4,12 +4,9 @@
  */
 package Rasterizer;
 
-import GL.Color;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.FrameBuffer;
-import Math.Utils;
-import Math.Vec4;
-import Texture.TextureAbstract;
+import Shader.FragmentShader;
 
 /**
  *
@@ -33,10 +30,12 @@ public class RasterizerTextures extends RasterizerAbstract {
     protected double[] atrs_L_k, atrs_R_k;
     protected double[] atrs_0inv, atrs_k;
     
-    protected int step;
+    protected int direction;
     
-    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture, int atrsCount, boolean linesFlag) {
-        super(frameBuffer, depthBuffer, texture, atrsCount, linesFlag);
+    
+    
+    public RasterizerTextures(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader, int atrsCount, boolean linesFlag) {
+        super(frameBuffer, depthBuffer, fragmentShader, atrsCount, linesFlag);
         
         this.atrs_zAInv = new double[this.atrsCount];
         this.atrs_zBInv = new double[this.atrsCount];
@@ -53,40 +52,7 @@ public class RasterizerTextures extends RasterizerAbstract {
         this.atrs_k = new double[this.atrsCount];
     }
 
-    /**
-     * seradi vertexy shora dolu v poradi A,B,C
-     */
-    public void sortVertices() {
-        
-        if (yB < yA) {
-            swapAB();
-        }
-        if (yC < yB) {
-            swapBC();
-            if (yB < yA) {
-                swapAB();
-            }
-        }
-        
-    }
     
-    public void swapAB() {
-        int tmp; double tmp2;
-        tmp  = xA; xA = xB; xB = tmp;
-        tmp  = yA; yA = yB; yB = tmp;
-        tmp2 = aZ; aZ = bZ; bZ = tmp2;
-        
-        tmp = idxA; idxA = idxB; idxB = tmp;
-    }
-    
-    public void swapBC() {
-        int tmp; double tmp2;
-        tmp  = xB; xB = xC; xC = tmp;
-        tmp  = yB; yB = yC; yC = tmp;
-        tmp2 = bZ; bZ = cZ; cZ = tmp2;
-        
-        tmp = idxB; idxB = idxC; idxC = tmp;
-    }
     
     @Override
     public void drawTriangle() {
@@ -118,7 +84,7 @@ public class RasterizerTextures extends RasterizerAbstract {
         dzBCInv = zCInv - zBInv;
         
         // podle levotocivosti/pravotocivosti trojuhelniku rozhodneme, jestli Scan Line bude probihat zleva doprava nebo zprava doleva
-        step = ((dxAB * dyAC - dyAB * dxAC) > 0) ? 1 : -1;
+        direction = ((dxAB * dyAC - dyAB * dxAC) > 0) ? 1 : -1;
         
         for (int i=0; i<this.atrsCount; i++) {
             atrs_zAInv[i] = atrs[idxA][i] * zAInv;
@@ -138,6 +104,7 @@ public class RasterizerTextures extends RasterizerAbstract {
             0
         );
         
+        
         scanEdge(
             yB, yC, 
             crossAC, crossBC, dxAC, dxBC, dyACInv, dyBCInv,
@@ -145,6 +112,7 @@ public class RasterizerTextures extends RasterizerAbstract {
             atrs_zAInv, atrs_dzACInv, atrs_zBInv, atrs_dzBCInv,
             kAC
         );
+        
     }
     
     public double scanEdge(
@@ -184,12 +152,19 @@ public class RasterizerTextures extends RasterizerAbstract {
     public void scanLine(int x0, int x1, int y, double z0, double z1, double[] atrs_0, double[] atrs_1) {
        
         if (linesFlag) {
-            this.fragmentShader(x0, y, z0, atrs_0);
-            this.fragmentShader(x1, y, z1, atrs_1);
+            
+            fragmentShader.setIn(x0, y, z0, atrs_0);
+            fragmentShader.run();
+            frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
+            
+            fragmentShader.setIn(x1, y, z1, atrs_1);
+            fragmentShader.run();
+            frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
+            
             return;
         }
         
-        int dx = step * (x1 - x0);
+        int dx = direction * (x1 - x0);
         double dxInv = 1.0d / (double) dx;
         double z0Inv = 1.0d / z0;
         double z1Inv = 1.0d / z1;
@@ -201,7 +176,6 @@ public class RasterizerTextures extends RasterizerAbstract {
         for (int i=0; i<this.atrsCount; i++) {
             atrs_0inv[i] = atrs_0[i] * z0Inv;
         }
-        
         
         for (int j=0; j<=dx; j++) {
         
@@ -215,41 +189,14 @@ public class RasterizerTextures extends RasterizerAbstract {
                     atrs_k[i] = (atrs_0inv[i] + k * (atrs_1[i] * z1Inv - atrs_0inv[i])) * z_k;
                 }
                 
-                this.fragmentShader(x, y, z_k_norm, atrs_k);
+                fragmentShader.setIn(x, y, z_k_norm, atrs_k);
+                fragmentShader.run();
+                frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
             }
             
-            x += step;
+            x += direction;
             k += dxInv;
         }
-    }
-    
-    
-    public void fragmentShader(int x, int y, double zNorm, double[] atrs) {
-    
-        int r,g,b;
-        
-        Color color = this.texture.getColor(atrs[0], atrs[1]);
-            
-        r = color.getR();
-        g = color.getG();
-        b = color.getB();
-        
-        Vec4 light = new Vec4(lightX, lightY, lightZ, 0.0d);
-        Vec4 normal = new Vec4(atrs[2], atrs[3], atrs[4], 0.0d).normal();
-        
-        double dot = Utils.dotProduct(light, normal);
-        
-        double dotFaktor = Utils.clamp(dot, -1.0d, 1.0d, 0.2d, 1.0d);
-        r *= dotFaktor;
-        g *= dotFaktor;
-        b *= dotFaktor;
-        
-        /*
-        x += Math.round((2*Math.random()-1.0d) * dotFaktor * 5);
-        y += Math.round((2*Math.random()-1.0d) * dotFaktor * 5);
-        //*/
-        
-        frameBuffer.putPixel(x, y, r, g, b);
     }
     
 }

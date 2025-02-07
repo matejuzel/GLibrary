@@ -13,6 +13,8 @@ import Rasterizer.RasterizerPoints;
 import Rasterizer.RasterizerLines;
 import Rasterizer.RasterizerSolid;
 import Rasterizer.RasterizerTextures;
+import Shader.FragmentShader;
+import Shader.FragmentShaderTextureSimple;
 import Texture.TextureAbstract;
 import Texture.TextureNearest;
 import java.awt.image.BufferedImage;
@@ -66,6 +68,8 @@ public class GLibrary {
     private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
     private TextureAbstract textureWork;
     
+    private FragmentShader fragmentShader;
+    
     //TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public GLibrary(int width, int height, boolean debug) {
@@ -78,11 +82,12 @@ public class GLibrary {
         matrixViewPort.loadViewport(width, height, 0, 0);
         
         TextureAbstract texture = textureUnit.getCurrentTexture();
+        fragmentShader = new FragmentShaderTextureSimple(texture);
         
-        rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, texture);
-        rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, texture);
-        rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, texture);
-        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, texture, 5, false);
+        rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, fragmentShader);
+        rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, fragmentShader);
+        rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, fragmentShader);
+        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, fragmentShader, 5, false);
         
     }
     
@@ -188,7 +193,6 @@ public class GLibrary {
                     vertC.transform(matrixViewPort);
                     
                     // RASTERIZACE:
-                    
                     rasterizer.setParams(
                             vertA.getX(), vertA.getY(), wA,
                             vertB.getX(), vertB.getY(), wB,

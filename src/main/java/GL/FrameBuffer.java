@@ -41,6 +41,14 @@ public class FrameBuffer extends BufferedImage {
         this.getRaster().setPixel(x, y, this.color);
     }
     
+    public void putPixel(int[] pos, int[] color) {
+        
+        if (pos[0] < 0 || pos[0] >= this.getWidth()) return;
+        if (pos[1] < 0 || pos[1] >= this.getHeight()) return;
+        
+        this.getRaster().setPixel(pos[0], pos[1], color);
+    }
+    
     public void putPixel(int x, int y, int r, int g, int b, int size) {
         
         int x0 = x - size / 2;

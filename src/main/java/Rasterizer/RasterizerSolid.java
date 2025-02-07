@@ -8,6 +8,7 @@ import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
 import GL.FrameBuffer;
 import Math.Vec4;
+import Shader.FragmentShader;
 import Texture.TextureAbstract;
 
 /**
@@ -28,46 +29,10 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected double kAC, kAB, kBC;
     
     
-    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, TextureAbstract texture) {
-        super(frameBuffer, depthBuffer, texture, 1, false);
+    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader) {
+        super(frameBuffer, depthBuffer, fragmentShader, 1, false);
     }
 
-    /**
-     * seradi vertexy shora dolu v poradi A,B,C
-     */
-    public void sortVertices() {
-        
-        if (yB < yA) {
-            swapAB();
-        }
-        if (yC < yB) {
-            swapBC();
-            if (yB < yA) {
-                swapAB();
-            }
-        }
-    }
-    
-    public void swapAB() {
-        int tmp; double tmp2;
-        tmp = xA; xA = xB; xB = tmp;
-        tmp = yA; yA = yB; yB = tmp;
-        tmp2 = aZ; aZ = bZ; bZ = tmp2;
-    }
-    
-    public void swapBC() {
-        int tmp; double tmp2;
-        tmp = xB; xB = xC; xC = tmp;
-        tmp = yB; yB = yC; yC = tmp;
-        tmp2 = bZ; bZ = cZ; cZ = tmp2;
-    }
-    
-    public void swapCA() {
-        int tmp; double tmp2;
-        tmp = xC; xC = xA; xA = tmp;
-        tmp = yC; yC = yA; yA = tmp;
-        tmp2 = cZ; cZ = aZ; aZ = tmp2;
-    }
     
     public void preprocessTriangle() {
         
