@@ -28,8 +28,10 @@ public class AppGL extends AbstractAppGL {
     Mtx4 mtxCube0 = new Mtx4();
     Mtx4 mtxCube1 = new Mtx4();
     
+    int frame = 0;
     
-    FragmentShader fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/tex256.png"));
+    
+    FragmentShaderTextureSimple fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/tex256.png"));
     //FragmentShader fragmentShader02 = new FragmentShaderTextureSimple(new TextureNearest("data/sach8.png"));
     FragmentShader fragmentShader02 = new FragmentShaderFlat(255, 0,0);
     
@@ -132,6 +134,9 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
         gLibrary.render(vbaCube1, fragmentShader02);
+        
+        fragmentShader01.frameInc();
+        frame++;
     }
     
     public static void scene01(double ratio, int height) {
@@ -149,7 +154,7 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        scene01(20/9.0, 150);
+        scene01(20/9.0, 350);
         //ParallelTasks.sceneParallelStreamTest();
     }
 }
