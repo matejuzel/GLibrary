@@ -27,9 +27,8 @@ abstract public class FragmentShader extends Shader {
     protected Mtx4 inModelview = new Mtx4();
     protected Mtx4 inProjection = new Mtx4();
     
-    public FragmentShader(TextureAbstract texture) {
+    public FragmentShader() {
         super();
-        this.inTexture = texture;
     }
     
     public void setIn(int inX, int inY, double inNormZ, double[] atrs) {

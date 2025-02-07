@@ -8,7 +8,9 @@ import GL.DepthBuffer.DepthBufferAbstract;
 import GL.GLibrary;
 import Math.Mtx4;
 import Math.Vec4;
-import Other.ParallelTasks;
+import Shader.FragmentShader;
+import Shader.FragmentShaderFlat;
+import Shader.FragmentShaderTextureSimple;
 import Texture.TextureNearest;
 
 /**
@@ -25,6 +27,11 @@ public class AppGL extends AbstractAppGL {
     Mtx4 mtxLookAt = new Mtx4();
     Mtx4 mtxCube0 = new Mtx4();
     Mtx4 mtxCube1 = new Mtx4();
+    
+    
+    FragmentShader fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/tex256.png"));
+    //FragmentShader fragmentShader02 = new FragmentShaderTextureSimple(new TextureNearest("data/sach8.png"));
+    FragmentShader fragmentShader02 = new FragmentShaderFlat(255, 0,0);
     
     public AppGL(int width, int height, int sleepMillis, int frames, int frameLimit, int frameOffset, boolean debug) {
         super(width, height, sleepMillis, frames, frameLimit, frameOffset, debug);
@@ -112,8 +119,6 @@ public class AppGL extends AbstractAppGL {
         mtxCube1.translate(0.0001, 0, 0.000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
-        
-        //gLibrary.render2DTexture(new TextureNearest("data/tex256.png"));
     }
     
     @Override
@@ -121,12 +126,12 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        gLibrary.render(vbaCube0);
+        gLibrary.render(vbaCube0, fragmentShader01);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        gLibrary.render(vbaCube1);
+        gLibrary.render(vbaCube1, fragmentShader02);
     }
     
     public static void scene01(double ratio, int height) {

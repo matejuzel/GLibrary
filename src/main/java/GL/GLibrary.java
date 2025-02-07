@@ -9,18 +9,12 @@ import GL.DepthBuffer.DepthBufferDouble;
 import Math.Mtx4;
 import Math.Vec4;
 import Rasterizer.RasterizerAbstract;
-import Rasterizer.RasterizerPoints;
-import Rasterizer.RasterizerLines;
-import Rasterizer.RasterizerSolid;
 import Rasterizer.RasterizerTextures;
 import Shader.FragmentShader;
+import Shader.FragmentShaderFlat;
 import Shader.FragmentShaderTextureSimple;
 import Texture.TextureAbstract;
-import Texture.TextureNearest;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 /**
  *
@@ -46,12 +40,8 @@ public class GLibrary {
      
     private final FrameBuffer frameBuffer;
     private final DepthBufferAbstract depthBuffer;
-    
-    private final RasterizerAbstract rasterizerPoints;
-    private final RasterizerAbstract rasterizerLines;
-    private final RasterizerAbstract rasterizerSolid;
-    private final RasterizerAbstract rasterizerTextures;
-    private RasterizerAbstract rasterizer;
+    private final RasterizerAbstract rasterizer;
+    private FragmentShader fragmentShader;
     
     private FaceCullingMode faceCullingMode = FaceCullingMode.NONE;
     private PrimitiveMode primitiveMode = PrimitiveMode.SOLID;
@@ -63,57 +53,46 @@ public class GLibrary {
     private ArrayList<VertexBuffer> vertexBufferArray = new ArrayList<>();
     
     private final TextureUnit textureUnit = new TextureUnit();
-    
-    
     private Mtx4 matrixFinal = new Mtx4(); // pracovni matice - zde bude soucit modelview a projection
-    private TextureAbstract textureWork;
-    
-    private FragmentShader fragmentShader;
-    
-    //TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public GLibrary(int width, int height, boolean debug) {
         
-        this.debug = debug;
-        
-        depthBuffer = new DepthBufferDouble(width, height);
-        frameBuffer = new FrameBuffer(width, height);
+        TextureAbstract texture = textureUnit.getCurrentTexture();
         
         matrixViewPort.loadViewport(width, height, 0, 0);
+        depthBuffer = new DepthBufferDouble(width, height);
+        frameBuffer = new FrameBuffer(width, height);
+        rasterizer = new RasterizerTextures(frameBuffer, depthBuffer, fragmentShader, 5, false); //rasterizer = new RasterizerPlain(frameBuffer, depthBuffer, fragmentShader);
         
-        TextureAbstract texture = textureUnit.getCurrentTexture();
-        fragmentShader = new FragmentShaderTextureSimple(texture);
-        
-        rasterizerPoints = new RasterizerPoints(frameBuffer, depthBuffer, fragmentShader);
-        rasterizerLines = new RasterizerLines(frameBuffer, depthBuffer, fragmentShader);
-        rasterizerSolid = new RasterizerSolid(frameBuffer, depthBuffer, fragmentShader);
-        rasterizerTextures = new RasterizerTextures(frameBuffer, depthBuffer, fragmentShader, 5, false);
-        
+        this.debug = debug;
     }
     
-    public GLibrary render(int handler) {
-        
-        textureWork = getTextureUnit().getCurrentTexture();
+    public void setFragmentShader(FragmentShader fragmentShader) {
+        this.fragmentShader = fragmentShader;
+    }
+    
+    public GLibrary render(int handler, FragmentShader fragmentShader) {
         
         VertexBuffer vb = this.vertexBufferArray.get(handler);
+        
+        rasterizer.setFragmentShader(fragmentShader);
         
         matrixFinal.loadIdentity();
         matrixFinal.multiply(matrixProjection);
         matrixFinal.multiply(matrixModelView);
         
-        
         switch (primitiveMode) {
             case POINTS:
-                rasterizer = rasterizerPoints;
+                
                 break;
             case LINES:
-                rasterizer = rasterizerLines;
+                
                 break;
             case SOLID:
-                rasterizer = rasterizerSolid;
+                
                 break;
             case TEXTURES:
-                rasterizer = rasterizerTextures;
+                
                 break;
             default:
                 throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");

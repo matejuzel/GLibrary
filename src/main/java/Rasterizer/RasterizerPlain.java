@@ -15,7 +15,7 @@ import Texture.TextureAbstract;
  *
  * @author matej uzel
  */
-public class RasterizerSolid extends RasterizerAbstract {
+public class RasterizerPlain extends RasterizerAbstract {
     
     // pomocne hodnoty - rasterizace
     protected int dxAC, dxAB, dxBC;
@@ -29,7 +29,7 @@ public class RasterizerSolid extends RasterizerAbstract {
     protected double kAC, kAB, kBC;
     
     
-    public RasterizerSolid(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader) {
+    public RasterizerPlain(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader) {
         super(frameBuffer, depthBuffer, fragmentShader, 1, false);
     }
 
