@@ -4,6 +4,7 @@
  */
 package App;
 
+import FileFormat.Obj.Obj;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.GLibrary;
 import Math.Mtx4;
@@ -12,6 +13,9 @@ import Shader.FragmentShader;
 import Shader.FragmentShaderFlat;
 import Shader.FragmentShaderTextureSimple;
 import Texture.TextureNearest;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,7 +35,7 @@ public class AppGL extends AbstractAppGL {
     int frame = 0;
     
     
-    FragmentShaderTextureSimple fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/tex256.png"));
+    FragmentShaderTextureSimple fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/textures/rock256.jpg"));
     //FragmentShader fragmentShader02 = new FragmentShaderTextureSimple(new TextureNearest("data/sach8.png"));
     FragmentShader fragmentShader02 = new FragmentShaderFlat(255, 0,0);
     
@@ -154,7 +158,15 @@ public class AppGL extends AbstractAppGL {
     }
     
     public static void main(String[] args) {
-        scene01(20/9.0, 350);
-        //ParallelTasks.sceneParallelStreamTest();
+        
+        try {
+            Obj model = new Obj("data/models/land.obj");
+            
+            System.out.println(model.getFaces().toString());
+            
+            //scene01(24/9.0, 950);
+        } catch (IOException ex) {
+            Logger.getLogger(AppGL.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
