@@ -21,6 +21,7 @@ public class VertexBuffer {
     
     ArrayList<Vec4> vertexArray = new ArrayList<>();
     ArrayList<Vec4> texCoordArray = new ArrayList<>();
+    ArrayList<Vec4> normalArray = new ArrayList<>();
     TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public VertexBuffer(TriangleMode triangleMode) {
@@ -50,6 +51,10 @@ public class VertexBuffer {
                 this.texCoordArray.add(vertex2.getTextureCoord());
                 this.texCoordArray.add(vertex3.getTextureCoord());
                 
+                this.normalArray.add(vertex1.getNormal());
+                this.normalArray.add(vertex2.getNormal());
+                this.normalArray.add(vertex3.getNormal());
+                
                 break;
             case FAN:
                 throw new RuntimeException("Traingle mode FAN neni zatim implementovan.");
@@ -65,6 +70,22 @@ public class VertexBuffer {
         return this;
     }
     
+    
+    public VertexBuffer addMesh(ArrayList<Face> mesh) {
+        
+        for (int i=0; i<mesh.size(); i++) {
+            
+            Face face = mesh.get(i);
+            
+            this.addTriangle(
+                    new Vertex(face.getVertexA(), face.getCoordA(), face.getNormalA()),
+                    new Vertex(face.getVertexB(), face.getCoordB(), face.getNormalB()),
+                    new Vertex(face.getVertexC(), face.getCoordC(), face.getNormalC())
+            );
+        }
+        
+        return this;
+    }
     
     public VertexBuffer addCube(double size) {
         

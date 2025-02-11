@@ -109,7 +109,7 @@ public class GLibrary {
                     Vec4 vertB = new Vec4(vb.vertexArray.get(i+1));
                     Vec4 vertC = new Vec4(vb.vertexArray.get(i+2));
                     
-                    
+                    /*
                     Vec4 vec_a = new Vec4(vertB.getX() - vertA.getX(), vertB.getY() - vertA.getY(), vertB.getZ() - vertA.getZ(), 1.0d);
                     Vec4 vec_b = new Vec4(vertC.getX() - vertB.getX(), vertC.getY() - vertB.getY(), vertC.getZ() - vertB.getZ(), 1.0d);
                     
@@ -123,6 +123,11 @@ public class GLibrary {
                     Vec4 normalA = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
                     Vec4 normalB = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
                     Vec4 normalC = new Vec4(norm.getX(), norm.getY(), norm.getZ(), 0.0d);
+                    */
+                    
+                    Vec4 normalA = vb.normalArray.get(i);
+                    Vec4 normalB = vb.normalArray.get(i+1);
+                    Vec4 normalC = vb.normalArray.get(i+2);
                     
                     Vec4 texCoordA = new Vec4(vb.texCoordArray.get(i));
                     Vec4 texCoordB = new Vec4(vb.texCoordArray.get(i+1));

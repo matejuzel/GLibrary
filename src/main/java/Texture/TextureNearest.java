@@ -22,11 +22,16 @@ public class TextureNearest extends TextureAbstract {
         int x_mapped = (int) Math.round(x * this.width);
         int y_mapped = (int) Math.round(y * this.height);
         
+        /*
         if (x_mapped < 0) x_mapped = 0;
         if (y_mapped < 0) y_mapped = 0;
         
         if (x_mapped >= this.width) x_mapped = this.width-1;
         if (y_mapped >= this.height) y_mapped = this.height-1;
+        */
+        
+        x_mapped = (int) Math.abs(x_mapped % width);
+        y_mapped = (int) Math.abs(y_mapped % height);
         
         return this.textels[this.mapFunction(x_mapped,y_mapped)];
     }

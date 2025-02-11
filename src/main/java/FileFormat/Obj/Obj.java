@@ -44,7 +44,7 @@ public class Obj {
                         // vertex
                         if (vals.length < 4) continue;
                         double vertexX = Double.parseDouble(vals[1]);
-                        double vertexY = Double.parseDouble(vals[2]);
+                        double vertexY = -Double.parseDouble(vals[2]);
                         double vertexZ = Double.parseDouble(vals[3]);
                         if (Obj.debug) System.out.println(String.format("vertex: %f ; %f ; %f", vertexX, vertexY, vertexZ));
                         verts.add(new Vec4(vertexX, vertexY, vertexZ, 1));
@@ -64,7 +64,7 @@ public class Obj {
                         double normalY = Double.parseDouble(vals[2]);
                         double normalZ = Double.parseDouble(vals[3]);
                         if (Obj.debug) System.out.println(String.format("vertex normal: %f ; %f ; %f", normalX, normalY, normalZ));
-                        normals.add(new Vec4(normalX, normalY, normalZ, 1));
+                        normals.add(new Vec4(normalX, normalY, normalZ, 0));
                         break;
                     case "f":
                         // face definition

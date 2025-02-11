@@ -20,14 +20,23 @@ public class Vertex {
     
     Vec4 textureCoordExt1 = null;
     
-    public Vertex() {
-        vertex = new Vec4(0, 0, 0, 1);
-        textureCoord = new Vec4(0, 0, 0, 1);
+    
+    public Vertex(Vec4 pos, Vec4 texCoord, Vec4 normal) {
+        vertex = new Vec4(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
+        textureCoord = new Vec4(texCoord.getX(), texCoord.getY(), texCoord.getZ(), texCoord.getW());
+        this.normal = new Vec4(normal.getX(), normal.getY(), normal.getZ(), normal.getW());
     }
     
     public Vertex(Vec4 pos, Vec4 texCoord) {
         vertex = new Vec4(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
         textureCoord = new Vec4(texCoord.getX(), texCoord.getY(), texCoord.getZ(), texCoord.getW());
+        normal = new Vec4(0, 1, 0, 0);
+    }
+    
+    public Vertex() {
+        vertex = new Vec4(0, 0, 0, 1);
+        textureCoord = new Vec4(0, 0, 0, 1);
+        normal = new Vec4(0, 1, 0, 0);
     }
     
     public Vertex transform(Mtx4 transformation) {

@@ -35,12 +35,13 @@ public class AppGL extends AbstractAppGL {
     int frame = 0;
     
     
-    FragmentShaderTextureSimple fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/textures/rock256.jpg"));
+    FragmentShaderTextureSimple fragmentShader01 = new FragmentShaderTextureSimple(new TextureNearest("data/textures/rock128.jpg"));
     //FragmentShader fragmentShader02 = new FragmentShaderTextureSimple(new TextureNearest("data/sach8.png"));
-    FragmentShader fragmentShader02 = new FragmentShaderFlat(255, 0,0);
+    FragmentShader fragmentShader02 = new FragmentShaderTextureSimple(new TextureNearest("data/textures/uhl128.png"));
     
     public AppGL(int width, int height, int sleepMillis, int frames, int frameLimit, int frameOffset, boolean debug) {
         super(width, height, sleepMillis, frames, frameLimit, frameOffset, debug);
+        
     }
     
     @Override
@@ -48,42 +49,36 @@ public class AppGL extends AbstractAppGL {
         
         // nastaveni vychozi barvy pozadi - clearColor
         gLibrary.getFrameBuffer().setClearColor(0, 0, 0);
-        gLibrary.getDepthBuffer().setClearValue(-1000.0f);
+        gLibrary.getDepthBuffer().setClearValue(-2.0f);
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.GREATER);
-        
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
-        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
+        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.NONE);
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
-        //gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(10), gLibrary.getWidth()/gLibrary.getHeight(), -0.5d, -5.0d));
-        //gLibrary.setMatrixViewPort(Mtx4.getViewport(width/2-100, height, 0, 0));
-        
-        hTexture0 = gLibrary.getTextureUnit().addTexture(new TextureNearest("data/tex32.png"));
-        
         // umisteni objektu cube
-        mtxCube0.loadIdentity().translate(1, 0, 0);
-        mtxCube1.loadIdentity().translate(-0.5, 0.0, 0).multiply(Mtx4.getRotationZ(1));
+        mtxCube0.loadIdentity().translate(0, 0, -0.6);
+        mtxCube1.loadIdentity().translate(0, 1, -0.6);
         
         // umisteni kamery
-        mtxCamera.loadIdentity().translate(0, 0, -2.3);
-        mtxLookAt.loadLookAt(new Vec4(8,9,3,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
+        mtxCamera.loadIdentity().translate(0, 0, -2.8);
+        //mtxLookAt.loadLookAt(new Vec4(8,1,3,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaCube0 = gLibrary.addVertexBuffer();
-        //vbaCube1 = gLibrary.addVertexBuffer();
+        vbaCube1 = gLibrary.addVertexBuffer();
         
-        gLibrary.getVertexBuffer(vbaCube0).addCube(1);
+        gLibrary.getVertexBuffer(vbaCube1).addCube(0.4);
         
-        /*
-        gLibrary.getVertexBuffer(vbaCube0).addQuad(
-            new Vertex(new Vec4(-2,-1,-1,1), new Vec4(0,0,0,1)),
-            new Vertex(new Vec4(-2,-1, 1,1), new Vec4(0,1,0,1)),
-            new Vertex(new Vec4(-2, 1, 1,1), new Vec4(1,1,0,1)),
-            new Vertex(new Vec4(-2, 1,-1,1), new Vec4(1,0,0,1))        
-        );
-        */
-        //gLibrary.getVertexBuffer(vbaCube1).addCube(0.9);
+        
+        try {
+            Obj model = new Obj("data/models/land2.obj");
+            gLibrary.getVertexBuffer(vbaCube0).addMesh(model.getFaces());
+            
+        } catch (IOException ex) {
+            Logger.getLogger(AppGL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
         //System.out.println(gLibrary.toString());
     }
@@ -98,27 +93,15 @@ public class AppGL extends AbstractAppGL {
         int w0, h0;
         w0 = width;
         h0 = height;
-        //gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.01d, -8.0d));
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.5, -5.0d));
+        
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), w0/(double)h0, -0.5, -10.0d));
         gLibrary.setMatrixViewPort(Mtx4.getViewport(w0, h0, 0, 0));
-        // objekt 1 - krychle
+        
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
-        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        //gLibrary.render(vbaCube0);
+        
+        mtxCube0.multiply(Mtx4.getRotationY(0.002d));
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
-        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
-        //gLibrary.render(vbaCube1);
-        
-        // do object transformations
-        mtxCube0.multiply(Mtx4.getRotationX(0.005d));
-        mtxCube0.multiply(Mtx4.getRotationY(0.002d));
-        mtxCube0.multiply(Mtx4.getRotationZ(-0.0002d));
-        mtxCube0.translate(0, 0, 0.0000);
-        
-        
         mtxCube1.multiply(Mtx4.getRotationX(-0.005d));
         mtxCube1.multiply(Mtx4.getRotationY( 0.001d));
         mtxCube1.multiply(Mtx4.getRotationZ( 0.02d));
@@ -129,14 +112,13 @@ public class AppGL extends AbstractAppGL {
     
     @Override
     public void render() {
-        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));
-        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
+        
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
+        
+        gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));        
         gLibrary.render(vbaCube0, fragmentShader01);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
-        gLibrary.getTextureUnit().setCurrentTexture(hTexture0);
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
         gLibrary.render(vbaCube1, fragmentShader02);
         
         fragmentShader01.frameInc();
@@ -159,14 +141,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        try {
-            Obj model = new Obj("data/models/land.obj");
-            
-            System.out.println(model.getFaces().toString());
-            
-            //scene01(24/9.0, 950);
-        } catch (IOException ex) {
-            Logger.getLogger(AppGL.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        scene01(24/9.0, 950);
     }
 }
