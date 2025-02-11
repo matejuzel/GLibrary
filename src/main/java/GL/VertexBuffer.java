@@ -101,50 +101,50 @@ public class VertexBuffer {
         
         // front
         this.addQuad(
-            new Vertex(a, new Vec4(0,0,0,1)),
-            new Vertex(b, new Vec4(0,1,0,1)),
-            new Vertex(c, new Vec4(1,1,0,1)),
-            new Vertex(d, new Vec4(1,0,0,1))
+            new Vertex(a, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(b, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(c, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(d, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         // right
         this.addQuad(
-            new Vertex(b, new Vec4(0,0,0,1)),
-            new Vertex(e, new Vec4(0,1,0,1)),
-            new Vertex(f, new Vec4(1,1,0,1)),
-            new Vertex(c, new Vec4(1,0,0,1))
+            new Vertex(b, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(e, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(f, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(c, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         // right
         this.addQuad(
-            new Vertex(e, new Vec4(0,0,0,1)),
-            new Vertex(h, new Vec4(0,1,0,1)),
-            new Vertex(g, new Vec4(1,1,0,1)),
-            new Vertex(f, new Vec4(1,0,0,1))
+            new Vertex(e, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(h, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(g, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(f, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         // right
         this.addQuad(
-            new Vertex(h, new Vec4(0,0,0,1)),
-            new Vertex(a, new Vec4(0,1,0,1)),
-            new Vertex(d, new Vec4(1,1,0,1)),
-            new Vertex(g, new Vec4(1,0,0,1))
+            new Vertex(h, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(a, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(d, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(g, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         // right
         this.addQuad(
-            new Vertex(d, new Vec4(0,0,0,1)),
-            new Vertex(c, new Vec4(0,1,0,1)),
-            new Vertex(f, new Vec4(1,1,0,1)),
-            new Vertex(g, new Vec4(1,0,0,1))
+            new Vertex(d, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(c, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(f, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(g, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         // right
         this.addQuad(
-            new Vertex(b, new Vec4(0,0,0,1)),
-            new Vertex(a, new Vec4(0,1,0,1)),
-            new Vertex(h, new Vec4(1,1,0,1)),
-            new Vertex(e, new Vec4(1,0,0,1))
+            new Vertex(b, new Vec4(0,0,0,1), new Vec4(0,0,1,0)),
+            new Vertex(a, new Vec4(0,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(h, new Vec4(1,1,0,1), new Vec4(0,0,1,0)),
+            new Vertex(e, new Vec4(1,0,0,1), new Vec4(0,0,1,0))
         );
         
         return this;

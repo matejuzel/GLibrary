@@ -37,7 +37,7 @@ public class Vertex {
         vertex = new Vec4(0, 0, 0, 1);
         textureCoord = new Vec4(0, 0, 0, 1);
         normal = new Vec4(0, 1, 0, 0);
-    }
+    }    
     
     public Vertex transform(Mtx4 transformation) {
         vertex.transform(transformation);
