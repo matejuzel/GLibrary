@@ -4,6 +4,7 @@
 
 package GL;
 
+import Geometry.VertexBuffer;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
 import Math.Mtx4;

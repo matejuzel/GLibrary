@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package GL;
+package Geometry;
 
+import Geometry.Vertex;
+import Geometry.Face;
 import Math.Vec4;
 import java.util.ArrayList;
 
@@ -19,10 +21,10 @@ public class VertexBuffer {
         STRIP
     }
     
-    ArrayList<Vec4> vertexArray = new ArrayList<>();
-    ArrayList<Vec4> texCoordArray = new ArrayList<>();
-    ArrayList<Vec4> normalArray = new ArrayList<>();
-    TriangleMode triangleMode = TriangleMode.SIMPLE;
+    public ArrayList<Vec4> vertexArray = new ArrayList<>();
+    public ArrayList<Vec4> texCoordArray = new ArrayList<>();
+    public ArrayList<Vec4> normalArray = new ArrayList<>();
+    public TriangleMode triangleMode = TriangleMode.SIMPLE;
     
     public VertexBuffer(TriangleMode triangleMode) {
     
@@ -78,9 +80,9 @@ public class VertexBuffer {
             Face face = mesh.get(i);
             
             this.addTriangle(
-                    new Vertex(face.getVertexA(), face.getCoordA(), face.getNormalA()),
-                    new Vertex(face.getVertexB(), face.getCoordB(), face.getNormalB()),
-                    new Vertex(face.getVertexC(), face.getCoordC(), face.getNormalC())
+                    new Vertex(face.getPositionA(), face.getCoordA(), face.getNormalA()),
+                    new Vertex(face.getPositionB(), face.getCoordB(), face.getNormalB()),
+                    new Vertex(face.getPositionC(), face.getCoordC(), face.getNormalC())
             );
         }
         

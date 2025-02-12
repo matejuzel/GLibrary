@@ -4,7 +4,7 @@
  */
 package FileFormat.Obj;
 
-import GL.Face;
+import Geometry.Face;
 import Math.Vec4;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
