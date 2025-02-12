@@ -107,7 +107,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));        
         gLibrary.render(vbaMesh0, fragmentShader01);
         
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.LINES);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.render(vbaMesh1, fragmentShader02);
@@ -132,6 +132,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        scene01(24/9.0, 250);
+        scene01(24/9.0, 250*3);
     }
 }

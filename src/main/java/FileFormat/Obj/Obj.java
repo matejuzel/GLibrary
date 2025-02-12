@@ -30,10 +30,6 @@ public class Obj {
         try (BufferedReader br = new BufferedReader(new FileReader(FileName))) {
             String line;
             
-            int vertexIndex = 0;
-            int coordIndex = 0;
-            int normalIndex = 0;
-            
             while ((line = br.readLine()) != null) {
                
                 String[] vals = line.split(" ");
@@ -44,7 +40,7 @@ public class Obj {
                         // vertex
                         if (vals.length < 4) continue;
                         double vertexX = Double.parseDouble(vals[1]);
-                        double vertexY = -Double.parseDouble(vals[2]);
+                        double vertexY = Double.parseDouble(vals[2]);
                         double vertexZ = Double.parseDouble(vals[3]);
                         if (Obj.debug) System.out.println(String.format("vertex: %f ; %f ; %f", vertexX, vertexY, vertexZ));
                         verts.add(new Vec4(vertexX, vertexY, vertexZ, 1));
@@ -92,23 +88,6 @@ public class Obj {
                         int coordIndexC = Integer.parseInt(vals2[1]) - 1;
                         int normalIndexC = Integer.parseInt(vals2[2]) - 1;
                         
-                        String vertexD = vals[4];
-                        vals2 = vertexD.split("/");
-                        if (vals2.length != 3) continue;
-                        int vertexIndexD = Integer.parseInt(vals2[0]) - 1;
-                        int coordIndexD = Integer.parseInt(vals2[1]) - 1;
-                        int normalIndexD = Integer.parseInt(vals2[2]) - 1;
-                        
-                        /*
-                        if (Obj.debug) System.out.println(String.format(
-                                "%d/%d/%d ; %d/%d/%d ; %d/%d/%d ; %d/%d/%d", 
-                                vertexIndexA, coordIndexA, normalIndexA, 
-                                vertexIndexB, coordIndexB, normalIndexB, 
-                                vertexIndexC, coordIndexC, normalIndexC,
-                                vertexIndexD, coordIndexD, normalIndexD
-                        ));
-                        */
-                        
                         //ACB
                         faces.add(new Face(
                                 (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexB), (Vec4)verts.get(vertexIndexC),
@@ -116,13 +95,22 @@ public class Obj {
                                 (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexB), (Vec4)normals.get(normalIndexC)
                         ));
                         
-                        //ADC
-                        faces.add(new Face(
-                                (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexC), (Vec4)verts.get(vertexIndexD),
-                                (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexC), (Vec4)coords.get(coordIndexD),
-                                (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexC), (Vec4)normals.get(normalIndexD)
-                        ));
+                        if (vals.length == 5) {
                         
+                            String vertexD = vals[4];
+                            vals2 = vertexD.split("/");
+                            if (vals2.length != 3) continue;
+                            int vertexIndexD = Integer.parseInt(vals2[0]) - 1;
+                            int coordIndexD = Integer.parseInt(vals2[1]) - 1;
+                            int normalIndexD = Integer.parseInt(vals2[2]) - 1;
+                            
+                            //ADC
+                            faces.add(new Face(
+                                    (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexC), (Vec4)verts.get(vertexIndexD),
+                                    (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexC), (Vec4)coords.get(coordIndexD),
+                                    (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexC), (Vec4)normals.get(normalIndexD)
+                            ));
+                        }
                         break;
                 }
             }
