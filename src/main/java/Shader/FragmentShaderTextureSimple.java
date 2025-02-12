@@ -15,16 +15,9 @@ import Texture.TextureAbstract;
  */
 public class FragmentShaderTextureSimple extends FragmentShader {
     
-    public int frame = 0;
-    
-    
     public FragmentShaderTextureSimple(TextureAbstract texture) {
         super();
         this.setTexture(texture);
-    }
-    
-    public void frameInc() {
-        frame++;
     }
     
     @Override

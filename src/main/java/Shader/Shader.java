@@ -11,8 +11,14 @@ package Shader;
  */
 abstract public class Shader {
     
+    protected int frame = 0;
+    
     public Shader() {
     
+    }
+    
+    public void frameInc() {
+        frame++;
     }
     
     abstract public void run();
