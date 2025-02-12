@@ -45,7 +45,7 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().setClearValue(-6.0f);
         gLibrary.getDepthBuffer().setDepthFunction(DepthBufferAbstract.DepthFunction.GREATER);
         gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
-        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.NONE);
+        gLibrary.setFaceCullingMode(GLibrary.FaceCullingMode.BACK);
         
         gLibrary.setMatrixModelView(Mtx4.getIdentity());
         
@@ -102,10 +102,12 @@ public class AppGL extends AbstractAppGL {
     @Override
     public void render() {
         
-        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.TEXTURES);
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.SOLID);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube0));        
         gLibrary.render(vbaMesh0, fragmentShader01);
+        
+        gLibrary.setPrimitiveMode(GLibrary.PrimitiveMode.LINES);
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
         gLibrary.render(vbaMesh1, fragmentShader02);

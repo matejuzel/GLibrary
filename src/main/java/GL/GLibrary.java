@@ -83,18 +83,17 @@ public class GLibrary {
         matrixFinal.multiply(matrixModelView);
         
         switch (primitiveMode) {
-            case POINTS:
-                
-                break;
             case LINES:
-                
+                rasterizer.setLinesFlag(true);
                 break;
             case SOLID:
-                
+                rasterizer.setLinesFlag(false);
                 break;
             case TEXTURES:
-                
+                rasterizer.setLinesFlag(false);
                 break;
+            case POINTS:
+                throw new UnsupportedOperationException("primitiveMode=POINTS neni podporovan.");
             default:
                 throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
         }

@@ -111,16 +111,16 @@ public class Obj {
                         
                         //ACB
                         faces.add(new Face(
-                                (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexC), (Vec4)verts.get(vertexIndexB),
-                                (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexC), (Vec4)coords.get(coordIndexB),
-                                (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexC), (Vec4)normals.get(normalIndexB)
+                                (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexB), (Vec4)verts.get(vertexIndexC),
+                                (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexB), (Vec4)coords.get(coordIndexC),
+                                (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexB), (Vec4)normals.get(normalIndexC)
                         ));
                         
                         //ADC
                         faces.add(new Face(
-                                (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexD), (Vec4)verts.get(vertexIndexC),
-                                (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexD), (Vec4)coords.get(coordIndexC),
-                                (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexD), (Vec4)normals.get(normalIndexC)
+                                (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexC), (Vec4)verts.get(vertexIndexD),
+                                (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexC), (Vec4)coords.get(coordIndexD),
+                                (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexC), (Vec4)normals.get(normalIndexD)
                         ));
                         
                         break;

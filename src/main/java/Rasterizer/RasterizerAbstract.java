@@ -52,7 +52,7 @@ public abstract class RasterizerAbstract {
     
     protected int atrsCount = 5;
     
-    protected boolean linesFlag = true;
+    protected boolean linesFlag = false;
     
     public RasterizerAbstract(FrameBuffer frameBuffer, DepthBufferAbstract depthBuffer, FragmentShader fragmentShader, int atrsCount, boolean linesFlag) {
         this.frameBuffer = frameBuffer;
@@ -252,4 +252,7 @@ public abstract class RasterizerAbstract {
         this.fragmentShader = fragmentShader;
     }
     
+    public void setLinesFlag(boolean flag) {
+        this.linesFlag = flag;
+    }
 }
