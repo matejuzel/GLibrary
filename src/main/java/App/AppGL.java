@@ -7,6 +7,7 @@ package App;
 import FileFormat.Obj.Obj;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.GLibrary;
+import Geometry.Vertex;
 import Math.Mtx4;
 import Math.Vec4;
 import Shader.FragmentShader;
@@ -51,11 +52,11 @@ public class AppGL extends AbstractAppGL {
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(0, 0, 0);
-        mtxCube1.loadIdentity().translate(0, 0, 0);
+        mtxCube1.loadIdentity().translate(-1.8, 0, -1);
         
         // umisteni kamery
-        //mtxCamera.loadIdentity().translate(0, 0, -2.8);
-        mtxCamera.loadLookAt(new Vec4(1,2,-3,1), new Vec4(0,0,0,1), new Vec4(0,1,0,0));
+        mtxCamera.loadIdentity().translate(0, 0, 0);
+        //mtxCamera.loadLookAt(new Vec4(5.6,2,-2,1), new Vec4(0,0,0,1), new Vec4(0,-1,0,0));
         
         // vytvoreni vertex bufferu a vlozeni krychle do nej
         vbaMesh0 = gLibrary.addVertexBuffer();
@@ -66,13 +67,19 @@ public class AppGL extends AbstractAppGL {
         
         try {
             gLibrary.getVertexBuffer(vbaMesh0).addMesh(new Obj("data/models/obj/land2.obj").getFaces());
-            gLibrary.getVertexBuffer(vbaMesh1).addMesh(new Obj("data/models/obj/stone.obj").getFaces());
+            //gLibrary.getVertexBuffer(vbaMesh1).addMesh(new Obj("data/models/obj/stone.obj").getFaces());
+            gLibrary.getVertexBuffer(vbaMesh1).addQuad(
+                    new Vertex(new Vec4(-1,-1,0,1), new Vec4(0,0,0,1)), 
+                    new Vertex(new Vec4( 1,-1,0,1), new Vec4(1,0,0,1)), 
+                    new Vertex(new Vec4( 1, 1,0,1), new Vec4(1,1,0,1)),
+                    new Vertex(new Vec4(-1, 1,0,1), new Vec4(0,1,0,1))
+                    );
             
         } catch (IOException ex) {
             Logger.getLogger(AppGL.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), width/(double)height, -0.5, -10.0d));
+        gLibrary.setMatrixProjection(Mtx4.getProjectionPerspective(Math.toRadians(20), width/(double)height, -0.05, -10.0d));
         gLibrary.setMatrixViewPort(Mtx4.getViewport(width, height, 0, 0));
         
         //System.out.println(gLibrary.toString());
@@ -91,10 +98,10 @@ public class AppGL extends AbstractAppGL {
         mtxCube0.multiply(Mtx4.getRotationY(0.002d));
         
         gLibrary.setMatrixModelView(mtxCamera.getOrthonormalInverted().multiply(mtxCube1));
-        mtxCube1.multiply(Mtx4.getRotationX(-0.005d));
-        mtxCube1.multiply(Mtx4.getRotationY( 0.001d));
+        //mtxCube1.multiply(Mtx4.getRotationX(-0.005d));
+        //mtxCube1.multiply(Mtx4.getRotationY( 0.001d));
         mtxCube1.multiply(Mtx4.getRotationZ( 0.02d));
-        //mtxCube1.translate(0.0001, 0, 0.000);
+        //mtxCube1.translate(-0.00, 0, 0.000);
         
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
@@ -132,6 +139,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        scene01(24/9.0, 250*3);
+        scene01(16/9.0, 250);
     }
 }

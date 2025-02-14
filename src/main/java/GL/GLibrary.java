@@ -7,7 +7,9 @@ package GL;
 import Geometry.VertexBuffer;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
+import Geometry.Vertex;
 import Math.Mtx4;
+import Math.Utils;
 import Math.Vec4;
 import Rasterizer.RasterizerAbstract;
 import Rasterizer.RasterizerTextures;
@@ -140,9 +142,81 @@ public class GLibrary {
                     vertB.transform(matrixFinal);
                     vertC.transform(matrixFinal);
                     
+                    // CLIP SPACE
+                    
                     double wA = vertA.getW();
                     double wB = vertB.getW();
                     double wC = vertC.getW();
+                    
+                    
+                    /*
+                    if (vertA.getX() >= vertA.getW()) continue;
+                    if (vertB.getX() >= vertB.getW()) continue;
+                    if (vertC.getX() >= vertC.getW()) continue;
+                    //*/
+                    
+                    int mask = 0;
+                    if (vertA.getX() >= vertA.getW()) mask |= 1;
+                    if (vertB.getX() >= vertB.getW()) mask |= 2;
+                    if (vertC.getX() >= vertC.getW()) mask |= 4;
+                    
+                    
+                    //*
+                    switch (mask) {
+                        case 7: // out: A,B,C
+                            continue;
+                        case 3:
+                            // in:  C
+                            // out: A,B
+                            vertA = Utils.cutRight(vertC, vertA);
+                            vertB = Utils.cutRight(vertC, vertB);
+                        case 4:
+                            // in: A,B
+                            // out: C
+                            vertC = Utils.cutRight(vertA, vertC);
+                            break;
+                        case 5:
+                            // in:  B
+                            // out: A,C
+                            vertA = Utils.cutRight(vertB, vertA);
+                            vertC = Utils.cutRight(vertB, vertC);
+                        case 2:
+                            // in: A,C
+                            // out: B
+                            vertB = Utils.cutRight(vertB, vertA);
+                            break;
+                        case 6:
+                            // in:  A
+                            // out: B,C
+                            vertB = Utils.cutRight(vertA, vertB);
+                            vertC = Utils.cutRight(vertA, vertC);
+                        case 1:
+                            // in: B,C
+                            // out: A
+                            vertA = Utils.cutRight(vertA, vertB);
+                            break;
+                    }
+                    //*/
+                    
+                    if (vertA.getX() <= -vertA.getW()) continue;
+                    if (vertB.getX() <= -vertB.getW()) continue;
+                    if (vertC.getX() <= -vertC.getW()) continue;
+                    
+                    if (vertA.getY() >= vertA.getW()) continue;
+                    if (vertB.getY() >= vertB.getW()) continue;
+                    if (vertC.getY() >= vertC.getW()) continue;
+                    
+                    if (vertA.getY() <= -vertA.getW()) continue;
+                    if (vertB.getY() <= -vertB.getW()) continue;
+                    if (vertC.getY() <= -vertC.getW()) continue;
+                    
+                    if (vertA.getZ() >= vertA.getW()) continue;
+                    if (vertB.getZ() >= vertB.getW()) continue;
+                    if (vertC.getZ() >= vertC.getW()) continue;
+                    
+                    if (vertA.getZ() <= -vertA.getW()) continue;
+                    if (vertB.getZ() <= -vertB.getW()) continue;
+                    if (vertC.getZ() <= -vertC.getW()) continue;
                     
                     vertA.divideByW();
                     vertB.divideByW();

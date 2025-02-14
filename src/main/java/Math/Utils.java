@@ -4,6 +4,8 @@
  */
 package Math;
 
+import Geometry.Vertex;
+
 /**
  *
  * @author matej uzel
@@ -101,5 +103,31 @@ public class Utils {
         System.out.println("===============");
     }
     
+    
+    public static Vec4 cutRight(Vec4 A, Vec4 B) {
+        
+        double k = (A.getW() - A.getX()) / ((B.getX() - A.getX()) - (B.getW() - A.getW()));
+        
+        return new Vec4(
+                A.getX() + k*(B.getX() - A.getX()),
+                A.getY() + k*(B.getY() - A.getY()),
+                A.getZ() + k*(B.getZ() - A.getZ()),
+                A.getW() + k*(B.getW() - A.getW())
+        );
+    }
+    
+    public static Vertex cutVertexRight(Vertex a, Vertex b) {
+        
+        double k = (a.getVertex().getW() - a.getVertex().getX()) / ((b.getVertex().getX() - a.getVertex().getX()) - (b.getVertex().getW() - a.getVertex().getW()));
+        
+        return new Vertex(
+            new Vec4(
+                a.getVertex().getX() + k * (b.getVertex().getX() - a.getVertex().getX()),
+                a.getVertex().getY() + k * (b.getVertex().getY() - a.getVertex().getY()),
+                a.getVertex().getZ() + k * (b.getVertex().getZ() - a.getVertex().getZ()),
+                a.getVertex().getW() + k * (b.getVertex().getW() - a.getVertex().getW())
+            )   
+        );
+    }
     
 }

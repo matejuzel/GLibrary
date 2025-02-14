@@ -30,7 +30,13 @@ public class Vertex {
     public Vertex(Vec4 pos, Vec4 texCoord) {
         vertex = new Vec4(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
         textureCoord = new Vec4(texCoord.getX(), texCoord.getY(), texCoord.getZ(), texCoord.getW());
-        normal = new Vec4(0, 1, 0, 0);
+        normal = new Vec4(0, 0, 1, 0);
+    }
+    
+    public Vertex(Vec4 pos) {
+        vertex = new Vec4(pos.getX(), pos.getY(), pos.getZ(), pos.getW());
+        textureCoord = new Vec4(1, 0, 0, 0);
+        normal = new Vec4(0, 0, 1, 0);
     }
     
     public Vertex() {
