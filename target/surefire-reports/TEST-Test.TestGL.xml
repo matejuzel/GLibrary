@@ -15,7 +15,7 @@
     <property name="user.country" value="CZ"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\matej\AppData\Local\Temp\surefire6416660803168487177\surefirebooter-20250211201821609_3.jar C:\Users\matej\AppData\Local\Temp\surefire6416660803168487177 2025-02-11T20-18-21_318-jvmRun1 surefire-20250211201821609_1tmp surefire_0-20250211201821609_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\matej\AppData\Local\Temp\surefire17671218216953777905\surefirebooter-20250215220550777_3.jar C:\Users\matej\AppData\Local\Temp\surefire17671218216953777905 2025-02-15T22-05-50_575-jvmRun1 surefire-20250215220550777_1tmp surefire_0-20250215220550777_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\matej\Documents\NetBeansProjects\GLibrary\target\test-classes;C:\Users\matej\Documents\NetBeansProjects\GLibrary\target\classes;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\matej\AppData\Local\Temp\surefire6416660803168487177\surefirebooter-20250211201821609_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\matej\AppData\Local\Temp\surefire17671218216953777905\surefirebooter-20250215220550777_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.9+11-LTS-201"/>
@@ -57,5 +57,5 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="Test.TestGL.testMtx4()" classname="Test.TestGL" time="0.0"/>
+  <testcase name="Test.TestGL.testMtx4()" classname="Test.TestGL" time="0.001"/>
 </testsuite>

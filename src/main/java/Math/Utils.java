@@ -29,6 +29,27 @@ public class Utils {
         return a.getX()*b.getX() + a.getY()*b.getY() + a.getZ()*b.getZ() + a.getW()*b.getW();
     }
     
+    public static double interpolate(double a0, double a1, double k) {
+        return a0 + k * (a1 - a0);
+    }
+    
+    public static Vec4 interpolate(Vec4 a0, Vec4 a1, double k) {
+        Vec4 ak = new Vec4(
+            a0.getX() + k * (a1.getX() - a0.getX()),
+            a0.getY() + k * (a1.getY() - a0.getY()),
+            a0.getZ() + k * (a1.getZ() - a0.getZ()),
+            a0.getW() + k * (a1.getW() - a0.getW())
+        );
+        ak.normal();
+        return ak;
+    }
+    
+    
+    
+    
+    
+    
+    
     public static int remapFloatToInt8Bit(float value, float minVal, float maxVal) {
         // Step 1: Scale the float to the range [0.0, 1.0]
         float scaledValue = (value - minVal) / (maxVal - minVal);

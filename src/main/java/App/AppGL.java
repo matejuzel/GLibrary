@@ -52,7 +52,7 @@ public class AppGL extends AbstractAppGL {
         
         // umisteni objektu cube
         mtxCube0.loadIdentity().translate(0, 0, 0);
-        mtxCube1.loadIdentity().translate(-1.8, 0, -1);
+        mtxCube1.loadIdentity().translate(-2, 0, -1);
         
         // umisteni kamery
         mtxCamera.loadIdentity().translate(0, 0, 0);
@@ -139,6 +139,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        scene01(16/9.0, 250);
+        scene01(16/9.0, 800);
     }
 }

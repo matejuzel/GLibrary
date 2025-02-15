@@ -170,6 +170,7 @@ public class GLibrary {
                             // out: A,B
                             vertA = Utils.cutRight(vertC, vertA);
                             vertB = Utils.cutRight(vertC, vertB);
+                            
                         case 4:
                             // in: A,B
                             // out: C

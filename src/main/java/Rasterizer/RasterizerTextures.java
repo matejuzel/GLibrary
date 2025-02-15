@@ -4,6 +4,7 @@
  */
 package Rasterizer;
 
+import GL.Color;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.FrameBuffer;
 import Shader.FragmentShader;
@@ -151,17 +152,26 @@ public class RasterizerTextures extends RasterizerAbstract {
     
     public void scanLine(int x0, int x1, int y, double z0, double z1, double[] atrs_0, double[] atrs_1) {
        
-        if (linesFlag) {
+        if (true || linesFlag) {
             
             fragmentShader.setIn(x0, y, z0, atrs_0);
             fragmentShader.run();
-            frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
+            //frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
             
-            fragmentShader.setIn(x1, y, z1, atrs_1);
-            fragmentShader.run();
-            frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
+            //fragmentShader.setIn(x1, y, z1, atrs_1);
+            //fragmentShader.run();
+            //frameBuffer.putPixel(fragmentShader.getOutPos(), fragmentShader.getOutColor());
             
-            return;
+            int[] red = {255, 0, 0};
+            int[] posLeft = {x0, y};
+            int[] posRight = {x1, y};
+            depthBuffer.write(x0, y, -1);
+            frameBuffer.putPixel(posLeft, red);
+            
+            depthBuffer.write(x1, y, -1);
+            frameBuffer.putPixel(posRight, red);
+            
+            //return;
         }
         
         int dx = direction * (x1 - x0);
