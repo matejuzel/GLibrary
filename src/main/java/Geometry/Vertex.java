@@ -95,6 +95,7 @@ public class Vertex {
         return this.textureCoordExt1;
     }
     
+    
     @Override
     public String toString() {
     

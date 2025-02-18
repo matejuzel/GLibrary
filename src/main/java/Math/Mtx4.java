@@ -27,7 +27,12 @@ public final class Mtx4 {
     }
     
     public Mtx4() {
-        this(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+        this(
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1
+        );
     }
     
     public Mtx4(Mtx4 m) {

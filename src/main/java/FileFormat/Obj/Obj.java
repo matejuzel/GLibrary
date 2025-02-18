@@ -5,6 +5,7 @@
 package FileFormat.Obj;
 
 import Geometry.Face;
+import Geometry.Mesh;
 import Math.Vec4;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -24,6 +25,8 @@ public class Obj {
     protected ArrayList coords = new ArrayList<Vec4>();
     protected ArrayList normals = new ArrayList<Vec4>();
     protected ArrayList faces = new ArrayList<Face>();
+    
+    protected Mesh mesh = new Mesh();
     
     public Obj(String FileName) throws FileNotFoundException, IOException {
         
@@ -89,7 +92,7 @@ public class Obj {
                         int normalIndexC = Integer.parseInt(vals2[2]) - 1;
                         
                         //ACB
-                        faces.add(new Face(
+                        mesh.addFace(new Face(
                                 (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexB), (Vec4)verts.get(vertexIndexC),
                                 (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexB), (Vec4)coords.get(coordIndexC),
                                 (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexB), (Vec4)normals.get(normalIndexC)
@@ -105,7 +108,7 @@ public class Obj {
                             int normalIndexD = Integer.parseInt(vals2[2]) - 1;
                             
                             //ADC
-                            faces.add(new Face(
+                            mesh.addFace(new Face(
                                     (Vec4)verts.get(vertexIndexA), (Vec4)verts.get(vertexIndexC), (Vec4)verts.get(vertexIndexD),
                                     (Vec4)coords.get(coordIndexA), (Vec4)coords.get(coordIndexC), (Vec4)coords.get(coordIndexD),
                                     (Vec4)normals.get(normalIndexA), (Vec4)normals.get(normalIndexC), (Vec4)normals.get(normalIndexD)
@@ -118,8 +121,13 @@ public class Obj {
         
     }
     
+    /*
     public ArrayList<Face> getFaces() {
         return faces;
+    }*/
+    
+    public Mesh getMesh() {
+        return mesh;
     }
     
 }

@@ -7,6 +7,8 @@ package GL;
 import Geometry.VertexBuffer;
 import GL.DepthBuffer.DepthBufferAbstract;
 import GL.DepthBuffer.DepthBufferDouble;
+import Geometry.Face;
+import Geometry.Mesh;
 import Geometry.Vertex;
 import Math.Mtx4;
 import Math.Utils;
@@ -73,6 +75,160 @@ public class GLibrary {
     public void setFragmentShader(FragmentShader fragmentShader) {
         this.fragmentShader = fragmentShader;
     }
+    
+    public GLibrary render(Mesh mesh, Mtx4 modelViewMatrix) {
+        
+        matrixFinal.loadIdentity();
+        matrixFinal.multiply(matrixProjection);
+        matrixFinal.multiply(matrixModelView);
+        matrixFinal.multiply(mesh.getTransformationMatrix());
+        
+        //System.out.println(matrixFinal);
+        
+        rasterizer.setFragmentShader(mesh.getFragmentShader());
+        
+        switch (primitiveMode) {
+            case LINES:
+                rasterizer.setLinesFlag(true);
+                break;
+            case SOLID:
+                rasterizer.setLinesFlag(false);
+                break;
+            case TEXTURES:
+                rasterizer.setLinesFlag(false);
+                break;
+            case POINTS:
+                throw new UnsupportedOperationException("primitiveMode=POINTS neni podporovan.");
+            default:
+                throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
+        }
+        
+        for (Face face : mesh.getFaces()) {
+            
+            Vertex vertexA = face.getVertexA();
+            Vertex vertexB = face.getVertexB();
+            Vertex vertexC = face.getVertexC();
+            
+            Vec4 a = new Vec4(vertexA.getVertex()).transform(matrixFinal);
+            Vec4 b = new Vec4(vertexB.getVertex()).transform(matrixFinal);
+            Vec4 c = new Vec4(vertexC.getVertex()).transform(matrixFinal);
+            
+            Vec4 lightDirection = new Vec4(0,0,-1,0);
+            lightDirection = lightDirection.transform(matrixModelView.getOrthonormalInverted());
+                    
+            // CLIP SPACE
+
+
+
+            if (a.getX() >= a.getW()) continue;
+            if (b.getX() >= b.getW()) continue;
+            if (c.getX() >= c.getW()) continue;
+
+            int mask = 0;
+            if (a.getX() >= a.getW()) mask |= 1;
+            if (b.getX() >= b.getW()) mask |= 2;
+            if (c.getX() >= c.getW()) mask |= 4;
+
+
+
+            if (a.getX() <= -a.getW()) continue;
+            if (b.getX() <= -b.getW()) continue;
+            if (c.getX() <= -c.getW()) continue;
+
+            if (a.getY() >= a.getW()) continue;
+            if (b.getY() >= b.getW()) continue;
+            if (c.getY() >= c.getW()) continue;
+
+            if (a.getY() <= -a.getW()) continue;
+            if (b.getY() <= -b.getW()) continue;
+            if (c.getY() <= -c.getW()) continue;
+
+            if (a.getZ() >= a.getW()) continue;
+            if (b.getZ() >= b.getW()) continue;
+            if (c.getZ() >= c.getW()) continue;
+
+            if (a.getZ() <= -a.getW()) continue;
+            if (b.getZ() <= -b.getW()) continue;
+            if (c.getZ() <= -c.getW()) continue;
+
+            a.divideByW();
+            b.divideByW();
+            c.divideByW();
+
+            // pro cross product
+            double vABx = b.getX() - a.getX();
+            double vABy = b.getY() - a.getY();
+            double vACx = c.getX() - a.getX();
+            double vACy = c.getY() - a.getY();
+
+            switch (faceCullingMode) {
+                case NONE:
+                    // nic
+                    break;
+                case BACK:
+                    // corss product: (ax, ay, 0) x (bx, by, 0) = (ax*by-ay*bx)
+                    if (vABx*vACy - vABy*vACx < 0) continue;
+                    break;
+                case FRONT:
+                    // corss product: (ax, ay, 0) x (bx, by, 0) = (ax*by-ay*bx)
+                    if (vABx*vACy - vABy*vACx > 0) continue;
+                    break;
+                case FRONT_AND_BACK:
+                    throw new UnsupportedOperationException("faceCullingMode=FRONT_AND_BACK is not supported yet");
+                default:
+                    throw new UnsupportedOperationException("faceCullingMode option is not set");
+            }
+
+            a.transform(matrixViewPort);
+            b.transform(matrixViewPort);
+            c.transform(matrixViewPort);
+
+            // RASTERIZACE:
+            rasterizer.setParams(
+                    a.getX(), a.getY(), vertexA.getVertex().getW(),
+                    b.getX(), b.getY(), vertexB.getVertex().getW(),
+                    c.getX(), c.getY(), vertexC.getVertex().getW(),
+
+                    lightDirection.getX(),
+                    lightDirection.getY(),
+                    lightDirection.getZ(),
+
+                    this.getMatrixProjection().getData(11), // normalizacni z-faktor: -2*n*f + (n+f)/(f-n)
+                    this.getMatrixProjection().getData(10), // normalizacni z-offset: (n+f)/(f-n)
+
+                    new double[] {
+                        vertexA.getTextureCoord().getX(),
+                        vertexA.getTextureCoord().getY(),
+                        vertexA.getNormal().getX(), 
+                        vertexA.getNormal().getY(), 
+                        vertexA.getNormal().getZ()
+                    },
+                    new double[] {
+                        vertexB.getTextureCoord().getX(),
+                        vertexB.getTextureCoord().getY(),
+                        vertexB.getNormal().getX(), 
+                        vertexB.getNormal().getY(), 
+                        vertexB.getNormal().getZ()
+                    },
+                    new double[] {
+                        vertexC.getTextureCoord().getX(),
+                        vertexC.getTextureCoord().getY(),
+                        vertexC.getNormal().getX(), 
+                        vertexC.getNormal().getY(), 
+                        vertexC.getNormal().getZ()
+                    }
+            );
+
+            rasterizer.drawTriangle();
+            
+            
+        }
+        
+        
+        
+        return this;
+    }
+    
     
     public GLibrary render(int handler, FragmentShader fragmentShader) {
         
