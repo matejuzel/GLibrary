@@ -114,6 +114,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        scene01(16/9.0, 200);
+        scene01(16/9.0, 600);
     }
 }

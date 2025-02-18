@@ -88,19 +88,11 @@ public class GLibrary {
         rasterizer.setFragmentShader(mesh.getFragmentShader());
         
         switch (primitiveMode) {
-            case LINES:
-                rasterizer.setLinesFlag(true);
-                break;
-            case SOLID:
-                rasterizer.setLinesFlag(false);
-                break;
-            case TEXTURES:
-                rasterizer.setLinesFlag(false);
-                break;
-            case POINTS:
-                throw new UnsupportedOperationException("primitiveMode=POINTS neni podporovan.");
-            default:
-                throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
+            case LINES -> rasterizer.setLinesFlag(true);
+            case SOLID -> rasterizer.setLinesFlag(false);
+            case TEXTURES -> rasterizer.setLinesFlag(false);
+            case POINTS -> throw new UnsupportedOperationException("primitiveMode=POINTS neni podporovan.");
+            default -> throw new UnsupportedOperationException("primitiveMode neni nastaven na validni hodnotu.");
         }
         
         for (Face face : mesh.getFaces()) {
