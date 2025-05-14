@@ -219,6 +219,16 @@ public final class Mtx4 {
         return this;
     }
     
+    public Mtx4 rotateX(double x) {
+        return this.multiply(Mtx4.getRotationX(x));
+    }
+    public Mtx4 rotateY(double y) {
+        return this.multiply(Mtx4.getRotationY(y));
+    }
+    public Mtx4 rotateZ(double z) {
+        return this.multiply(Mtx4.getRotationZ(z));
+    }
+    
     public static Mtx4 getProjectionPerspective(double left, double right, double bottom, double top, double near, double far) {
         Mtx4 mtx = new Mtx4();
         mtx.loadProjectionPerspective(left, right, bottom, top, near, far);

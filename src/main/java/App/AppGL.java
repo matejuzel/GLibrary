@@ -81,9 +81,10 @@ public class AppGL extends AbstractAppGL {
         gLibrary.getDepthBuffer().clear();
         
         mesh01.transform(Mtx4.getRotationY(0.005));
-        mesh02.transform(Mtx4.getRotationX(0.01));
+        mesh02.transform(Mtx4.getRotationX(-0.05));
         
         mtxCamera.translate(0, 0, -0.005);
+        mtxCamera.rotateX(-0.0006);
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
     
