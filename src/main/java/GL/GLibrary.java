@@ -79,8 +79,8 @@ public class GLibrary {
     public GLibrary render(Mesh mesh, Mtx4 modelViewMatrix) {
         
         matrixFinal.loadIdentity();
-        matrixFinal.multiply(matrixProjection);
-        matrixFinal.multiply(matrixModelView);
+        matrixFinal.multiply(this.matrixProjection);
+        matrixFinal.multiply(modelViewMatrix);
         matrixFinal.multiply(mesh.getTransformationMatrix());
         
         //System.out.println(matrixFinal);

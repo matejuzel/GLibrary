@@ -83,6 +83,7 @@ public class AppGL extends AbstractAppGL {
         mesh01.transform(Mtx4.getRotationY(0.005));
         mesh02.transform(Mtx4.getRotationX(0.01));
         
+        mtxCamera.translate(0, 0, -0.005);
         //gLibrary.getFrameBuffer().getGraphics().drawString("test", 20, 20);
     }
     
@@ -114,6 +115,6 @@ public class AppGL extends AbstractAppGL {
     
     public static void main(String[] args) {
         
-        scene01(16/9.0, 600);
+        scene01(16/9.0, 800);
     }
 }
